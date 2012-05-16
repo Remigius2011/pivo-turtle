@@ -1,0 +1,14 @@
+
+# backup files created by merge tools
+*.bak
+
+# C# binaries
+*/bin/**
+*/obj/**
+
+# VS user settings
+*.suo
+
+# various
+*.reg
+!*-bare.reg

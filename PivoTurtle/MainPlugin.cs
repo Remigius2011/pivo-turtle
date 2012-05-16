@@ -48,7 +48,7 @@ namespace PivoTurtle
         {
             return true;
         }
-        /*
+
         public string CheckCommit(IntPtr hParentWnd, string parameters, string commonURL, string commonRoot, string[] pathList, string commitMessage)
         {
             throw new NotImplementedException();
@@ -61,7 +61,7 @@ namespace PivoTurtle
 
         public bool HasOptions()
         {
-            throw new NotImplementedException();
+            return true;
         }
 
         public string OnCommitFinished(IntPtr hParentWnd, string commonRoot, string[] pathList, string logMessage, int revision)
@@ -72,6 +72,6 @@ namespace PivoTurtle
         public string ShowOptionsDialog(IntPtr hParentWnd, string parameters)
         {
             throw new NotImplementedException();
-        }*/
+        }
     }
 }

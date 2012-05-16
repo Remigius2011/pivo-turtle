@@ -33,6 +33,7 @@
             this.listView1 = new System.Windows.Forms.ListView();
             this.columnHeaderId = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderDescription = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeaderCheck = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.SuspendLayout();
             // 
             // buttonCancel
@@ -63,6 +64,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.listView1.CheckBoxes = true;
             this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeaderCheck,
             this.columnHeaderId,
             this.columnHeaderDescription});
             this.listView1.FullRowSelect = true;
@@ -83,6 +85,11 @@
             // 
             this.columnHeaderDescription.Text = "Description";
             this.columnHeaderDescription.Width = 250;
+            // 
+            // columnHeaderCheck
+            // 
+            this.columnHeaderCheck.Text = "";
+            this.columnHeaderCheck.Width = 22;
             // 
             // IssuesForm
             // 
@@ -113,5 +120,6 @@
         private System.Windows.Forms.ListView listView1;
         private System.Windows.Forms.ColumnHeader columnHeaderId;
         private System.Windows.Forms.ColumnHeader columnHeaderDescription;
+        private System.Windows.Forms.ColumnHeader columnHeaderCheck;
     }
 }

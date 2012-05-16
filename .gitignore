@@ -12,3 +12,4 @@
 # various
 *.reg
 !*-bare.reg
+*/samples/*.xml

@@ -10,6 +10,7 @@ using System.Windows.Forms;
 // see http://tortoisesvn.net/docs/nightly/TortoiseSVN_en/tsvn-dug-bugtracker.html
 // see http://tortoisesvn.net/issuetrackerplugins.html
 // see http://www.clean-code-developer.de/Tools.ashx
+// see https://www.pivotaltracker.com/help/api?version=v3
 
 namespace PivoTurtle
 {

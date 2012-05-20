@@ -17,25 +17,32 @@ namespace PivoTurtle
     [ComVisible(true), Guid("4A32C95D-0B66-4280-B370-F71410B521D6"), ClassInterface(ClassInterfaceType.None)]
     public class MainPlugin : IBugTraqProvider //, IBugTraqProvider2
     {
+        private IssuesForm form;
+
         public string GetCommitMessage(IntPtr hParentWnd, string parameters, string commonRoot, string[] pathList, string originalMessage)
         {
-            List<TicketItem> tickets = new List<TicketItem>();
-            tickets.Add(new TicketItem(12, "Service doesn't start on Windows Vista"));
-            tickets.Add(new TicketItem(19, "About box doesn't render correctly in large fonts mode"));
-
-            IssuesForm form = new IssuesForm(tickets);
-            if (form.ShowDialog() != DialogResult.OK)
-                return originalMessage;
-
-            StringBuilder result = new StringBuilder(originalMessage);
-            if (originalMessage.Length != 0 && !originalMessage.EndsWith("\n"))
-                result.AppendLine();
-
-            foreach (TicketItem ticket in form.TicketsFixed)
+            if (form == null)
             {
-                result.AppendFormat("Fixed #{0}: {1}", ticket.Number, ticket.Summary);
-                result.AppendLine();
+//                List<TicketItem> tickets = new List<TicketItem>();
+//                tickets.Add(new TicketItem(12, "Service doesn't start on Windows Vista"));
+//                tickets.Add(new TicketItem(19, "About box doesn't render correctly in large fonts mode"));
+                form = new IssuesForm();
             }
+            if (form.ShowDialog() != DialogResult.OK)
+            {
+                return originalMessage;
+            }
+            StringBuilder result = new StringBuilder();
+
+//            if (originalMessage.Length != 0 && !originalMessage.EndsWith("\n"))
+//                result.AppendLine();
+
+            foreach (PivotalStory story in form.SelectedStories)
+            {
+                result.AppendFormat(story.Url);
+                result.Append(" ");
+            }
+            result.Append(originalMessage);
 
             return result.ToString();
         }

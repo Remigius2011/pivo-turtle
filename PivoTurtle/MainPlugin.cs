@@ -21,30 +21,24 @@ namespace PivoTurtle
 
         public string GetCommitMessage(IntPtr hParentWnd, string parameters, string commonRoot, string[] pathList, string originalMessage)
         {
-            if (form == null)
+            try
             {
-//                List<TicketItem> tickets = new List<TicketItem>();
-//                tickets.Add(new TicketItem(12, "Service doesn't start on Windows Vista"));
-//                tickets.Add(new TicketItem(19, "About box doesn't render correctly in large fonts mode"));
-                form = new IssuesForm();
+                if (form == null)
+                {
+                    form = new IssuesForm();
+                }
+                form.SetParameters(parameters);
+                form.OriginalMessage = originalMessage;
+                if (form.ShowDialog() == DialogResult.OK)
+                {
+                    return form.CommitMessage;
+                }
             }
-            if (form.ShowDialog() != DialogResult.OK)
+            catch (Exception x)
             {
-                return originalMessage;
+                ErrorForm.ShowException(x, "Error Getting Commit Message");
             }
-            StringBuilder result = new StringBuilder();
-
-//            if (originalMessage.Length != 0 && !originalMessage.EndsWith("\n"))
-//                result.AppendLine();
-
-            foreach (PivotalStory story in form.SelectedStories)
-            {
-                result.AppendFormat(story.Url);
-                result.Append(" ");
-            }
-            result.Append(originalMessage);
-
-            return result.ToString();
+            return originalMessage;
         }
 
         public string GetLinkText(IntPtr hParentWnd, string parameters)
@@ -54,16 +48,44 @@ namespace PivoTurtle
 
         public bool ValidateParameters(IntPtr hParentWnd, string parameters)
         {
-            return true;
+            try
+            {
+                return true;
+            }
+            catch (Exception x)
+            {
+                ErrorForm.ShowException(x, "Error Validating Parameters");
+            }
+            return false;
         }
 
         public string CheckCommit(IntPtr hParentWnd, string parameters, string commonURL, string commonRoot, string[] pathList, string commitMessage)
         {
-            throw new NotImplementedException();
+            /*
+            try
+            {
+
+            }
+            catch (Exception x)
+            {
+                ErrorForm.ShowException(x, "Error Checking Commit");
+            }
+             * */
+            return commitMessage;
         }
 
         public string GetCommitMessage2(IntPtr hParentWnd, string parameters, string commonURL, string commonRoot, string[] pathList, string originalMessage, string bugID, out string bugIDOut, out string[] revPropNames, out string[] revPropValues)
         {
+            /*
+            try
+            {
+
+            }
+            catch (Exception x)
+            {
+                ErrorForm.ShowException(x, "Error Getting Commit Message");
+            }
+             * */
             throw new NotImplementedException();
         }
 
@@ -74,11 +96,31 @@ namespace PivoTurtle
 
         public string OnCommitFinished(IntPtr hParentWnd, string commonRoot, string[] pathList, string logMessage, int revision)
         {
+            /*
+            try
+            {
+
+            }
+            catch (Exception x)
+            {
+                ErrorForm.ShowException(x, "Error After Commit");
+            }
+             * */
             throw new NotImplementedException();
         }
 
         public string ShowOptionsDialog(IntPtr hParentWnd, string parameters)
         {
+            /*
+            try
+            {
+
+            }
+            catch (Exception x)
+            {
+                ErrorForm.ShowException(x, "Error Showing Options Dialog");
+            }
+             * */
             throw new NotImplementedException();
         }
     }

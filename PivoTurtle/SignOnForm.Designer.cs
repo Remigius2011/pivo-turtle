@@ -58,6 +58,7 @@
             // buttonOk
             // 
             this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.buttonOk.Location = new System.Drawing.Point(264, 107);
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.Size = new System.Drawing.Size(75, 23);
@@ -106,7 +107,7 @@
             this.textBoxPassword.Size = new System.Drawing.Size(217, 20);
             this.textBoxPassword.TabIndex = 6;
             // 
-            // SignOnDialog
+            // SignOnForm
             // 
             this.AcceptButton = this.buttonOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -122,7 +123,7 @@
             this.Controls.Add(this.labelUserid);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "SignOnDialog";
+            this.Name = "SignOnForm";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

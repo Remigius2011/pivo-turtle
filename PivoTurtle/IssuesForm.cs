@@ -14,6 +14,8 @@ namespace PivoTurtle
         private List<PivotalStory> stories = new List<PivotalStory>();
         private long selectedProjectId = -1;
         private List<PivotalStory> selectedStories = new List<PivotalStory>();
+        private string originalMessage;
+        private string commitMessage;
 
         public IssuesForm()
         {
@@ -42,25 +44,39 @@ namespace PivoTurtle
             get { return selectedStories; }
         }
 
-        private void IssuesForm_Load(object sender, EventArgs e)
+        public string OriginalMessage
         {
-            LoadPivotalData();
-            DisplayPivotalData();
+            get { return originalMessage; }
+            set { originalMessage = value; }
+        }
+
+        public string CommitMessage
+        {
+            get { return commitMessage; }
+        }
+
+        public void SetParameters(string parameters)
+        {
+            selectedProjectId = long.Parse(parameters);
         }
 
         private void buttonOk_Click(object sender, EventArgs e)
         {
             selectedStories.Clear();
+            StringBuilder result = new StringBuilder();
             foreach (ListViewItem item in listViewStories.Items)
             {
                 PivotalStory story = item.Tag as PivotalStory;
                 if (story != null && item.Checked)
                 {
                     selectedStories.Add(story);
+                    result.AppendFormat(story.Url);
+                    result.Append(" ");
                 }
             }
-            DialogResult = DialogResult.OK;
-            Close();
+            result.Append(originalMessage);
+
+            commitMessage = result.ToString();
         }
 
         private void DisplayPivotalData()
@@ -150,6 +166,20 @@ namespace PivoTurtle
             PivotalProject project = (PivotalProject)comboBoxProjects.SelectedItem;
             LoadPivotalStories(project.Id);
             DisplayPivotalStories();
+        }
+
+        private void IssuesForm_Shown(object sender, EventArgs e)
+        {
+            try
+            {
+                LoadPivotalData();
+                DisplayPivotalData();
+            }
+            catch (Exception x)
+            {
+                ErrorForm.ShowException(x, "Error Displaying Issues Form - will close");
+                Close();
+            }
         }
     }
 }

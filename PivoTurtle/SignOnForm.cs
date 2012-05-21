@@ -48,8 +48,6 @@ namespace PivoTurtle
         {
             userId = textBoxUserid.Text;
             password = textBoxPassword.Text;
-            DialogResult = DialogResult.OK;
-            Close();
         }
 
         private void SignOnDialog_Load(object sender, EventArgs e)

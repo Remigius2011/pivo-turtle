@@ -13,10 +13,5 @@ namespace PivoTurtle
         {
             InitializeComponent();
         }
-
-        private void buttonOk_Click(object sender, EventArgs e)
-        {
-            // todo
-        }
     }
 }

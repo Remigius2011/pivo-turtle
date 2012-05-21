@@ -63,7 +63,15 @@ namespace PivoTurtle
         public List<PivotalTask> GetTasks(string projectId, string storyId)
         {
             // curl -H "X-TrackerToken: %TOKEN%" -X GET https://www.pivotaltracker.com/services/v3/projects/%PROJECT_ID%/stories/%STORY_ID%/tasks
+            XmlDocument result = executeRequest("https://www.pivotaltracker.com/services/v3/projects/" + projectId + "/stories/" + storyId + "/tasks");
             List<PivotalTask> tasks = new List<PivotalTask>();
+            XmlNodeList nodeList = result.DocumentElement.GetElementsByTagName("task");
+            foreach (XmlNode node in nodeList)
+            {
+                XmlElement element = (XmlElement)node;
+                PivotalTask task = PivotalTask.fromXml(element);
+                tasks.Add(task);
+            }
             return tasks;
         }
 
@@ -75,33 +83,35 @@ namespace PivoTurtle
         public XmlDocument executeRequest(string requestUrl, string userId, string passWord)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUrl);
-            if (userId.Length > 0 && passWord.Length > 0)
+            HttpWebResponse response = null;
+            StreamReader reader = null;
+            try
             {
-                request.Credentials = new NetworkCredential(userId, passWord);
+                if (userId.Length > 0 && passWord.Length > 0)
+                {
+                    request.Credentials = new NetworkCredential(userId, passWord);
+                }
+                if (token != null)
+                {
+                    request.Headers.Add("X-TrackerToken", token.Guid);
+                }
+                request.KeepAlive = false;
+                response = (HttpWebResponse)request.GetResponse();
+
+                Stream receiveStream = response.GetResponseStream();
+                Encoding encode = System.Text.Encoding.GetEncoding("utf-8");
+
+                // Pipes the stream to a higher level stream reader with the required encoding format. 
+                reader = new StreamReader(receiveStream, encode);
+                XmlDocument document = new XmlDocument();
+                document.Load(reader);
+                return document;
             }
-            if (token != null)
+            finally
             {
-                request.Headers.Add("X-TrackerToken", token.Guid);
+                if (reader != null) { reader.Close(); }
+                if (response != null) { response.Close(); }
             }
-            request.KeepAlive = false;
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-            if (response.StatusCode != HttpStatusCode.OK)
-            {
-                // todo: throw an exception here
-                return null;
-            }
-
-            Stream receiveStream = response.GetResponseStream();
-            Encoding encode = System.Text.Encoding.GetEncoding("utf-8");
-
-            // Pipes the stream to a higher level stream reader with the required encoding format. 
-            StreamReader readStream = new StreamReader(receiveStream, encode);
-            XmlDocument document = new XmlDocument();
-            document.Load(readStream);
-
-            readStream.Close();
-            response.Close();
-            return document;
         }
     }
 }

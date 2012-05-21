@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml;
 
 namespace PivoTurtle
 {
@@ -49,6 +50,18 @@ namespace PivoTurtle
         {
             get { return createdAt; }
             set { createdAt = value; }
+        }
+
+        public static PivotalTask fromXml(XmlElement element)
+        {
+            string idStr = element.GetElementsByTagName("id").Item(0).InnerText;
+            long id = long.Parse(idStr);
+            string description = element.GetElementsByTagName("description").Item(0).InnerText;
+            string url = element.GetElementsByTagName("url").Item(0).InnerText;
+            PivotalTask story = new PivotalTask();
+            story.Id = id;
+            story.Description = description;
+            return story;
         }
     }
 }

@@ -30,5 +30,10 @@ namespace PivoTurtle
             textBoxMessage.Text = x.Message;
             textBoxStackTrace.Text = x.StackTrace.ToString();
         }
+
+        private void buttonCopy_Click(object sender, EventArgs e)
+        {
+            Clipboard.SetText(x.Message + "\r\n\r\n" + x.StackTrace.ToString());
+        }
     }
 }

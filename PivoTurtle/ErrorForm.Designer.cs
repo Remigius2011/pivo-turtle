@@ -33,6 +33,7 @@
             this.textBoxMessage = new System.Windows.Forms.TextBox();
             this.labelStackTrace = new System.Windows.Forms.Label();
             this.textBoxStackTrace = new System.Windows.Forms.TextBox();
+            this.buttonCopy = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // buttonOk
@@ -42,7 +43,7 @@
             this.buttonOk.Location = new System.Drawing.Point(301, 285);
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.Size = new System.Drawing.Size(75, 23);
-            this.buttonOk.TabIndex = 1;
+            this.buttonOk.TabIndex = 4;
             this.buttonOk.Text = "OK";
             this.buttonOk.UseVisualStyleBackColor = true;
             // 
@@ -52,7 +53,7 @@
             this.labelMessage.Location = new System.Drawing.Point(12, 15);
             this.labelMessage.Name = "labelMessage";
             this.labelMessage.Size = new System.Drawing.Size(75, 13);
-            this.labelMessage.TabIndex = 2;
+            this.labelMessage.TabIndex = 0;
             this.labelMessage.Text = "Error Message";
             // 
             // textBoxMessage
@@ -65,7 +66,7 @@
             this.textBoxMessage.Name = "textBoxMessage";
             this.textBoxMessage.ReadOnly = true;
             this.textBoxMessage.Size = new System.Drawing.Size(260, 54);
-            this.textBoxMessage.TabIndex = 0;
+            this.textBoxMessage.TabIndex = 1;
             // 
             // labelStackTrace
             // 
@@ -73,7 +74,7 @@
             this.labelStackTrace.Location = new System.Drawing.Point(12, 88);
             this.labelStackTrace.Name = "labelStackTrace";
             this.labelStackTrace.Size = new System.Drawing.Size(66, 13);
-            this.labelStackTrace.TabIndex = 3;
+            this.labelStackTrace.TabIndex = 2;
             this.labelStackTrace.Text = "Stack Trace";
             // 
             // textBoxStackTrace
@@ -88,8 +89,18 @@
             this.textBoxStackTrace.ReadOnly = true;
             this.textBoxStackTrace.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.textBoxStackTrace.Size = new System.Drawing.Size(361, 175);
-            this.textBoxStackTrace.TabIndex = 4;
+            this.textBoxStackTrace.TabIndex = 3;
             this.textBoxStackTrace.WordWrap = false;
+            // 
+            // buttonCopy
+            // 
+            this.buttonCopy.Location = new System.Drawing.Point(15, 285);
+            this.buttonCopy.Name = "buttonCopy";
+            this.buttonCopy.Size = new System.Drawing.Size(75, 23);
+            this.buttonCopy.TabIndex = 5;
+            this.buttonCopy.Text = "to Clipboard";
+            this.buttonCopy.UseVisualStyleBackColor = true;
+            this.buttonCopy.Click += new System.EventHandler(this.buttonCopy_Click);
             // 
             // ErrorForm
             // 
@@ -97,6 +108,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(388, 320);
+            this.Controls.Add(this.buttonCopy);
             this.Controls.Add(this.textBoxStackTrace);
             this.Controls.Add(this.labelStackTrace);
             this.Controls.Add(this.labelMessage);
@@ -122,5 +134,6 @@
         private System.Windows.Forms.TextBox textBoxMessage;
         private System.Windows.Forms.Label labelStackTrace;
         private System.Windows.Forms.TextBox textBoxStackTrace;
+        private System.Windows.Forms.Button buttonCopy;
     }
 }

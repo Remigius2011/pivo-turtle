@@ -181,5 +181,35 @@ namespace PivoTurtle
                 Close();
             }
         }
+
+        private void linkLabelPivotal_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            string link = "https://www.pivotaltracker.com";
+            if (selectedProjectId >= 0)
+            {
+                link += "/projects/" + selectedProjectId;
+            }
+            System.Diagnostics.Process.Start(link);
+        }
+
+        private void openInPivotalTrackerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            PivotalStory story = (PivotalStory)((ToolStripItem)sender).Tag;
+            System.Diagnostics.Process.Start(story.Url);
+        }
+
+        private void listViewStories_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                ListViewHitTestInfo hitTestInfo = listViewStories.HitTest(e.X, e.Y);
+                if (hitTestInfo.Item != null)
+                {
+                    contextMenuStripStories.Items[0].Tag = hitTestInfo.Item.Tag;
+                    Point point = listViewStories.PointToScreen(e.Location);
+                    contextMenuStripStories.Show(point);
+                }
+            }
+        }
     }
 }

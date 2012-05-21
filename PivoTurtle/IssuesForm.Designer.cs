@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.buttonOk = new System.Windows.Forms.Button();
             this.listViewStories = new System.Windows.Forms.ListView();
@@ -37,6 +38,10 @@
             this.comboBoxProjects = new System.Windows.Forms.ComboBox();
             this.labelProject = new System.Windows.Forms.Label();
             this.labelStories = new System.Windows.Forms.Label();
+            this.linkLabelPivotal = new System.Windows.Forms.LinkLabel();
+            this.contextMenuStripStories = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.openInPivotalTrackerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.contextMenuStripStories.SuspendLayout();
             this.SuspendLayout();
             // 
             // buttonCancel
@@ -46,7 +51,7 @@
             this.buttonCancel.Location = new System.Drawing.Point(218, 284);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
-            this.buttonCancel.TabIndex = 0;
+            this.buttonCancel.TabIndex = 5;
             this.buttonCancel.Text = "Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
             // 
@@ -57,7 +62,7 @@
             this.buttonOk.Location = new System.Drawing.Point(299, 284);
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.Size = new System.Drawing.Size(75, 23);
-            this.buttonOk.TabIndex = 1;
+            this.buttonOk.TabIndex = 6;
             this.buttonOk.Text = "OK";
             this.buttonOk.UseVisualStyleBackColor = true;
             this.buttonOk.Click += new System.EventHandler(this.buttonOk_Click);
@@ -77,9 +82,10 @@
             this.listViewStories.Location = new System.Drawing.Point(12, 130);
             this.listViewStories.Name = "listViewStories";
             this.listViewStories.Size = new System.Drawing.Size(362, 148);
-            this.listViewStories.TabIndex = 2;
+            this.listViewStories.TabIndex = 3;
             this.listViewStories.UseCompatibleStateImageBehavior = false;
             this.listViewStories.View = System.Windows.Forms.View.Details;
+            this.listViewStories.MouseClick += new System.Windows.Forms.MouseEventHandler(this.listViewStories_MouseClick);
             // 
             // columnHeaderCheck
             // 
@@ -105,7 +111,7 @@
             this.comboBoxProjects.Location = new System.Drawing.Point(113, 12);
             this.comboBoxProjects.Name = "comboBoxProjects";
             this.comboBoxProjects.Size = new System.Drawing.Size(261, 21);
-            this.comboBoxProjects.TabIndex = 3;
+            this.comboBoxProjects.TabIndex = 1;
             this.comboBoxProjects.SelectedIndexChanged += new System.EventHandler(this.comboBoxProjects_SelectedIndexChanged);
             // 
             // labelProject
@@ -114,7 +120,7 @@
             this.labelProject.Location = new System.Drawing.Point(12, 15);
             this.labelProject.Name = "labelProject";
             this.labelProject.Size = new System.Drawing.Size(40, 13);
-            this.labelProject.TabIndex = 4;
+            this.labelProject.TabIndex = 0;
             this.labelProject.Text = "Project";
             // 
             // labelStories
@@ -123,8 +129,34 @@
             this.labelStories.Location = new System.Drawing.Point(12, 105);
             this.labelStories.Name = "labelStories";
             this.labelStories.Size = new System.Drawing.Size(39, 13);
-            this.labelStories.TabIndex = 5;
+            this.labelStories.TabIndex = 2;
             this.labelStories.Text = "Stories";
+            // 
+            // linkLabelPivotal
+            // 
+            this.linkLabelPivotal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.linkLabelPivotal.AutoSize = true;
+            this.linkLabelPivotal.Location = new System.Drawing.Point(12, 289);
+            this.linkLabelPivotal.Name = "linkLabelPivotal";
+            this.linkLabelPivotal.Size = new System.Drawing.Size(157, 13);
+            this.linkLabelPivotal.TabIndex = 4;
+            this.linkLabelPivotal.TabStop = true;
+            this.linkLabelPivotal.Text = "https://www.pivotaltracker.com";
+            this.linkLabelPivotal.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelPivotal_LinkClicked);
+            // 
+            // contextMenuStripStories
+            // 
+            this.contextMenuStripStories.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.openInPivotalTrackerToolStripMenuItem});
+            this.contextMenuStripStories.Name = "contextMenuStripStories";
+            this.contextMenuStripStories.Size = new System.Drawing.Size(195, 26);
+            // 
+            // openInPivotalTrackerToolStripMenuItem
+            // 
+            this.openInPivotalTrackerToolStripMenuItem.Name = "openInPivotalTrackerToolStripMenuItem";
+            this.openInPivotalTrackerToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
+            this.openInPivotalTrackerToolStripMenuItem.Text = "Open in PivotalTracker";
+            this.openInPivotalTrackerToolStripMenuItem.Click += new System.EventHandler(this.openInPivotalTrackerToolStripMenuItem_Click);
             // 
             // IssuesForm
             // 
@@ -133,6 +165,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(386, 319);
+            this.Controls.Add(this.linkLabelPivotal);
             this.Controls.Add(this.labelStories);
             this.Controls.Add(this.labelProject);
             this.Controls.Add(this.comboBoxProjects);
@@ -147,6 +180,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Pivotal Tracker Issues";
             this.Shown += new System.EventHandler(this.IssuesForm_Shown);
+            this.contextMenuStripStories.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -163,5 +197,8 @@
         private System.Windows.Forms.ComboBox comboBoxProjects;
         private System.Windows.Forms.Label labelProject;
         private System.Windows.Forms.Label labelStories;
+        private System.Windows.Forms.LinkLabel linkLabelPivotal;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStripStories;
+        private System.Windows.Forms.ToolStripMenuItem openInPivotalTrackerToolStripMenuItem;
     }
 }

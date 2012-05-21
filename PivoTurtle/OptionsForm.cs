@@ -14,7 +14,6 @@ namespace PivoTurtle
             OptionsForm form = new OptionsForm();
             if (form.ShowDialog() == DialogResult.OK)
             {
-                // todo: update properties
                 return true;
             }
             return false;
@@ -23,12 +22,18 @@ namespace PivoTurtle
         public OptionsForm()
         {
             InitializeComponent();
+            textBoxMessageTemplate.Text = Properties.Settings.Default.MessageTemplate;
         }
 
         private void buttonResetToken_Click(object sender, EventArgs e)
         {
             Properties.Settings.Default.TokenGuid = "";
             Properties.Settings.Default.TokenId = -1;
+        }
+
+        private void buttonOk_Click(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.MessageTemplate = textBoxMessageTemplate.Text;
         }
     }
 }

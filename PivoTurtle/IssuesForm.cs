@@ -16,15 +16,12 @@ namespace PivoTurtle
         private List<PivotalStory> selectedStories = new List<PivotalStory>();
         private string originalMessage;
         private string commitMessage;
+        private StoryMessageTemplate template = new StoryMessageTemplate();
 
         public IssuesForm()
         {
             InitializeComponent();
             pivotalClient = new PivotalServiceClient();
-            if (Properties.Settings.Default.SaveServerToken)
-            {
-                UpdateServerToken();
-            }
         }
 
         public List<PivotalProject> Projects
@@ -186,6 +183,11 @@ namespace PivoTurtle
         {
             try
             {
+                UpdateTemplate();
+                if (Properties.Settings.Default.SaveServerToken)
+                {
+                    UpdateServerToken();
+                }
                 LoadPivotalData();
                 DisplayPivotalData();
                 string selectedIds = Properties.Settings.Default.SelectedStories;
@@ -242,6 +244,10 @@ namespace PivoTurtle
         {
             OptionsForm.ShowOptions();
             UpdateServerToken();
+            if (!Properties.Settings.Default.MessageTemplate.Equals(template.Template))
+            {
+                UpdateTemplate();
+            }
         }
 
         private void UpdateServerToken()
@@ -257,6 +263,73 @@ namespace PivoTurtle
             {
                 pivotalClient.Token = null;
             }
+        }
+
+        private void UpdateTemplate()
+        {
+            try
+            {
+                string templateStr = Properties.Settings.Default.MessageTemplate;
+                if (templateStr.Length == 0)
+                {
+                    templateStr = StoryMessageTemplate.defaultTemplate;
+                }
+                template.Template = templateStr;
+                UpdateMessage();
+            }
+            catch (Exception x)
+            {
+                ErrorForm.ShowException(x, "Parse Message Template");
+                Properties.Settings.Default.MessageTemplate = "";
+                template.Template = StoryMessageTemplate.defaultTemplate;
+            }
+        }
+
+        private void listViewStories_ColumnClick(object sender, ColumnClickEventArgs e)
+        {
+            if (e.Column == 0)
+            {
+                bool check = false;
+                foreach (ListViewItem item in listViewStories.Items)
+                {
+                    check |= !item.Checked;
+                }
+                foreach (ListViewItem item in listViewStories.Items)
+                {
+                    item.Checked = check;
+                }
+            }
+        }
+
+        private void UpdateMessage()
+        {
+            try
+            {
+                List<PivotalStory> currentSelection = new List<PivotalStory>();
+                foreach (ListViewItem item in listViewStories.Items)
+                {
+                    if (item.Checked)
+                    {
+                        currentSelection.Add(item.Tag as PivotalStory);
+                    }
+                }
+                string result = template.Evaluate(currentSelection, textBoxOriginal.Text);
+                textBoxResult.Text = result;
+            }
+            catch (Exception x)
+            {
+                ErrorForm.ShowException(x, "Evaluate Message Template");
+            }
+        }
+
+        private void textBoxOriginal_TextChanged(object sender, EventArgs e)
+        {
+            UpdateMessage();
+        }
+
+        private void listViewStories_ItemChecked(object sender, ItemCheckedEventArgs e)
+        {
+            UpdateMessage();
         }
     }
 }

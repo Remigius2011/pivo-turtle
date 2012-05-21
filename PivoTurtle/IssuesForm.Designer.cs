@@ -43,6 +43,10 @@
             this.contextMenuStripStories = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.openInPivotalTrackerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.buttonOptions = new System.Windows.Forms.Button();
+            this.labelOriginal = new System.Windows.Forms.Label();
+            this.labelResult = new System.Windows.Forms.Label();
+            this.textBoxOriginal = new System.Windows.Forms.TextBox();
+            this.textBoxResult = new System.Windows.Forms.TextBox();
             this.contextMenuStripStories.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -50,7 +54,7 @@
             // 
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(218, 284);
+            this.buttonCancel.Location = new System.Drawing.Point(461, 361);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
             this.buttonCancel.TabIndex = 5;
@@ -61,7 +65,7 @@
             // 
             this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.buttonOk.Location = new System.Drawing.Point(299, 284);
+            this.buttonOk.Location = new System.Drawing.Point(542, 361);
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.Size = new System.Drawing.Size(75, 23);
             this.buttonOk.TabIndex = 6;
@@ -80,13 +84,14 @@
             this.columnHeaderId,
             this.columnHeaderDescription});
             this.listViewStories.FullRowSelect = true;
-            this.listViewStories.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-            this.listViewStories.Location = new System.Drawing.Point(12, 130);
+            this.listViewStories.Location = new System.Drawing.Point(12, 188);
             this.listViewStories.Name = "listViewStories";
-            this.listViewStories.Size = new System.Drawing.Size(362, 148);
+            this.listViewStories.Size = new System.Drawing.Size(605, 167);
             this.listViewStories.TabIndex = 3;
             this.listViewStories.UseCompatibleStateImageBehavior = false;
             this.listViewStories.View = System.Windows.Forms.View.Details;
+            this.listViewStories.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listViewStories_ColumnClick);
+            this.listViewStories.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.listViewStories_ItemChecked);
             this.listViewStories.MouseClick += new System.Windows.Forms.MouseEventHandler(this.listViewStories_MouseClick);
             // 
             // columnHeaderCheck
@@ -102,7 +107,7 @@
             // columnHeaderDescription
             // 
             this.columnHeaderDescription.Text = "Description";
-            this.columnHeaderDescription.Width = 250;
+            this.columnHeaderDescription.Width = 496;
             // 
             // comboBoxProjects
             // 
@@ -112,7 +117,7 @@
             this.comboBoxProjects.FormattingEnabled = true;
             this.comboBoxProjects.Location = new System.Drawing.Point(113, 12);
             this.comboBoxProjects.Name = "comboBoxProjects";
-            this.comboBoxProjects.Size = new System.Drawing.Size(180, 21);
+            this.comboBoxProjects.Size = new System.Drawing.Size(423, 21);
             this.comboBoxProjects.TabIndex = 1;
             this.comboBoxProjects.SelectedIndexChanged += new System.EventHandler(this.comboBoxProjects_SelectedIndexChanged);
             // 
@@ -128,7 +133,7 @@
             // labelStories
             // 
             this.labelStories.AutoSize = true;
-            this.labelStories.Location = new System.Drawing.Point(12, 105);
+            this.labelStories.Location = new System.Drawing.Point(9, 163);
             this.labelStories.Name = "labelStories";
             this.labelStories.Size = new System.Drawing.Size(39, 13);
             this.labelStories.TabIndex = 2;
@@ -138,7 +143,7 @@
             // 
             this.linkLabelPivotal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.linkLabelPivotal.AutoSize = true;
-            this.linkLabelPivotal.Location = new System.Drawing.Point(12, 289);
+            this.linkLabelPivotal.Location = new System.Drawing.Point(12, 366);
             this.linkLabelPivotal.Name = "linkLabelPivotal";
             this.linkLabelPivotal.Size = new System.Drawing.Size(157, 13);
             this.linkLabelPivotal.TabIndex = 4;
@@ -164,12 +169,53 @@
             // 
             this.buttonOptions.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonOptions.Image = ((System.Drawing.Image)(resources.GetObject("buttonOptions.Image")));
-            this.buttonOptions.Location = new System.Drawing.Point(352, 11);
+            this.buttonOptions.Location = new System.Drawing.Point(594, 11);
             this.buttonOptions.Name = "buttonOptions";
             this.buttonOptions.Size = new System.Drawing.Size(23, 23);
             this.buttonOptions.TabIndex = 7;
             this.buttonOptions.UseVisualStyleBackColor = true;
             this.buttonOptions.Click += new System.EventHandler(this.buttonOptions_Click);
+            // 
+            // labelOriginal
+            // 
+            this.labelOriginal.AutoSize = true;
+            this.labelOriginal.Location = new System.Drawing.Point(12, 42);
+            this.labelOriginal.Name = "labelOriginal";
+            this.labelOriginal.Size = new System.Drawing.Size(42, 13);
+            this.labelOriginal.TabIndex = 8;
+            this.labelOriginal.Text = "Original";
+            // 
+            // labelResult
+            // 
+            this.labelResult.AutoSize = true;
+            this.labelResult.Location = new System.Drawing.Point(12, 68);
+            this.labelResult.Name = "labelResult";
+            this.labelResult.Size = new System.Drawing.Size(37, 13);
+            this.labelResult.TabIndex = 9;
+            this.labelResult.Text = "Result";
+            // 
+            // textBoxOriginal
+            // 
+            this.textBoxOriginal.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxOriginal.Location = new System.Drawing.Point(113, 39);
+            this.textBoxOriginal.Name = "textBoxOriginal";
+            this.textBoxOriginal.Size = new System.Drawing.Size(504, 20);
+            this.textBoxOriginal.TabIndex = 10;
+            this.textBoxOriginal.TextChanged += new System.EventHandler(this.textBoxOriginal_TextChanged);
+            // 
+            // textBoxResult
+            // 
+            this.textBoxResult.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxResult.Location = new System.Drawing.Point(113, 65);
+            this.textBoxResult.Multiline = true;
+            this.textBoxResult.Name = "textBoxResult";
+            this.textBoxResult.ReadOnly = true;
+            this.textBoxResult.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.textBoxResult.Size = new System.Drawing.Size(504, 81);
+            this.textBoxResult.TabIndex = 11;
+            this.textBoxResult.WordWrap = false;
             // 
             // IssuesForm
             // 
@@ -177,10 +223,14 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(386, 319);
+            this.ClientSize = new System.Drawing.Size(629, 396);
+            this.Controls.Add(this.textBoxResult);
+            this.Controls.Add(this.textBoxOriginal);
+            this.Controls.Add(this.labelResult);
+            this.Controls.Add(this.labelOriginal);
             this.Controls.Add(this.linkLabelPivotal);
-            this.Controls.Add(this.labelStories);
             this.Controls.Add(this.labelProject);
+            this.Controls.Add(this.labelStories);
             this.Controls.Add(this.buttonOptions);
             this.Controls.Add(this.comboBoxProjects);
             this.Controls.Add(this.listViewStories);
@@ -215,5 +265,9 @@
         private System.Windows.Forms.ContextMenuStrip contextMenuStripStories;
         private System.Windows.Forms.ToolStripMenuItem openInPivotalTrackerToolStripMenuItem;
         private System.Windows.Forms.Button buttonOptions;
+        private System.Windows.Forms.Label labelOriginal;
+        private System.Windows.Forms.Label labelResult;
+        private System.Windows.Forms.TextBox textBoxOriginal;
+        private System.Windows.Forms.TextBox textBoxResult;
     }
 }

@@ -31,6 +31,8 @@
             this.buttonOk = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.buttonResetToken = new System.Windows.Forms.Button();
+            this.labelMessageTemplate = new System.Windows.Forms.Label();
+            this.textBoxMessageTemplate = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // buttonOk
@@ -43,6 +45,7 @@
             this.buttonOk.TabIndex = 0;
             this.buttonOk.Text = "Ok";
             this.buttonOk.UseVisualStyleBackColor = true;
+            this.buttonOk.Click += new System.EventHandler(this.buttonOk_Click);
             // 
             // buttonCancel
             // 
@@ -57,13 +60,30 @@
             // 
             // buttonResetToken
             // 
-            this.buttonResetToken.Location = new System.Drawing.Point(12, 145);
+            this.buttonResetToken.Location = new System.Drawing.Point(12, 227);
             this.buttonResetToken.Name = "buttonResetToken";
             this.buttonResetToken.Size = new System.Drawing.Size(139, 23);
             this.buttonResetToken.TabIndex = 2;
             this.buttonResetToken.Text = "Reset Server Token";
             this.buttonResetToken.UseVisualStyleBackColor = true;
             this.buttonResetToken.Click += new System.EventHandler(this.buttonResetToken_Click);
+            // 
+            // labelMessageTemplate
+            // 
+            this.labelMessageTemplate.AutoSize = true;
+            this.labelMessageTemplate.Location = new System.Drawing.Point(12, 15);
+            this.labelMessageTemplate.Name = "labelMessageTemplate";
+            this.labelMessageTemplate.Size = new System.Drawing.Size(97, 13);
+            this.labelMessageTemplate.TabIndex = 3;
+            this.labelMessageTemplate.Text = "Message Template";
+            // 
+            // textBoxMessageTemplate
+            // 
+            this.textBoxMessageTemplate.Location = new System.Drawing.Point(131, 12);
+            this.textBoxMessageTemplate.Multiline = true;
+            this.textBoxMessageTemplate.Name = "textBoxMessageTemplate";
+            this.textBoxMessageTemplate.Size = new System.Drawing.Size(270, 68);
+            this.textBoxMessageTemplate.TabIndex = 4;
             // 
             // OptionsForm
             // 
@@ -72,6 +92,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(413, 262);
+            this.Controls.Add(this.textBoxMessageTemplate);
+            this.Controls.Add(this.labelMessageTemplate);
             this.Controls.Add(this.buttonResetToken);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonOk);
@@ -83,6 +105,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "PivoTurtle Options";
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -91,5 +114,7 @@
         private System.Windows.Forms.Button buttonOk;
         private System.Windows.Forms.Button buttonCancel;
         private System.Windows.Forms.Button buttonResetToken;
+        private System.Windows.Forms.Label labelMessageTemplate;
+        private System.Windows.Forms.TextBox textBoxMessageTemplate;
     }
 }

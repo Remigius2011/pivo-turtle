@@ -81,5 +81,17 @@ namespace PivoTurtle.Properties {
                 this["SelectedStories"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string MessageTemplate {
+            get {
+                return ((string)(this["MessageTemplate"]));
+            }
+            set {
+                this["MessageTemplate"] = value;
+            }
+        }
     }
 }

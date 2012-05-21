@@ -22,7 +22,6 @@ namespace PivoTurtle
 
         public string GetCommitMessage(IntPtr hParentWnd, string parameters, string commonRoot, string[] pathList, string originalMessage)
         {
-            LoadSettings();
             try
             {
                 if (form == null)
@@ -133,11 +132,6 @@ namespace PivoTurtle
         private void SaveSettings()
         {
             Properties.Settings.Default.Save();
-        }
-
-        private void LoadSettings()
-        {
-            Properties.Settings.Default.Reload();
         }
     }
 }

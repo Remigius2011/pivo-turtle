@@ -68,6 +68,7 @@ namespace PivoTurtle
         {
             selectedStories.Clear();
             StringBuilder result = new StringBuilder();
+            StringBuilder selectedIds = new StringBuilder(",");
             foreach (ListViewItem item in listViewStories.Items)
             {
                 PivotalStory story = item.Tag as PivotalStory;
@@ -76,11 +77,14 @@ namespace PivoTurtle
                     selectedStories.Add(story);
                     result.AppendFormat(story.Url);
                     result.Append(" ");
+                    selectedIds.Append(story.Id);
+                    selectedIds.Append(",");
                 }
             }
             result.Append(originalMessage);
 
             commitMessage = result.ToString();
+            Properties.Settings.Default.SelectedStories = selectedIds.ToString();
         }
 
         private void DisplayPivotalData()
@@ -173,7 +177,7 @@ namespace PivoTurtle
 
         private void comboBoxProjects_SelectedIndexChanged(object sender, EventArgs e)
         {
-            PivotalProject project = (PivotalProject)comboBoxProjects.SelectedItem;
+            PivotalProject project = comboBoxProjects.SelectedItem as PivotalProject;
             LoadPivotalStories(project.Id);
             DisplayPivotalStories();
         }
@@ -184,6 +188,18 @@ namespace PivoTurtle
             {
                 LoadPivotalData();
                 DisplayPivotalData();
+                string selectedIds = Properties.Settings.Default.SelectedStories;
+                if (selectedIds.Length > 0)
+                {
+                    foreach (ListViewItem item in listViewStories.Items)
+                    {
+                        PivotalStory story = item.Tag as PivotalStory;
+                        if (story != null)
+                        {
+                            item.Checked = selectedIds.Contains("," + story.Id + ",");
+                        }
+                    }
+                }
             }
             catch (Exception x)
             {
@@ -204,7 +220,7 @@ namespace PivoTurtle
 
         private void openInPivotalTrackerToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            PivotalStory story = (PivotalStory)((ToolStripItem)sender).Tag;
+            PivotalStory story = (sender as ToolStripItem).Tag as PivotalStory;
             System.Diagnostics.Process.Start(story.Url);
         }
 

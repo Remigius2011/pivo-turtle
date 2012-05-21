@@ -14,5 +14,8 @@
     <Setting Name="TokenId" Type="System.Int64" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="SelectedStories" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

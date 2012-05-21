@@ -69,5 +69,17 @@ namespace PivoTurtle.Properties {
                 this["TokenId"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string SelectedStories {
+            get {
+                return ((string)(this["SelectedStories"]));
+            }
+            set {
+                this["SelectedStories"] = value;
+            }
+        }
     }
 }

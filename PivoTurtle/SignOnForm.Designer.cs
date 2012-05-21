@@ -32,7 +32,7 @@
             this.labelPassword = new System.Windows.Forms.Label();
             this.buttonOk = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
-            this.checkBoxSaveCredentials = new System.Windows.Forms.CheckBox();
+            this.checkBoxSaveServerToken = new System.Windows.Forms.CheckBox();
             this.textBoxUserid = new System.Windows.Forms.TextBox();
             this.textBoxPassword = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
@@ -52,7 +52,7 @@
             this.labelPassword.Location = new System.Drawing.Point(12, 41);
             this.labelPassword.Name = "labelPassword";
             this.labelPassword.Size = new System.Drawing.Size(53, 13);
-            this.labelPassword.TabIndex = 1;
+            this.labelPassword.TabIndex = 2;
             this.labelPassword.Text = "Password";
             // 
             // buttonOk
@@ -62,7 +62,7 @@
             this.buttonOk.Location = new System.Drawing.Point(264, 107);
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.Size = new System.Drawing.Size(75, 23);
-            this.buttonOk.TabIndex = 2;
+            this.buttonOk.TabIndex = 6;
             this.buttonOk.Text = "Ok";
             this.buttonOk.UseVisualStyleBackColor = true;
             this.buttonOk.Click += new System.EventHandler(this.buttonOk_Click);
@@ -74,19 +74,19 @@
             this.buttonCancel.Location = new System.Drawing.Point(183, 107);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
-            this.buttonCancel.TabIndex = 3;
+            this.buttonCancel.TabIndex = 5;
             this.buttonCancel.Text = "Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
             // 
-            // checkBoxSaveCredentials
+            // checkBoxSaveServerToken
             // 
-            this.checkBoxSaveCredentials.AutoSize = true;
-            this.checkBoxSaveCredentials.Location = new System.Drawing.Point(15, 72);
-            this.checkBoxSaveCredentials.Name = "checkBoxSaveCredentials";
-            this.checkBoxSaveCredentials.Size = new System.Drawing.Size(106, 17);
-            this.checkBoxSaveCredentials.TabIndex = 4;
-            this.checkBoxSaveCredentials.Text = "Save Credentials";
-            this.checkBoxSaveCredentials.UseVisualStyleBackColor = true;
+            this.checkBoxSaveServerToken.AutoSize = true;
+            this.checkBoxSaveServerToken.Location = new System.Drawing.Point(15, 72);
+            this.checkBoxSaveServerToken.Name = "checkBoxSaveServerToken";
+            this.checkBoxSaveServerToken.Size = new System.Drawing.Size(113, 17);
+            this.checkBoxSaveServerToken.TabIndex = 4;
+            this.checkBoxSaveServerToken.Text = "Save server token";
+            this.checkBoxSaveServerToken.UseVisualStyleBackColor = true;
             // 
             // textBoxUserid
             // 
@@ -95,7 +95,7 @@
             this.textBoxUserid.Location = new System.Drawing.Point(122, 12);
             this.textBoxUserid.Name = "textBoxUserid";
             this.textBoxUserid.Size = new System.Drawing.Size(217, 20);
-            this.textBoxUserid.TabIndex = 5;
+            this.textBoxUserid.TabIndex = 1;
             // 
             // textBoxPassword
             // 
@@ -105,7 +105,7 @@
             this.textBoxPassword.Name = "textBoxPassword";
             this.textBoxPassword.PasswordChar = '*';
             this.textBoxPassword.Size = new System.Drawing.Size(217, 20);
-            this.textBoxPassword.TabIndex = 6;
+            this.textBoxPassword.TabIndex = 3;
             // 
             // SignOnForm
             // 
@@ -116,7 +116,7 @@
             this.ClientSize = new System.Drawing.Size(351, 142);
             this.Controls.Add(this.textBoxPassword);
             this.Controls.Add(this.textBoxUserid);
-            this.Controls.Add(this.checkBoxSaveCredentials);
+            this.Controls.Add(this.checkBoxSaveServerToken);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonOk);
             this.Controls.Add(this.labelPassword);
@@ -140,7 +140,7 @@
         private System.Windows.Forms.Label labelPassword;
         private System.Windows.Forms.Button buttonOk;
         private System.Windows.Forms.Button buttonCancel;
-        private System.Windows.Forms.CheckBox checkBoxSaveCredentials;
+        private System.Windows.Forms.CheckBox checkBoxSaveServerToken;
         private System.Windows.Forms.TextBox textBoxUserid;
         private System.Windows.Forms.TextBox textBoxPassword;
     }

@@ -13,6 +13,7 @@ namespace PivoTurtle
         public PivotalToken Token
         {
             get { return token; }
+            set { token = value; }
         }
 
         public bool IsSignedOn()

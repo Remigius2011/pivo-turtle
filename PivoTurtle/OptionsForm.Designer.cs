@@ -30,6 +30,7 @@
         {
             this.buttonOk = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
+            this.buttonResetToken = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // buttonOk
@@ -54,6 +55,16 @@
             this.buttonCancel.Text = "Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
             // 
+            // buttonResetToken
+            // 
+            this.buttonResetToken.Location = new System.Drawing.Point(12, 145);
+            this.buttonResetToken.Name = "buttonResetToken";
+            this.buttonResetToken.Size = new System.Drawing.Size(139, 23);
+            this.buttonResetToken.TabIndex = 2;
+            this.buttonResetToken.Text = "Reset Server Token";
+            this.buttonResetToken.UseVisualStyleBackColor = true;
+            this.buttonResetToken.Click += new System.EventHandler(this.buttonResetToken_Click);
+            // 
             // OptionsForm
             // 
             this.AcceptButton = this.buttonOk;
@@ -61,6 +72,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(413, 262);
+            this.Controls.Add(this.buttonResetToken);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonOk);
             this.MaximizeBox = false;
@@ -78,5 +90,6 @@
 
         private System.Windows.Forms.Button buttonOk;
         private System.Windows.Forms.Button buttonCancel;
+        private System.Windows.Forms.Button buttonResetToken;
     }
 }

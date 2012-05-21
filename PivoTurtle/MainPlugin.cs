@@ -18,9 +18,11 @@ namespace PivoTurtle
     public class MainPlugin : IBugTraqProvider //, IBugTraqProvider2
     {
         private IssuesForm form;
+        private bool settingsLoaded = false;
 
         public string GetCommitMessage(IntPtr hParentWnd, string parameters, string commonRoot, string[] pathList, string originalMessage)
         {
+            LoadSettings();
             try
             {
                 if (form == null)
@@ -37,6 +39,10 @@ namespace PivoTurtle
             catch (Exception x)
             {
                 ErrorForm.ShowException(x, "Error Getting Commit Message");
+            }
+            finally
+            {
+                SaveSettings();
             }
             return originalMessage;
         }
@@ -122,6 +128,16 @@ namespace PivoTurtle
             }
              * */
             throw new NotImplementedException();
+        }
+
+        private void SaveSettings()
+        {
+            Properties.Settings.Default.Save();
+        }
+
+        private void LoadSettings()
+        {
+            Properties.Settings.Default.Reload();
         }
     }
 }

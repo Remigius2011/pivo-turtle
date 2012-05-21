@@ -9,9 +9,26 @@ namespace PivoTurtle
 {
     public partial class OptionsForm : Form
     {
+        public static bool ShowOptions()
+        {
+            OptionsForm form = new OptionsForm();
+            if (form.ShowDialog() == DialogResult.OK)
+            {
+                // todo: update properties
+                return true;
+            }
+            return false;
+        }
+
         public OptionsForm()
         {
             InitializeComponent();
+        }
+
+        private void buttonResetToken_Click(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.TokenGuid = "";
+            Properties.Settings.Default.TokenId = -1;
         }
     }
 }

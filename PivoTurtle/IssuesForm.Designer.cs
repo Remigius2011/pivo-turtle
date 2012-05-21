@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(IssuesForm));
             this.buttonCancel = new System.Windows.Forms.Button();
             this.buttonOk = new System.Windows.Forms.Button();
             this.listViewStories = new System.Windows.Forms.ListView();
@@ -41,6 +42,7 @@
             this.linkLabelPivotal = new System.Windows.Forms.LinkLabel();
             this.contextMenuStripStories = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.openInPivotalTrackerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.buttonOptions = new System.Windows.Forms.Button();
             this.contextMenuStripStories.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -110,7 +112,7 @@
             this.comboBoxProjects.FormattingEnabled = true;
             this.comboBoxProjects.Location = new System.Drawing.Point(113, 12);
             this.comboBoxProjects.Name = "comboBoxProjects";
-            this.comboBoxProjects.Size = new System.Drawing.Size(261, 21);
+            this.comboBoxProjects.Size = new System.Drawing.Size(180, 21);
             this.comboBoxProjects.TabIndex = 1;
             this.comboBoxProjects.SelectedIndexChanged += new System.EventHandler(this.comboBoxProjects_SelectedIndexChanged);
             // 
@@ -158,6 +160,17 @@
             this.openInPivotalTrackerToolStripMenuItem.Text = "Open in PivotalTracker";
             this.openInPivotalTrackerToolStripMenuItem.Click += new System.EventHandler(this.openInPivotalTrackerToolStripMenuItem_Click);
             // 
+            // buttonOptions
+            // 
+            this.buttonOptions.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonOptions.Image = ((System.Drawing.Image)(resources.GetObject("buttonOptions.Image")));
+            this.buttonOptions.Location = new System.Drawing.Point(352, 11);
+            this.buttonOptions.Name = "buttonOptions";
+            this.buttonOptions.Size = new System.Drawing.Size(23, 23);
+            this.buttonOptions.TabIndex = 7;
+            this.buttonOptions.UseVisualStyleBackColor = true;
+            this.buttonOptions.Click += new System.EventHandler(this.buttonOptions_Click);
+            // 
             // IssuesForm
             // 
             this.AcceptButton = this.buttonOk;
@@ -168,6 +181,7 @@
             this.Controls.Add(this.linkLabelPivotal);
             this.Controls.Add(this.labelStories);
             this.Controls.Add(this.labelProject);
+            this.Controls.Add(this.buttonOptions);
             this.Controls.Add(this.comboBoxProjects);
             this.Controls.Add(this.listViewStories);
             this.Controls.Add(this.buttonOk);
@@ -200,5 +214,6 @@
         private System.Windows.Forms.LinkLabel linkLabelPivotal;
         private System.Windows.Forms.ContextMenuStrip contextMenuStripStories;
         private System.Windows.Forms.ToolStripMenuItem openInPivotalTrackerToolStripMenuItem;
+        private System.Windows.Forms.Button buttonOptions;
     }
 }

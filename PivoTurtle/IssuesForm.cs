@@ -21,6 +21,10 @@ namespace PivoTurtle
         {
             InitializeComponent();
             pivotalClient = new PivotalServiceClient();
+            if (Properties.Settings.Default.SaveServerToken)
+            {
+                UpdateServerToken();
+            }
         }
 
         public List<PivotalProject> Projects
@@ -130,7 +134,6 @@ namespace PivoTurtle
 
         private void LoadPivotalData()
         {
-            SignOn();
             LoadPivotalProjects();
             if (selectedProjectId >= 0)
             {
@@ -146,18 +149,25 @@ namespace PivoTurtle
                 string password = "";
                 if (SignOnForm.SignOn(ref userId, ref password))
                 {
-                    pivotalClient.SignOn(userId, password);
+                    PivotalToken token = pivotalClient.SignOn(userId, password);
+                    if (Properties.Settings.Default.SaveServerToken)
+                    {
+                        Properties.Settings.Default.TokenGuid = token.Guid;
+                        Properties.Settings.Default.TokenId = token.Id;
+                    }
                 }
             }
         }
 
         private void LoadPivotalProjects()
         {
+            SignOn();
             projects = pivotalClient.GetProjects();
         }
 
         private void LoadPivotalStories(long projectId)
         {
+            SignOn();
             stories = pivotalClient.GetStories(projectId.ToString());
         }
 
@@ -209,6 +219,27 @@ namespace PivoTurtle
                     Point point = listViewStories.PointToScreen(e.Location);
                     contextMenuStripStories.Show(point);
                 }
+            }
+        }
+
+        private void buttonOptions_Click(object sender, EventArgs e)
+        {
+            OptionsForm.ShowOptions();
+            UpdateServerToken();
+        }
+
+        private void UpdateServerToken()
+        {
+            string tokenGuid = Properties.Settings.Default.TokenGuid;
+            long tokenId = Properties.Settings.Default.TokenId;
+            if (tokenId >= 0 && tokenGuid.Length > 0)
+            {
+                PivotalToken token = new PivotalToken(tokenGuid, tokenId);
+                pivotalClient.Token = token;
+            }
+            else
+            {
+                pivotalClient.Token = null;
             }
         }
     }

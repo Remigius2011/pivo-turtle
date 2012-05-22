@@ -17,6 +17,7 @@ namespace PivoTurtle
         private string originalMessage;
         private string commitMessage;
         private StoryMessageTemplate template = new StoryMessageTemplate();
+        private bool disableMessageUptate = false;
 
         public IssuesForm()
         {
@@ -58,7 +59,14 @@ namespace PivoTurtle
 
         public void SetParameters(string parameters)
         {
-            selectedProjectId = long.Parse(parameters);
+            try
+            {
+                selectedProjectId = long.Parse(parameters);
+            }
+            catch (System.Exception ex)
+            {
+                // do nothing
+            }
         }
 
         private void buttonOk_Click(object sender, EventArgs e)
@@ -109,6 +117,7 @@ namespace PivoTurtle
 
         private void DisplayPivotalStories()
         {
+            disableMessageUptate = true;
             listViewStories.BeginUpdate();
             listViewStories.Items.Clear();
             foreach (PivotalStory story in stories)
@@ -131,6 +140,7 @@ namespace PivoTurtle
                 listViewStories.Items.Add(item);
             }
             listViewStories.EndUpdate();
+            disableMessageUptate = false;
         }
 
         private void LoadPivotalData()
@@ -177,19 +187,20 @@ namespace PivoTurtle
             PivotalProject project = comboBoxProjects.SelectedItem as PivotalProject;
             LoadPivotalStories(project.Id);
             DisplayPivotalStories();
+            UpdateMessage();
         }
 
         private void IssuesForm_Shown(object sender, EventArgs e)
         {
             try
             {
-                UpdateTemplate();
                 if (Properties.Settings.Default.SaveServerToken)
                 {
                     UpdateServerToken();
                 }
                 LoadPivotalData();
                 DisplayPivotalData();
+                disableMessageUptate = true;
                 string selectedIds = Properties.Settings.Default.SelectedStories;
                 if (selectedIds.Length > 0)
                 {
@@ -202,6 +213,8 @@ namespace PivoTurtle
                         }
                     }
                 }
+                disableMessageUptate = false;
+                UpdateTemplate();
             }
             catch (Exception x)
             {
@@ -303,6 +316,10 @@ namespace PivoTurtle
 
         private void UpdateMessage()
         {
+            if (disableMessageUptate)
+            {
+                return;
+            }
             try
             {
                 List<PivotalStory> currentSelection = new List<PivotalStory>();

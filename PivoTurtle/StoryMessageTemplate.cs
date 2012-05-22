@@ -43,30 +43,31 @@ namespace PivoTurtle
         {
             int repeatFrom = -1;
             StringBuilder result = new StringBuilder();
-            int count = fragments.Count;
+            int fragmentCount = fragments.Count;
+            int storyCount = stories.Count;
             int storyIndex = 0;
-            for (int i = 0; i < count; i++)
+            for (int i = 0; i < fragmentCount; i++)
             {
                 Fragment fragment = fragments[i];
                 switch (fragment.token)
                 {
                     case FragmentToken.REPEAT_START:
-                        repeatFrom = i;
+                        repeatFrom = i + 1;
+                        storyIndex = 0;
                         break;
                     case FragmentToken.REPEAT_END:
-                        if (storyIndex >= stories.Count - 1)
-                        {
-                            storyIndex = 0;
-                        }
-                        else
+                        storyIndex++;
+                        if (storyIndex < storyCount)
                         {
                             i = repeatFrom;
-                            storyIndex++;
                             result.Append(fragment.value);
                         }
                         break;
                     default:
-                        AppendFragmentValue(result, fragment, stories, storyIndex, originalMessage);
+                        if (storyIndex < storyCount)
+                        {
+                            AppendFragmentValue(result, fragment, stories, storyIndex, originalMessage);
+                        }
                         break;
                 }
             }

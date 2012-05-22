@@ -103,7 +103,7 @@ namespace PivoTurtle
             comboBoxProjects.BeginUpdate();
             comboBoxProjects.Items.Clear();
             comboBoxProjects.ValueMember = "Id";
-            comboBoxProjects.DisplayMember = "Name";
+            comboBoxProjects.DisplayMember = "DisplayName";
             foreach (PivotalProject project in projects)
             {
                 comboBoxProjects.Items.Add(project);

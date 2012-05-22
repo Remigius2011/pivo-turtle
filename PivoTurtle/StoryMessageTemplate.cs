@@ -6,7 +6,7 @@ namespace PivoTurtle
 {
     public class StoryMessageTemplate
     {
-        public static readonly string defaultTemplate = "{%url% } %original%";
+        public static readonly string defaultTemplate = "%original%\\r\\n{\\r\\n%url% %name%}\\r\\n\\0x65";
 
         public static readonly string tokenId = "id";
         public static readonly string tokenName = "name";
@@ -46,14 +46,16 @@ namespace PivoTurtle
             int fragmentCount = fragments.Count;
             int storyCount = stories.Count;
             int storyIndex = 0;
+            bool isRepeating = false;
             for (int i = 0; i < fragmentCount; i++)
             {
                 Fragment fragment = fragments[i];
                 switch (fragment.token)
                 {
                     case FragmentToken.REPEAT_START:
-                        repeatFrom = i + 1;
+                        repeatFrom = i;
                         storyIndex = 0;
+                        isRepeating = true;
                         break;
                     case FragmentToken.REPEAT_END:
                         storyIndex++;
@@ -62,9 +64,13 @@ namespace PivoTurtle
                             i = repeatFrom;
                             result.Append(fragment.value);
                         }
+                        else
+                        {
+                            isRepeating = false;
+                        }
                         break;
                     default:
-                        if (storyIndex < storyCount)
+                        if (!isRepeating || storyIndex < storyCount)
                         {
                             AppendFragmentValue(result, fragment, stories, storyIndex, originalMessage);
                         }
@@ -144,7 +150,7 @@ namespace PivoTurtle
                             throw new ApplicationException("Error in template: unterminated token encountered: " + currentFragmentValue.ToString());
                         }
                         isRepeating = false;
-                        newFragments.Add(new Fragment(FragmentToken.REPEAT_END, currentFragmentValue.ToString()));
+                        newFragments.Add(new Fragment(FragmentToken.REPEAT_END, ConvertValue(currentFragmentValue)));
                         break;
                     default:
                         currentFragmentValue.Append(template[i]);
@@ -197,10 +203,61 @@ namespace PivoTurtle
             }
             else
             {
-                Fragment fragment = new Fragment(FragmentToken.LITERAL, stringBuilder.ToString());
+                Fragment fragment = new Fragment(FragmentToken.LITERAL, ConvertValue(stringBuilder));
                 newFragments.Add(fragment);
             }
             stringBuilder.Remove(0, stringBuilder.Length);
+        }
+
+        public string ConvertValue(StringBuilder stringBuilder)
+        {
+            StringBuilder result = new StringBuilder();
+            int length = stringBuilder.Length;
+            int i = 0;
+            while (i < length)
+            {
+                if (stringBuilder[i] == '\\' && i + 1 < length)
+                {
+                    switch (stringBuilder[i + 1])
+                    {
+                        case 'r':
+                            result.Append('\r');
+                            i += 2;
+                            break;
+                        case 'n':
+                            result.Append('\n');
+                            i += 2;
+                            break;
+                        case 't':
+                            result.Append('\t');
+                            i += 2;
+                            break;
+                        case '0':
+                            if (i + 4 < length && stringBuilder[i + 2] == 'x')
+                            {
+                                char d1 = stringBuilder[i + 3];
+                                char d2 = stringBuilder[i + 4];
+                                d1 = char.IsDigit(d1) ? (char)(d1 - '0') : char.IsUpper(d1) ? (char)(10 + d1 - 'A') : (char)(10 + d1 - 'a');
+                                d2 = char.IsDigit(d2) ? (char)(d2 - '0') : char.IsUpper(d2) ? (char)(10 + d2 - 'A') : (char)(10 + d2 - 'a');
+                                char c = (char)(16 * d1 + d2);
+                                result.Append(c);
+                                i += 5;
+                            }
+                            else
+                            {
+                                i++;
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                else
+                {
+                    result.Append(stringBuilder[i++]);
+                }
+            }
+            return result.ToString();
         }
     }
 }

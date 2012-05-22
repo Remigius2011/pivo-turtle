@@ -51,6 +51,11 @@ namespace PivoTurtle
         private int iterationLength;
         private string weekStartDay;
 
+        public string DisplayName
+        {
+            get { return name + " (" + id + ")"; }
+        }
+
         public long Id
         {
             get { return id; }

@@ -12,6 +12,10 @@ using System.Windows.Forms;
 // see http://www.clean-code-developer.de/Tools.ashx
 // see https://www.pivotaltracker.com/help/api?version=v3
 
+// icons
+// http://www.iconarchive.com/show/soft-icons-by-kyo-tux/Refresh-icon.html
+// http://www.iconarchive.com/show/must-have-icons-by-visualpharm.html
+
 namespace PivoTurtle
 {
     [ComVisible(true), Guid("4A32C95D-0B66-4280-B370-F71410B521D6"), ClassInterface(ClassInterfaceType.None)]

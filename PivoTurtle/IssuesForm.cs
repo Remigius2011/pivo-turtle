@@ -17,7 +17,8 @@ namespace PivoTurtle
         private string originalMessage;
         private string commitMessage;
         private StoryMessageTemplate template = new StoryMessageTemplate();
-        private bool disableMessageUptate = false;
+        private bool whileDisplayingStories = false;
+        private bool whileDisplayingProjects = false;
 
         public IssuesForm()
         {
@@ -77,47 +78,61 @@ namespace PivoTurtle
 
         private void DisplayPivotalProjects()
         {
-            comboBoxProjects.BeginUpdate();
-            comboBoxProjects.Items.Clear();
-            comboBoxProjects.ValueMember = "Id";
-            comboBoxProjects.DisplayMember = "DisplayName";
-            foreach (PivotalProject project in projects)
+            whileDisplayingProjects = true;
+            try
             {
-                comboBoxProjects.Items.Add(project);
-                if (project.Id == selectedProjectId)
+                comboBoxProjects.BeginUpdate();
+                comboBoxProjects.Items.Clear();
+                comboBoxProjects.ValueMember = "Id";
+                comboBoxProjects.DisplayMember = "DisplayName";
+                foreach (PivotalProject project in projects)
                 {
-                    comboBoxProjects.SelectedItem = project;
+                    comboBoxProjects.Items.Add(project);
+                    if (project.Id == selectedProjectId)
+                    {
+                        comboBoxProjects.SelectedItem = project;
+                    }
                 }
             }
-            comboBoxProjects.EndUpdate();
+            finally
+            {
+                whileDisplayingProjects = false;
+                comboBoxProjects.EndUpdate();
+            }
         }
 
         private void DisplayPivotalStories()
         {
-            disableMessageUptate = true;
-            listViewStories.BeginUpdate();
-            listViewStories.Items.Clear();
-            foreach (PivotalStory story in stories)
+            whileDisplayingStories = true;
+            try
             {
-                ListViewItem item = new ListViewItem();
-                item.Text = "";
-                item.SubItems.Add(story.Id.ToString());
-                item.SubItems.Add(story.Name);
-                item.Tag = story;
-
-                foreach (PivotalStory selected in selectedStories)
+                listViewStories.BeginUpdate();
+                listViewStories.Items.Clear();
+                foreach (PivotalStory story in stories)
                 {
-                    if (selected.Id == story.Id)
-                    {
-                        item.Checked = true;
-                        break;
-                    }
-                }
+                    ListViewItem item = new ListViewItem();
+                    item.Text = "";
+                    item.SubItems.Add(story.Id.ToString());
+                    item.SubItems.Add(story.Name);
+                    item.Tag = story;
 
-                listViewStories.Items.Add(item);
+                    foreach (PivotalStory selected in selectedStories)
+                    {
+                        if (selected.Id == story.Id)
+                        {
+                            item.Checked = true;
+                            break;
+                        }
+                    }
+
+                    listViewStories.Items.Add(item);
+                }
             }
-            listViewStories.EndUpdate();
-            disableMessageUptate = false;
+            finally
+            {
+                whileDisplayingStories = false;
+                listViewStories.EndUpdate();
+            }
         }
 
         private void LoadPivotalData()
@@ -161,6 +176,10 @@ namespace PivoTurtle
 
         private void comboBoxProjects_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (whileDisplayingProjects)
+            {
+                return;
+            }
             PivotalProject project = comboBoxProjects.SelectedItem as PivotalProject;
             LoadPivotalStories(project.Id);
             DisplayPivotalStories();
@@ -181,7 +200,7 @@ namespace PivoTurtle
                     LoadPivotalData();
                 }
                 DisplayPivotalData();
-                disableMessageUptate = true;
+                whileDisplayingStories = true;
                 string selectedIds = Properties.Settings.Default.SelectedStories;
                 if (selectedIds.Length > 0)
                 {
@@ -194,7 +213,7 @@ namespace PivoTurtle
                         }
                     }
                 }
-                disableMessageUptate = false;
+                whileDisplayingStories = false;
                 UpdateTemplate();
             }
             catch (Exception x)
@@ -297,7 +316,7 @@ namespace PivoTurtle
 
         private void UpdateMessage()
         {
-            if (disableMessageUptate)
+            if (whileDisplayingStories)
             {
                 return;
             }
@@ -334,6 +353,12 @@ namespace PivoTurtle
         private void listViewStories_ItemChecked(object sender, ItemCheckedEventArgs e)
         {
             UpdateMessage();
+        }
+
+        private void buttonRefresh_Click(object sender, EventArgs e)
+        {
+            LoadPivotalData();
+            DisplayPivotalData();
         }
     }
 }

@@ -47,6 +47,7 @@
             this.labelResult = new System.Windows.Forms.Label();
             this.textBoxOriginal = new System.Windows.Forms.TextBox();
             this.textBoxResult = new System.Windows.Forms.TextBox();
+            this.buttonRefresh = new System.Windows.Forms.Button();
             this.contextMenuStripStories.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -116,7 +117,7 @@
             this.comboBoxProjects.FormattingEnabled = true;
             this.comboBoxProjects.Location = new System.Drawing.Point(113, 12);
             this.comboBoxProjects.Name = "comboBoxProjects";
-            this.comboBoxProjects.Size = new System.Drawing.Size(423, 21);
+            this.comboBoxProjects.Size = new System.Drawing.Size(504, 21);
             this.comboBoxProjects.TabIndex = 1;
             this.comboBoxProjects.SelectedIndexChanged += new System.EventHandler(this.comboBoxProjects_SelectedIndexChanged);
             // 
@@ -166,9 +167,9 @@
             // 
             // buttonOptions
             // 
-            this.buttonOptions.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonOptions.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonOptions.Image = ((System.Drawing.Image)(resources.GetObject("buttonOptions.Image")));
-            this.buttonOptions.Location = new System.Drawing.Point(594, 11);
+            this.buttonOptions.Location = new System.Drawing.Point(417, 361);
             this.buttonOptions.Name = "buttonOptions";
             this.buttonOptions.Size = new System.Drawing.Size(23, 23);
             this.buttonOptions.TabIndex = 7;
@@ -216,6 +217,17 @@
             this.textBoxResult.TabIndex = 11;
             this.textBoxResult.WordWrap = false;
             // 
+            // buttonRefresh
+            // 
+            this.buttonRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonRefresh.Image = ((System.Drawing.Image)(resources.GetObject("buttonRefresh.Image")));
+            this.buttonRefresh.Location = new System.Drawing.Point(388, 361);
+            this.buttonRefresh.Name = "buttonRefresh";
+            this.buttonRefresh.Size = new System.Drawing.Size(23, 23);
+            this.buttonRefresh.TabIndex = 12;
+            this.buttonRefresh.UseVisualStyleBackColor = true;
+            this.buttonRefresh.Click += new System.EventHandler(this.buttonRefresh_Click);
+            // 
             // IssuesForm
             // 
             this.AcceptButton = this.buttonOk;
@@ -223,6 +235,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(629, 396);
+            this.Controls.Add(this.buttonRefresh);
             this.Controls.Add(this.textBoxResult);
             this.Controls.Add(this.textBoxOriginal);
             this.Controls.Add(this.labelResult);
@@ -230,8 +243,8 @@
             this.Controls.Add(this.linkLabelPivotal);
             this.Controls.Add(this.labelProject);
             this.Controls.Add(this.labelStories);
-            this.Controls.Add(this.buttonOptions);
             this.Controls.Add(this.comboBoxProjects);
+            this.Controls.Add(this.buttonOptions);
             this.Controls.Add(this.listViewStories);
             this.Controls.Add(this.buttonOk);
             this.Controls.Add(this.buttonCancel);
@@ -268,5 +281,6 @@
         private System.Windows.Forms.Label labelResult;
         private System.Windows.Forms.TextBox textBoxOriginal;
         private System.Windows.Forms.TextBox textBoxResult;
+        private System.Windows.Forms.Button buttonRefresh;
     }
 }

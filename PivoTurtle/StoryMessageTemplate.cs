@@ -6,19 +6,31 @@ namespace PivoTurtle
 {
     public class StoryMessageTemplate
     {
-        public static readonly string defaultTemplate = "%original%\\r\\n{\\r\\n%url% %name%}\\r\\n\\0x65";
+        public const string defaultTemplate = "%original%\\r\\n{\\r\\n%url% %name%}\\r\\n\\0x65";
 
-        public static readonly string tokenId = "id";
-        public static readonly string tokenName = "name";
-        public static readonly string tokenUrl = "url";
-        public static readonly string tokenOriginal = "original";
+        public const string tokenId = "id";
+        public const string tokenName = "name";
+        public const string tokenUrl = "url";
+        public const string tokenOriginal = "original";
+
+        public const char templateDelimiter = '%';
+        public const char repeatStart = '{';
+        public const char repeatEnd = '}';
+        public const char optionalStart = '[';
+        public const char optionalEnd = ']';
+        public const char escapeChar = '\\';
+        public const char escapeCr = 'r';
+        public const char escapeNl = 'n';
+        public const char escapeTab = 't';
+        public const char escapeZero = '0';
+        public const char escapeHex = 'x';
 
         private string template;
         private List<Fragment> fragments = new List<Fragment>();
 
         private enum FragmentToken
         {
-            LITERAL, ID, NAME, URL, ORIGINAL, REPEAT_START, REPEAT_END
+            LITERAL, ID, NAME, URL, ORIGINAL, REPEAT_START, REPEAT_END, OPTIONAL_START, OPTIONAL_END
         }
 
         private class Fragment
@@ -27,6 +39,12 @@ namespace PivoTurtle
             {
                 this.token = token;
                 this.value = value;
+            }
+
+            public Fragment(FragmentToken token)
+            {
+                this.token = token;
+                this.value = "";
             }
 
             public FragmentToken token;
@@ -69,10 +87,31 @@ namespace PivoTurtle
                             isRepeating = false;
                         }
                         break;
+                    case FragmentToken.OPTIONAL_START:
+                        int k = i + i;
+                        bool isEmpty = true;
+                        while (k < fragmentCount && fragments[k].token != FragmentToken.OPTIONAL_END && isEmpty)
+                        {
+                            if (fragments[k].token != FragmentToken.LITERAL)
+                            {
+                                string value = GetFragmentValue(fragment, null, 0, originalMessage);
+                                isEmpty = value != null && value.Length > 0;
+                            }
+                            k++;
+                        }
+                        if (isEmpty)
+                        {
+                            i = k + 1;
+                        }
+                        break;
+                    case FragmentToken.OPTIONAL_END:
+                        result.Append(fragment.value);
+                        break;
                     default:
                         if (!isRepeating || storyIndex < storyCount)
                         {
-                            AppendFragmentValue(result, fragment, stories, storyIndex, originalMessage);
+                            string value = GetFragmentValue(fragment, stories, storyIndex, originalMessage);
+                            result.Append(value);
                         }
                         break;
                 }
@@ -80,76 +119,101 @@ namespace PivoTurtle
             return result.ToString();
         }
 
-        private void AppendFragmentValue(StringBuilder result, Fragment fragment, List<PivotalStory> stories, int index, string originalMessage)
+        private string GetFragmentValue(Fragment fragment, List<PivotalStory> stories, int index, string originalMessage)
         {
-            PivotalStory story = index < stories.Count ? stories[index] : null;
+            PivotalStory story = stories != null && index < stories.Count ? stories[index] : null;
             switch (fragment.token)
             {
                 case FragmentToken.LITERAL:
-                    result.Append(fragment.value);
-                    break;
+                    return fragment.value;
                 case FragmentToken.ID:
                     if (story != null)
                     {
-                        result.Append(story.Id);
+                        return story.Id.ToString();
                     }
                     break;
                 case FragmentToken.NAME:
                     if (story != null)
                     {
-                        result.Append(story.Name);
+                        return story.Name;
                     }
                     break;
                 case FragmentToken.URL:
                     if (story != null)
                     {
-                        result.Append(story.Url);
+                        return story.Url;
                     }
                     break;
                 case FragmentToken.ORIGINAL:
-                    result.Append(originalMessage);
-                    break;
+                    return originalMessage;
             }
+            return "";
         }
 
         public void ParseTemplate(string template)
         {
             List<Fragment> newFragments = new List<Fragment>();
             int length = template.Length;
-            bool isRepeating = false;
+            bool isRepeat = false;
+            bool isOptional = false;
             bool isToken = false;
             StringBuilder currentFragmentValue = new StringBuilder();
             for (int i = 0; i < length; i++)
             {
                 switch (template[i])
                 {
-                    case '%':
+                    case templateDelimiter:
                         AddFragment(newFragments, currentFragmentValue, isToken);
                         isToken = !isToken;
                         break;
-                    case '{':
-                        if (isRepeating)
+                    case repeatStart:
+                        if (isRepeat)
                         {
-                            throw new ApplicationException("Error in template: nested repeat is not allowed");
+                            throw new ApplicationException("Error in template: nested repeated sequence is not allowed");
                         }
-                        if (isToken)
+                        if (isToken || isOptional)
                         {
-                            throw new ApplicationException("Error in template: unterminated token encountered: " + currentFragmentValue.ToString());
+                            throw new ApplicationException("Error in template: unterminated token or optional sequence encountered: " + currentFragmentValue.ToString());
                         }
                         AddFragment(newFragments, currentFragmentValue, isToken);
-                        isRepeating = true;
-                        newFragments.Add(new Fragment(FragmentToken.REPEAT_START, ""));
+                        isRepeat = true;
+                        newFragments.Add(new Fragment(FragmentToken.REPEAT_START));
                         break;
-                    case '}':
-                        if (!isRepeating)
+                    case repeatEnd:
+                        if (!isRepeat)
                         {
-                            throw new ApplicationException("Error in template: end repeat without corresponding start");
+                            throw new ApplicationException("Error in template: end of repeated sequence without corresponding start");
                         }
-                        if (isToken)
+                        if (isToken || isOptional)
                         {
-                            throw new ApplicationException("Error in template: unterminated token encountered: " + currentFragmentValue.ToString());
+                            throw new ApplicationException("Error in template: unterminated token or optional sequence encountered: " + currentFragmentValue.ToString());
                         }
-                        isRepeating = false;
+                        isRepeat = false;
+                        newFragments.Add(new Fragment(FragmentToken.REPEAT_END, ConvertValue(currentFragmentValue)));
+                        break;
+                    case optionalStart:
+                        if (isOptional)
+                        {
+                            throw new ApplicationException("Error in template: nested optional sequence is not allowed");
+                        }
+                        if (isToken || isRepeat)
+                        {
+                            throw new ApplicationException("Error in template: unterminated token or repeated sequence encountered: " + currentFragmentValue.ToString());
+                        }
+                        AddFragment(newFragments, currentFragmentValue, isToken);
+                        isOptional = true;
+                        newFragments.Add(new Fragment(FragmentToken.REPEAT_START));
+                        break;
+                    case optionalEnd:
+                        if (!isOptional)
+                        {
+                            throw new ApplicationException("Error in template: end of optional sequence without corresponding start");
+                        }
+                        if (isToken || isRepeat)
+                        {
+                            throw new ApplicationException("Error in template: unterminated token or repeated sequence encountered: " + currentFragmentValue.ToString());
+                        }
+                        isOptional = false;
                         newFragments.Add(new Fragment(FragmentToken.REPEAT_END, ConvertValue(currentFragmentValue)));
                         break;
                     default:
@@ -157,7 +221,7 @@ namespace PivoTurtle
                         break;
                 }
             }
-            if (isRepeating)
+            if (isRepeat)
             {
                 throw new ApplicationException("Error in template: start repeat without corresponding end");
             }
@@ -181,19 +245,19 @@ namespace PivoTurtle
                 string value = stringBuilder.ToString();
                 if (tokenId.Equals(value))
                 {
-                    fragment = new Fragment(FragmentToken.ID, "");
+                    fragment = new Fragment(FragmentToken.ID);
                 }
                 else if (tokenName.Equals(value))
                 {
-                    fragment = new Fragment(FragmentToken.NAME, "");
+                    fragment = new Fragment(FragmentToken.NAME);
                 }
                 else if (tokenUrl.Equals(value))
                 {
-                    fragment = new Fragment(FragmentToken.URL, "");
+                    fragment = new Fragment(FragmentToken.URL);
                 }
                 else if (tokenOriginal.Equals(value))
                 {
-                    fragment = new Fragment(FragmentToken.ORIGINAL, "");
+                    fragment = new Fragment(FragmentToken.ORIGINAL);
                 }
                 else
                 {
@@ -216,24 +280,24 @@ namespace PivoTurtle
             int i = 0;
             while (i < length)
             {
-                if (stringBuilder[i] == '\\' && i + 1 < length)
+                if (stringBuilder[i] == escapeChar && i + 1 < length)
                 {
                     switch (stringBuilder[i + 1])
                     {
-                        case 'r':
+                        case escapeCr:
                             result.Append('\r');
                             i += 2;
                             break;
-                        case 'n':
+                        case escapeNl:
                             result.Append('\n');
                             i += 2;
                             break;
-                        case 't':
+                        case escapeTab:
                             result.Append('\t');
                             i += 2;
                             break;
-                        case '0':
-                            if (i + 4 < length && stringBuilder[i + 2] == 'x')
+                        case escapeZero:
+                            if (i + 4 < length && stringBuilder[i + 2] == escapeHex)
                             {
                                 char d1 = stringBuilder[i + 3];
                                 char d2 = stringBuilder[i + 4];

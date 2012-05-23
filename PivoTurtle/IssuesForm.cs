@@ -338,6 +338,7 @@ namespace PivoTurtle
                 textBoxResult.Text = result;
                 commitMessage = result;
                 Properties.Settings.Default.SelectedStories = selectedIds.ToString();
+                buttonOk.Enabled = textBoxOriginal.Text.Length > 0 && selectedStories.Count > 0;
             }
             catch (Exception x)
             {

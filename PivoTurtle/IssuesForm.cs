@@ -69,29 +69,6 @@ namespace PivoTurtle
             }
         }
 
-        private void buttonOk_Click(object sender, EventArgs e)
-        {
-            selectedStories.Clear();
-            StringBuilder result = new StringBuilder();
-            StringBuilder selectedIds = new StringBuilder(",");
-            foreach (ListViewItem item in listViewStories.Items)
-            {
-                PivotalStory story = item.Tag as PivotalStory;
-                if (story != null && item.Checked)
-                {
-                    selectedStories.Add(story);
-                    result.AppendFormat(story.Url);
-                    result.Append(" ");
-                    selectedIds.Append(story.Id);
-                    selectedIds.Append(",");
-                }
-            }
-            result.Append(originalMessage);
-
-            commitMessage = result.ToString();
-            Properties.Settings.Default.SelectedStories = selectedIds.ToString();
-        }
-
         private void DisplayPivotalData()
         {
             DisplayPivotalProjects();
@@ -132,7 +109,7 @@ namespace PivoTurtle
                 {
                     if (selected.Id == story.Id)
                     {
-                        item.Selected = true;
+                        item.Checked = true;
                         break;
                     }
                 }
@@ -188,6 +165,7 @@ namespace PivoTurtle
             LoadPivotalStories(project.Id);
             DisplayPivotalStories();
             UpdateMessage();
+            selectedProjectId = project.Id;
         }
 
         private void IssuesForm_Shown(object sender, EventArgs e)
@@ -198,7 +176,10 @@ namespace PivoTurtle
                 {
                     UpdateServerToken();
                 }
-                LoadPivotalData();
+                if (projects.Count == 0)
+                {
+                    LoadPivotalData();
+                }
                 DisplayPivotalData();
                 disableMessageUptate = true;
                 string selectedIds = Properties.Settings.Default.SelectedStories;
@@ -322,16 +303,22 @@ namespace PivoTurtle
             }
             try
             {
-                List<PivotalStory> currentSelection = new List<PivotalStory>();
+                selectedStories.Clear();
+                StringBuilder selectedIds = new StringBuilder(",");
                 foreach (ListViewItem item in listViewStories.Items)
                 {
                     if (item.Checked)
                     {
-                        currentSelection.Add(item.Tag as PivotalStory);
+                        PivotalStory story = item.Tag as PivotalStory;
+                        selectedStories.Add(story);
+                        selectedIds.Append(story.Id);
+                        selectedIds.Append(",");
                     }
                 }
-                string result = template.Evaluate(currentSelection, textBoxOriginal.Text);
+                string result = template.Evaluate(selectedStories, textBoxOriginal.Text);
                 textBoxResult.Text = result;
+                commitMessage = result;
+                Properties.Settings.Default.SelectedStories = selectedIds.ToString();
             }
             catch (Exception x)
             {

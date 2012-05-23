@@ -6,7 +6,7 @@ namespace PivoTurtle
 {
     public class StoryMessageTemplate
     {
-        public const string defaultTemplate = "%original%\\r\\n{\\r\\n%url% %name%}\\r\\n\\0x65";
+        public const string defaultTemplate = "[%original%\\r\\n\\r\\n]{%url% %name%\\r\\n}\\r\\n\\0x65";
 
         public const string tokenId = "id";
         public const string tokenName = "name";
@@ -88,20 +88,20 @@ namespace PivoTurtle
                         }
                         break;
                     case FragmentToken.OPTIONAL_START:
-                        int k = i + i;
+                        int k = i + 1;
                         bool isEmpty = true;
                         while (k < fragmentCount && fragments[k].token != FragmentToken.OPTIONAL_END && isEmpty)
                         {
                             if (fragments[k].token != FragmentToken.LITERAL)
                             {
-                                string value = GetFragmentValue(fragment, null, 0, originalMessage);
-                                isEmpty = value != null && value.Length > 0;
+                                string value = GetFragmentValue(fragments[k], null, 0, originalMessage);
+                                isEmpty = string.IsNullOrEmpty(value);
                             }
                             k++;
                         }
                         if (isEmpty)
                         {
-                            i = k + 1;
+                            i = k;
                         }
                         break;
                     case FragmentToken.OPTIONAL_END:
@@ -175,9 +175,8 @@ namespace PivoTurtle
                         {
                             throw new ApplicationException("Error in template: unterminated token or optional sequence encountered: " + currentFragmentValue.ToString());
                         }
-                        AddFragment(newFragments, currentFragmentValue, isToken);
+                        AddFragment(newFragments, currentFragmentValue, FragmentToken.REPEAT_START);
                         isRepeat = true;
-                        newFragments.Add(new Fragment(FragmentToken.REPEAT_START));
                         break;
                     case repeatEnd:
                         if (!isRepeat)
@@ -188,8 +187,8 @@ namespace PivoTurtle
                         {
                             throw new ApplicationException("Error in template: unterminated token or optional sequence encountered: " + currentFragmentValue.ToString());
                         }
+                        AddFragment(newFragments, currentFragmentValue, FragmentToken.REPEAT_END);
                         isRepeat = false;
-                        newFragments.Add(new Fragment(FragmentToken.REPEAT_END, ConvertValue(currentFragmentValue)));
                         break;
                     case optionalStart:
                         if (isOptional)
@@ -200,9 +199,8 @@ namespace PivoTurtle
                         {
                             throw new ApplicationException("Error in template: unterminated token or repeated sequence encountered: " + currentFragmentValue.ToString());
                         }
-                        AddFragment(newFragments, currentFragmentValue, isToken);
+                        AddFragment(newFragments, currentFragmentValue, FragmentToken.OPTIONAL_START);
                         isOptional = true;
-                        newFragments.Add(new Fragment(FragmentToken.REPEAT_START));
                         break;
                     case optionalEnd:
                         if (!isOptional)
@@ -214,7 +212,7 @@ namespace PivoTurtle
                             throw new ApplicationException("Error in template: unterminated token or repeated sequence encountered: " + currentFragmentValue.ToString());
                         }
                         isOptional = false;
-                        newFragments.Add(new Fragment(FragmentToken.REPEAT_END, ConvertValue(currentFragmentValue)));
+                        AddFragment(newFragments, currentFragmentValue, FragmentToken.OPTIONAL_END);
                         break;
                     default:
                         currentFragmentValue.Append(template[i]);
@@ -231,6 +229,13 @@ namespace PivoTurtle
             }
             AddFragment(newFragments, currentFragmentValue, false);
             fragments = newFragments;
+        }
+
+        private void AddFragment(List<Fragment> newFragments, StringBuilder stringBuilder, FragmentToken token)
+        {
+            Fragment fragment = new Fragment(token, ConvertValue(stringBuilder));
+            newFragments.Add(fragment);
+            stringBuilder.Remove(0, stringBuilder.Length);
         }
 
         private void AddFragment(List<Fragment> newFragments, StringBuilder stringBuilder, bool isToken)

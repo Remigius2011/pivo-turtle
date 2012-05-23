@@ -55,7 +55,7 @@
             // 
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(461, 361);
+            this.buttonCancel.Location = new System.Drawing.Point(461, 417);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
             this.buttonCancel.TabIndex = 5;
@@ -66,7 +66,7 @@
             // 
             this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.buttonOk.Location = new System.Drawing.Point(542, 361);
+            this.buttonOk.Location = new System.Drawing.Point(542, 417);
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.Size = new System.Drawing.Size(75, 23);
             this.buttonOk.TabIndex = 6;
@@ -84,9 +84,9 @@
             this.columnHeaderId,
             this.columnHeaderDescription});
             this.listViewStories.FullRowSelect = true;
-            this.listViewStories.Location = new System.Drawing.Point(12, 188);
+            this.listViewStories.Location = new System.Drawing.Point(12, 234);
             this.listViewStories.Name = "listViewStories";
-            this.listViewStories.Size = new System.Drawing.Size(605, 167);
+            this.listViewStories.Size = new System.Drawing.Size(605, 177);
             this.listViewStories.TabIndex = 3;
             this.listViewStories.UseCompatibleStateImageBehavior = false;
             this.listViewStories.View = System.Windows.Forms.View.Details;
@@ -133,7 +133,7 @@
             // labelStories
             // 
             this.labelStories.AutoSize = true;
-            this.labelStories.Location = new System.Drawing.Point(9, 163);
+            this.labelStories.Location = new System.Drawing.Point(12, 213);
             this.labelStories.Name = "labelStories";
             this.labelStories.Size = new System.Drawing.Size(39, 13);
             this.labelStories.TabIndex = 2;
@@ -143,7 +143,7 @@
             // 
             this.linkLabelPivotal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.linkLabelPivotal.AutoSize = true;
-            this.linkLabelPivotal.Location = new System.Drawing.Point(12, 366);
+            this.linkLabelPivotal.Location = new System.Drawing.Point(12, 422);
             this.linkLabelPivotal.Name = "linkLabelPivotal";
             this.linkLabelPivotal.Size = new System.Drawing.Size(157, 13);
             this.linkLabelPivotal.TabIndex = 4;
@@ -169,7 +169,7 @@
             // 
             this.buttonOptions.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonOptions.Image = ((System.Drawing.Image)(resources.GetObject("buttonOptions.Image")));
-            this.buttonOptions.Location = new System.Drawing.Point(417, 361);
+            this.buttonOptions.Location = new System.Drawing.Point(417, 417);
             this.buttonOptions.Name = "buttonOptions";
             this.buttonOptions.Size = new System.Drawing.Size(23, 23);
             this.buttonOptions.TabIndex = 7;
@@ -188,7 +188,7 @@
             // labelResult
             // 
             this.labelResult.AutoSize = true;
-            this.labelResult.Location = new System.Drawing.Point(12, 68);
+            this.labelResult.Location = new System.Drawing.Point(12, 128);
             this.labelResult.Name = "labelResult";
             this.labelResult.Size = new System.Drawing.Size(37, 13);
             this.labelResult.TabIndex = 9;
@@ -199,16 +199,19 @@
             this.textBoxOriginal.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxOriginal.Location = new System.Drawing.Point(113, 39);
+            this.textBoxOriginal.Multiline = true;
             this.textBoxOriginal.Name = "textBoxOriginal";
-            this.textBoxOriginal.Size = new System.Drawing.Size(504, 20);
+            this.textBoxOriginal.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.textBoxOriginal.Size = new System.Drawing.Size(504, 80);
             this.textBoxOriginal.TabIndex = 10;
+            this.textBoxOriginal.WordWrap = false;
             this.textBoxOriginal.TextChanged += new System.EventHandler(this.textBoxOriginal_TextChanged);
             // 
             // textBoxResult
             // 
             this.textBoxResult.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxResult.Location = new System.Drawing.Point(113, 65);
+            this.textBoxResult.Location = new System.Drawing.Point(113, 125);
             this.textBoxResult.Multiline = true;
             this.textBoxResult.Name = "textBoxResult";
             this.textBoxResult.ReadOnly = true;
@@ -221,7 +224,7 @@
             // 
             this.buttonRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonRefresh.Image = ((System.Drawing.Image)(resources.GetObject("buttonRefresh.Image")));
-            this.buttonRefresh.Location = new System.Drawing.Point(388, 361);
+            this.buttonRefresh.Location = new System.Drawing.Point(388, 417);
             this.buttonRefresh.Name = "buttonRefresh";
             this.buttonRefresh.Size = new System.Drawing.Size(23, 23);
             this.buttonRefresh.TabIndex = 12;
@@ -234,19 +237,19 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(629, 396);
+            this.ClientSize = new System.Drawing.Size(629, 452);
             this.Controls.Add(this.buttonRefresh);
-            this.Controls.Add(this.textBoxResult);
             this.Controls.Add(this.textBoxOriginal);
-            this.Controls.Add(this.labelResult);
             this.Controls.Add(this.labelOriginal);
+            this.Controls.Add(this.textBoxResult);
             this.Controls.Add(this.linkLabelPivotal);
+            this.Controls.Add(this.labelResult);
             this.Controls.Add(this.labelProject);
-            this.Controls.Add(this.labelStories);
             this.Controls.Add(this.comboBoxProjects);
             this.Controls.Add(this.buttonOptions);
-            this.Controls.Add(this.listViewStories);
             this.Controls.Add(this.buttonOk);
+            this.Controls.Add(this.listViewStories);
+            this.Controls.Add(this.labelStories);
             this.Controls.Add(this.buttonCancel);
             this.MaximizeBox = false;
             this.MinimizeBox = false;

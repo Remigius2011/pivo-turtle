@@ -16,6 +16,9 @@ using System.Windows.Forms;
 // http://www.iconarchive.com/show/soft-icons-by-kyo-tux/Refresh-icon.html
 // http://www.iconarchive.com/show/must-have-icons-by-visualpharm.html
 
+// loader generator
+// http://www.jquery4u.com/tools/online-loading-ajax-spinner-generators
+
 namespace PivoTurtle
 {
     [ComVisible(true), Guid("4A32C95D-0B66-4280-B370-F71410B521D6"), ClassInterface(ClassInterfaceType.None)]

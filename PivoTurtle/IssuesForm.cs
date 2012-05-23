@@ -164,14 +164,32 @@ namespace PivoTurtle
 
         private void LoadPivotalProjects()
         {
-            SignOn();
-            projects = pivotalClient.GetProjects();
+            Cursor cursor = this.Cursor;
+            this.Cursor = Cursors.WaitCursor;
+            try
+            {
+                SignOn();
+                projects = pivotalClient.GetProjects();
+            }
+            finally
+            {
+                this.Cursor = cursor;
+            }
         }
 
         private void LoadPivotalStories(long projectId)
         {
-            SignOn();
-            stories = pivotalClient.GetStories(projectId.ToString());
+            Cursor cursor = this.Cursor;
+            this.Cursor = Cursors.WaitCursor;
+            try
+            {
+                SignOn();
+                stories = pivotalClient.GetStories(projectId.ToString());
+            }
+            finally
+            {
+                this.Cursor = cursor;
+            }
         }
 
         private void comboBoxProjects_SelectedIndexChanged(object sender, EventArgs e)

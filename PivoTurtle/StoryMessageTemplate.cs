@@ -191,6 +191,7 @@ namespace PivoTurtle
                         {
                             throw new ApplicationException("Error in template: unterminated token or optional sequence encountered: " + currentFragmentValue.ToString());
                         }
+                        AddFragment(newFragments, currentFragmentValue, false);
                         AddFragment(newFragments, currentFragmentValue, FragmentToken.REPEAT_START);
                         isRepeat = true;
                         break;
@@ -215,6 +216,7 @@ namespace PivoTurtle
                         {
                             throw new ApplicationException("Error in template: unterminated token or repeated sequence encountered: " + currentFragmentValue.ToString());
                         }
+                        AddFragment(newFragments, currentFragmentValue, false);
                         AddFragment(newFragments, currentFragmentValue, FragmentToken.OPTIONAL_START);
                         isOptional = true;
                         break;

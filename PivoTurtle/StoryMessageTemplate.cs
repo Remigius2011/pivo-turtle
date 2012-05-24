@@ -22,7 +22,16 @@ namespace PivoTurtle
 {
     public class StoryMessageTemplate
     {
-        public const string defaultTemplate = "[%original%\\r\\n\\r\\n]{%url% %name%\\r\\n}";
+        public static readonly string[] standardTemplates = {
+                                                      "{%id%,}[ %original%]",
+                                                      "[%original%\\r\\n\\r\\n]{%name%, }",
+                                                      "[%original%\\r\\n\\r\\n]{%id% - %name%, }",
+                                                      "[%original%\\r\\n\\r\\n]{%name%\\r\\n}",
+                                                      "[%original%\\r\\n\\r\\n]{%id% - %name%\\r\\n}",
+                                                      "[%original%\\r\\n\\r\\n]{%url%\\r\\n}",
+                                                      "[%original%\\r\\n\\r\\n]{%url% %name%\\r\\n}",
+                                                      "[Message: %original%\\r\\n\\r\\n]Pivotal Tracker Stories:\\r\\n\\r\\n{%url% %name%\\r\\n}"
+                                                  };
 
         public const string tokenId = "id";
         public const string tokenName = "name";

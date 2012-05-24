@@ -50,6 +50,7 @@
     <Compile Include="ErrorForm.Designer.cs">
       <DependentUpon>ErrorForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="ProjectSettings.cs" />
     <Compile Include="StoryMessageTemplate.cs" />
     <Compile Include="PivotalProject.cs" />
     <Compile Include="PivotalStory.cs" />

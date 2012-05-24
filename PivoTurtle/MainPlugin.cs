@@ -118,6 +118,12 @@ namespace PivoTurtle
         public string OnCommitFinished(IntPtr hParentWnd, string commonRoot, string[] pathList, string logMessage, int revision)
         {
             // todo: link back to commit here
+            // pathList contains a list of relative paths to the committed objects
+            // todo: find a way to access commit hash in case of git
+            // o optionally add comment with path list
+            // o optionally add comment with commit hash / revision no
+            // o optionally finish the issue
+            // -> dialog to make sure everything is OK even if PivoTurtle was not invoked for the commit message
             /*
             try
             {

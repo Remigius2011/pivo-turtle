@@ -71,16 +71,42 @@ namespace PivoTurtle
         private void TemplateForm_Load(object sender, EventArgs e)
         {
             textBoxTemplate.Text = template;
+            int length = StoryMessageTemplate.standardTemplates.Length;
+            int selectedIndex = -1;
+            for (int i = 0; i < length; i++)
+            {
+                comboBoxStandard.Items.Add(StoryMessageTemplate.standardTemplates[i]);
+                if (template != null && template.Equals(StoryMessageTemplate.standardTemplates[i]))
+                {
+                    selectedIndex = i;
+                }
+            }
+            comboBoxStandard.SelectedIndex = selectedIndex;
         }
 
         private void textBoxTemplate_TextChanged(object sender, EventArgs e)
         {
             try
             {
-                messageTemplate.Template = textBoxTemplate.Text;
+                string newTemplate = textBoxTemplate.Text;
+                messageTemplate.Template = newTemplate;
                 textBoxPreview.Text = messageTemplate.Evaluate(stories, originalMessage);
                 labelOkFail.ImageIndex = 0;
                 buttonOk.Enabled = true;
+                int count = comboBoxStandard.Items.Count;
+                int selectedIndex = -1;
+                for (int i = 0; i < count; i++)
+                {
+                    if (newTemplate.Equals(comboBoxStandard.Items[i] as string))
+                    {
+                        selectedIndex = i;
+                        break;
+                    }
+                }
+                if (comboBoxStandard.SelectedIndex != selectedIndex)
+                {
+                    comboBoxStandard.SelectedIndex = selectedIndex;
+                }
             }
             catch (Exception x)
             {
@@ -103,6 +129,14 @@ namespace PivoTurtle
         private void textBoxTemplate_Leave(object sender, EventArgs e)
         {
             AcceptButton = buttonOk;
+        }
+
+        private void comboBoxStandard_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (comboBoxStandard.SelectedIndex >= 0)
+            {
+                textBoxTemplate.Text = comboBoxStandard.SelectedItem as string;
+            }
         }
     }
 }

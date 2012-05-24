@@ -253,7 +253,7 @@ namespace PivoTurtle
                 string templateStr = newTemplate;
                 if (templateStr.Length == 0)
                 {
-                    templateStr = StoryMessageTemplate.defaultTemplate;
+                    templateStr = StoryMessageTemplate.standardTemplates[0];
                 }
                 template.Template = templateStr;
                 UpdateMessage();

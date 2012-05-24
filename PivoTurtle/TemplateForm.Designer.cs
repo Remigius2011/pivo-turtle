@@ -51,8 +51,9 @@
             // 
             // labelPreview
             // 
+            this.labelPreview.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.labelPreview.AutoSize = true;
-            this.labelPreview.Location = new System.Drawing.Point(12, 101);
+            this.labelPreview.Location = new System.Drawing.Point(12, 121);
             this.labelPreview.Name = "labelPreview";
             this.labelPreview.Size = new System.Drawing.Size(45, 13);
             this.labelPreview.TabIndex = 1;
@@ -67,7 +68,7 @@
             this.textBoxTemplate.Multiline = true;
             this.textBoxTemplate.Name = "textBoxTemplate";
             this.textBoxTemplate.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBoxTemplate.Size = new System.Drawing.Size(411, 80);
+            this.textBoxTemplate.Size = new System.Drawing.Size(411, 100);
             this.textBoxTemplate.TabIndex = 2;
             this.textBoxTemplate.WordWrap = false;
             this.textBoxTemplate.TextChanged += new System.EventHandler(this.textBoxTemplate_TextChanged);
@@ -78,12 +79,12 @@
             // 
             this.textBoxPreview.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxPreview.Location = new System.Drawing.Point(93, 98);
+            this.textBoxPreview.Location = new System.Drawing.Point(93, 118);
             this.textBoxPreview.Multiline = true;
             this.textBoxPreview.Name = "textBoxPreview";
             this.textBoxPreview.ReadOnly = true;
             this.textBoxPreview.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBoxPreview.Size = new System.Drawing.Size(411, 80);
+            this.textBoxPreview.Size = new System.Drawing.Size(411, 100);
             this.textBoxPreview.TabIndex = 3;
             this.textBoxPreview.WordWrap = false;
             // 
@@ -91,7 +92,7 @@
             // 
             this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.buttonOk.Location = new System.Drawing.Point(429, 196);
+            this.buttonOk.Location = new System.Drawing.Point(429, 236);
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.Size = new System.Drawing.Size(75, 23);
             this.buttonOk.TabIndex = 4;
@@ -103,7 +104,7 @@
             // 
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(338, 196);
+            this.buttonCancel.Location = new System.Drawing.Point(338, 236);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
             this.buttonCancel.TabIndex = 5;
@@ -132,7 +133,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(516, 231);
+            this.ClientSize = new System.Drawing.Size(516, 271);
             this.Controls.Add(this.labelOkFail);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonOk);

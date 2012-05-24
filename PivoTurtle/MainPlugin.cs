@@ -38,13 +38,54 @@ using System.Windows.Forms;
 namespace PivoTurtle
 {
     [ComVisible(true), Guid("4A32C95D-0B66-4280-B370-F71410B521D6"), ClassInterface(ClassInterfaceType.None)]
-    public class MainPlugin : IBugTraqProvider //, IBugTraqProvider2
+    public class MainPlugin : IBugTraqProvider, IBugTraqProvider2
     {
         private IssuesForm form;
-        private bool settingsLoaded = false;
 
         public string GetCommitMessage(IntPtr hParentWnd, string parameters, string commonRoot, string[] pathList, string originalMessage)
         {
+            string bugId = "";
+            string[] revPropNames;
+            string[] revPropValues;
+            return GetCommitMessage2(hParentWnd, parameters, "", commonRoot, pathList, originalMessage, bugId, out bugId, out revPropNames, out revPropValues);
+        }
+
+        public string GetLinkText(IntPtr hParentWnd, string parameters)
+        {
+            return "Choose Pivotal Stories";
+        }
+
+        public bool ValidateParameters(IntPtr hParentWnd, string parameters)
+        {
+            try
+            {
+                return true;
+            }
+            catch (Exception x)
+            {
+                ErrorForm.ShowException(x, "Error Validating Parameters");
+            }
+            return false;
+        }
+
+        public string CheckCommit(IntPtr hParentWnd, string parameters, string commonURL, string commonRoot, string[] pathList, string commitMessage)
+        {
+            // return an empty string for OK or an error message to inhibit the commit
+            if (form == null || commitMessage == null || !commitMessage.Equals(form.CommitMessage))
+            {
+                if (MessageBox.Show("The message has been modified outside PivoTurtle\nand therefore might not be compliant to the project guidelines.\n\nDo you want to continue anyway?", "Message modified", MessageBoxButtons.YesNo) == DialogResult.No)
+                {
+                    return "Commit aborted after message modification";
+                }
+            }
+            return "";
+        }
+
+        public string GetCommitMessage2(IntPtr hParentWnd, string parameters, string commonURL, string commonRoot, string[] pathList, string originalMessage, string bugID, out string bugIDOut, out string[] revPropNames, out string[] revPropValues)
+        {
+            bugIDOut = bugID;
+            revPropNames = new string[0];
+            revPropValues = new string[0];
             try
             {
                 if (form == null)
@@ -69,54 +110,6 @@ namespace PivoTurtle
             return originalMessage;
         }
 
-        public string GetLinkText(IntPtr hParentWnd, string parameters)
-        {
-            return "Choose Pivotal Issue";
-        }
-
-        public bool ValidateParameters(IntPtr hParentWnd, string parameters)
-        {
-            try
-            {
-                return true;
-            }
-            catch (Exception x)
-            {
-                ErrorForm.ShowException(x, "Error Validating Parameters");
-            }
-            return false;
-        }
-
-        public string CheckCommit(IntPtr hParentWnd, string parameters, string commonURL, string commonRoot, string[] pathList, string commitMessage)
-        {
-            /*
-            try
-            {
-
-            }
-            catch (Exception x)
-            {
-                ErrorForm.ShowException(x, "Error Checking Commit");
-            }
-             * */
-            return commitMessage;
-        }
-
-        public string GetCommitMessage2(IntPtr hParentWnd, string parameters, string commonURL, string commonRoot, string[] pathList, string originalMessage, string bugID, out string bugIDOut, out string[] revPropNames, out string[] revPropValues)
-        {
-            /*
-            try
-            {
-
-            }
-            catch (Exception x)
-            {
-                ErrorForm.ShowException(x, "Error Getting Commit Message");
-            }
-             * */
-            throw new NotImplementedException();
-        }
-
         public bool HasOptions()
         {
             return true;
@@ -124,6 +117,7 @@ namespace PivoTurtle
 
         public string OnCommitFinished(IntPtr hParentWnd, string commonRoot, string[] pathList, string logMessage, int revision)
         {
+            // todo: link back to commit here
             /*
             try
             {
@@ -134,22 +128,23 @@ namespace PivoTurtle
                 ErrorForm.ShowException(x, "Error After Commit");
             }
              * */
-            throw new NotImplementedException();
+            return "";
         }
 
         public string ShowOptionsDialog(IntPtr hParentWnd, string parameters)
         {
-            /*
             try
             {
-
+                if (OptionsForm.ShowOptions())
+                {
+                    SaveSettings();
+                }
             }
             catch (Exception x)
             {
                 ErrorForm.ShowException(x, "Error Showing Options Dialog");
             }
-             * */
-            throw new NotImplementedException();
+            return parameters;
         }
 
         private void SaveSettings()

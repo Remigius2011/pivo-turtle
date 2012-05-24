@@ -341,10 +341,15 @@ namespace PivoTurtle
                 {
                     selectedProjectId = Properties.Settings.Default.SelectedProject;
                     projects.Clear();
+                    stories.Clear();
                 }
                 if (projects.Count == 0)
                 {
                     LoadPivotalData();
+                    if (projects.Count == 0)
+                    {
+                        throw new ApplicationException("No projects obtained from Pivotal Tracker.\nYou must be assigned to at least one project.");
+                    }
                 }
                 DisplayPivotalData();
                 UpdateSelectAllCheckbox();
@@ -360,112 +365,182 @@ namespace PivoTurtle
 
         private void comboBoxProjects_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (whileDisplayingProjects)
+            try
             {
-                return;
+                if (whileDisplayingProjects)
+                {
+                    return;
+                }
+                PivotalProject project = comboBoxProjects.SelectedItem as PivotalProject;
+                LoadPivotalStories(project.Id);
+                DisplayPivotalStories();
+                UpdateMessage();
+                selectedProjectId = project.Id;
             }
-            PivotalProject project = comboBoxProjects.SelectedItem as PivotalProject;
-            LoadPivotalStories(project.Id);
-            DisplayPivotalStories();
-            UpdateMessage();
-            selectedProjectId = project.Id;
+            catch (Exception x)
+            {
+                ErrorForm.ShowException(x, "An Error Occurred");
+            }
         }
 
         private void textBoxOriginal_TextChanged(object sender, EventArgs e)
         {
-            UpdateMessage();
+            try
+            {
+                UpdateMessage();
+            }
+            catch (Exception x)
+            {
+                ErrorForm.ShowException(x, "An Error Occurred");
+            }
         }
 
         private void listViewStories_ColumnClick(object sender, ColumnClickEventArgs e)
         {
-            if (e.Column != 0)
-            {
-                return;
-            }
-            whileChangingAllSelections = true;
             try
             {
-                bool check = false;
-                foreach (ListViewItem item in listViewStories.Items)
+                if (e.Column != 0)
                 {
-                    check |= !item.Checked;
+                    return;
                 }
-                foreach (ListViewItem item in listViewStories.Items)
+                whileChangingAllSelections = true;
+                try
                 {
-                    item.Checked = check;
+                    bool check = false;
+                    foreach (ListViewItem item in listViewStories.Items)
+                    {
+                        check |= !item.Checked;
+                    }
+                    foreach (ListViewItem item in listViewStories.Items)
+                    {
+                        item.Checked = check;
+                    }
                 }
+                finally
+                {
+                    whileChangingAllSelections = false;
+                }
+                UpdateSelectAllCheckbox();
+                UpdateSelectedStories();
+                UpdateMessage();
             }
-            finally
+            catch (Exception x)
             {
-                whileChangingAllSelections = false;
+                ErrorForm.ShowException(x, "An Error Occurred");
             }
-            UpdateSelectAllCheckbox();
-            UpdateSelectedStories();
-            UpdateMessage();
         }
 
         private void listViewStories_ItemChecked(object sender, ItemCheckedEventArgs e)
         {
-            if (whileDisplayingStories || whileChangingAllSelections)
+            try
             {
-                return;
+                if (whileDisplayingStories || whileChangingAllSelections)
+                {
+                    return;
+                }
+                UpdateSelectAllCheckbox();
+                UpdateSelectedStories();
+                UpdateMessage();
             }
-            UpdateSelectAllCheckbox();
-            UpdateSelectedStories();
-            UpdateMessage();
+            catch (Exception x)
+            {
+                ErrorForm.ShowException(x, "An Error Occurred");
+            }
         }
 
         private void listViewStories_MouseClick(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Right)
+            try
             {
-                ListViewHitTestInfo hitTestInfo = listViewStories.HitTest(e.X, e.Y);
-                if (hitTestInfo.Item != null)
+                if (e.Button == MouseButtons.Right)
                 {
-                    contextMenuStripStories.Items[0].Tag = hitTestInfo.Item.Tag;
-                    Point point = listViewStories.PointToScreen(e.Location);
-                    contextMenuStripStories.Show(point);
+                    ListViewHitTestInfo hitTestInfo = listViewStories.HitTest(e.X, e.Y);
+                    if (hitTestInfo.Item != null)
+                    {
+                        contextMenuStripStories.Items[0].Tag = hitTestInfo.Item.Tag;
+                        Point point = listViewStories.PointToScreen(e.Location);
+                        contextMenuStripStories.Show(point);
+                    }
                 }
+            }
+            catch (Exception x)
+            {
+                ErrorForm.ShowException(x, "An Error Occurred");
             }
         }
 
         private void openInPivotalTrackerToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            PivotalStory story = (sender as ToolStripItem).Tag as PivotalStory;
-            System.Diagnostics.Process.Start(story.Url);
+            try
+            {
+                PivotalStory story = (sender as ToolStripItem).Tag as PivotalStory;
+                System.Diagnostics.Process.Start(story.Url);
+            }
+            catch (Exception x)
+            {
+                ErrorForm.ShowException(x, "An Error Occurred");
+            }
         }
 
         private void linkLabelPivotal_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            string link = "https://www.pivotaltracker.com";
-            if (selectedProjectId >= 0)
+            try
             {
-                link += "/projects/" + selectedProjectId;
+                string link = "https://www.pivotaltracker.com";
+                if (selectedProjectId >= 0)
+                {
+                    link += "/projects/" + selectedProjectId;
+                }
+                System.Diagnostics.Process.Start(link);
             }
-            System.Diagnostics.Process.Start(link);
+            catch (Exception x)
+            {
+                ErrorForm.ShowException(x, "An Error Occurred");
+            }
         }
 
         private void buttonTemplate_Click(object sender, EventArgs e)
         {
-            string editTemplate = template.Template;
-            List<PivotalStory> selectedStoryList = GetSelectedStories();
-            if (TemplateForm.EditTemplate(ref editTemplate, selectedStoryList, textBoxOriginal.Text))
+            try
             {
-                UpdateTemplate(editTemplate);
-                Properties.Settings.Default.MessageTemplate = editTemplate;
+                string editTemplate = template.Template;
+                List<PivotalStory> selectedStoryList = GetSelectedStories();
+                if (TemplateForm.EditTemplate(ref editTemplate, selectedStoryList, textBoxOriginal.Text))
+                {
+                    UpdateTemplate(editTemplate);
+                    Properties.Settings.Default.MessageTemplate = editTemplate;
+                }
+            }
+            catch (Exception x)
+            {
+                ErrorForm.ShowException(x, "An Error Occurred");
             }
         }
 
         private void buttonRefresh_Click(object sender, EventArgs e)
         {
-            LoadPivotalData();
-            DisplayPivotalData();
+            try
+            {
+                LoadPivotalData();
+                DisplayPivotalData();
+            }
+            catch (Exception x)
+            {
+                ErrorForm.ShowException(x, "An Error Occurred");
+            }
         }
 
         private void buttonOptions_Click(object sender, EventArgs e)
         {
-            OptionsForm.ShowOptions();
-            UpdateServerToken();
+            try
+            {
+                OptionsForm.ShowOptions();
+                UpdateServerToken();
+            }
+            catch (Exception x)
+            {
+                ErrorForm.ShowException(x, "An Error Occurred");
+            }
         }
 
         private void buttonOk_Click(object sender, EventArgs e)

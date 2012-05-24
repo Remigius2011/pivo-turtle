@@ -73,7 +73,7 @@ namespace PivoTurtle
             // return an empty string for OK or an error message to inhibit the commit
             if (form == null || commitMessage == null || !commitMessage.Equals(form.CommitMessage))
             {
-                if (MessageBox.Show("The message has been modified outside PivoTurtle\nand therefore might not be compliant to the project guidelines.\n\nDo you want to continue anyway?", "Message modified", MessageBoxButtons.YesNo) == DialogResult.No)
+                if (MessageBox.Show("The message has been edited outside PivoTurtle\nand therefore might not be compliant to the project guidelines.\n\nDo you want to continue anyway?", "Message modified", MessageBoxButtons.YesNo) == DialogResult.No)
                 {
                     return "Commit aborted after message modification";
                 }

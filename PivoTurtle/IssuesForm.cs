@@ -312,6 +312,19 @@ namespace PivoTurtle
             selectedStories = result.ToString();
         }
 
+        private void UpdateSelectAllCheckbox()
+        {
+            bool allChecked = listViewStories.Items.Count > 0;
+            bool allUnchecked = true;
+            foreach (ListViewItem item in listViewStories.Items)
+            {
+                bool check = item.Checked;
+                allChecked &= check;
+                allUnchecked &= !check;
+            }
+            columnHeaderCheck.ImageIndex = allUnchecked ? 0 : allChecked ? 1 : 2;
+        }
+
         private void IssuesForm_Shown(object sender, EventArgs e)
         {
             try
@@ -334,6 +347,7 @@ namespace PivoTurtle
                     LoadPivotalData();
                 }
                 DisplayPivotalData();
+                UpdateSelectAllCheckbox();
                 UpdateTemplate(Properties.Settings.Default.MessageTemplate);
             }
             catch (Exception x)
@@ -384,6 +398,7 @@ namespace PivoTurtle
             {
                 whileChangingAllSelections = false;
             }
+            UpdateSelectAllCheckbox();
             UpdateSelectedStories();
             UpdateMessage();
         }
@@ -394,6 +409,7 @@ namespace PivoTurtle
             {
                 return;
             }
+            UpdateSelectAllCheckbox();
             UpdateSelectedStories();
             UpdateMessage();
         }

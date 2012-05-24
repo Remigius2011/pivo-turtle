@@ -36,6 +36,7 @@
             this.columnHeaderCheck = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderId = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderDescription = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.imageListCheckbox = new System.Windows.Forms.ImageList(this.components);
             this.comboBoxProjects = new System.Windows.Forms.ComboBox();
             this.labelProject = new System.Windows.Forms.Label();
             this.labelStories = new System.Windows.Forms.Label();
@@ -89,6 +90,7 @@
             this.listViewStories.Location = new System.Drawing.Point(12, 234);
             this.listViewStories.Name = "listViewStories";
             this.listViewStories.Size = new System.Drawing.Size(605, 177);
+            this.listViewStories.SmallImageList = this.imageListCheckbox;
             this.listViewStories.TabIndex = 3;
             this.listViewStories.UseCompatibleStateImageBehavior = false;
             this.listViewStories.View = System.Windows.Forms.View.Details;
@@ -99,7 +101,7 @@
             // columnHeaderCheck
             // 
             this.columnHeaderCheck.Text = "";
-            this.columnHeaderCheck.Width = 22;
+            this.columnHeaderCheck.Width = 27;
             // 
             // columnHeaderId
             // 
@@ -110,6 +112,14 @@
             // 
             this.columnHeaderDescription.Text = "Description";
             this.columnHeaderDescription.Width = 496;
+            // 
+            // imageListCheckbox
+            // 
+            this.imageListCheckbox.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListCheckbox.ImageStream")));
+            this.imageListCheckbox.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageListCheckbox.Images.SetKeyName(0, "IconCheckboxUnchecked.png");
+            this.imageListCheckbox.Images.SetKeyName(1, "IconCheckboxChecked.png");
+            this.imageListCheckbox.Images.SetKeyName(2, "IconCheckboxIndeterminate.png");
             // 
             // comboBoxProjects
             // 
@@ -301,5 +311,6 @@
         private System.Windows.Forms.TextBox textBoxResult;
         private System.Windows.Forms.Button buttonRefresh;
         private System.Windows.Forms.Button buttonTemplate;
+        private System.Windows.Forms.ImageList imageListCheckbox;
     }
 }

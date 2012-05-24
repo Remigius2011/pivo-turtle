@@ -48,6 +48,7 @@
             this.textBoxOriginal = new System.Windows.Forms.TextBox();
             this.textBoxResult = new System.Windows.Forms.TextBox();
             this.buttonRefresh = new System.Windows.Forms.Button();
+            this.buttonTemplate = new System.Windows.Forms.Button();
             this.contextMenuStripStories.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -232,6 +233,16 @@
             this.buttonRefresh.UseVisualStyleBackColor = true;
             this.buttonRefresh.Click += new System.EventHandler(this.buttonRefresh_Click);
             // 
+            // buttonTemplate
+            // 
+            this.buttonTemplate.Image = ((System.Drawing.Image)(resources.GetObject("buttonTemplate.Image")));
+            this.buttonTemplate.Location = new System.Drawing.Point(359, 417);
+            this.buttonTemplate.Name = "buttonTemplate";
+            this.buttonTemplate.Size = new System.Drawing.Size(23, 23);
+            this.buttonTemplate.TabIndex = 13;
+            this.buttonTemplate.UseVisualStyleBackColor = true;
+            this.buttonTemplate.Click += new System.EventHandler(this.buttonTemplate_Click);
+            // 
             // IssuesForm
             // 
             this.AcceptButton = this.buttonOk;
@@ -239,6 +250,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(629, 452);
+            this.Controls.Add(this.buttonTemplate);
             this.Controls.Add(this.buttonRefresh);
             this.Controls.Add(this.textBoxOriginal);
             this.Controls.Add(this.labelOriginal);
@@ -286,5 +298,6 @@
         private System.Windows.Forms.TextBox textBoxOriginal;
         private System.Windows.Forms.TextBox textBoxResult;
         private System.Windows.Forms.Button buttonRefresh;
+        private System.Windows.Forms.Button buttonTemplate;
     }
 }

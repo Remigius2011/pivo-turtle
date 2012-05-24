@@ -66,7 +66,7 @@ namespace PivoTurtle
             {
                 SelectedProjectId = long.Parse(parameters);
             }
-            catch (System.Exception ex)
+            catch (Exception x)
             {
                 // do nothing
             }
@@ -229,12 +229,12 @@ namespace PivoTurtle
             }
         }
 
-        private void UpdateTemplate()
+        private void UpdateTemplate(string newTemplate)
         {
             string previousTemplate = template.Template;
             try
             {
-                string templateStr = Properties.Settings.Default.MessageTemplate;
+                string templateStr = newTemplate;
                 if (templateStr.Length == 0)
                 {
                     templateStr = StoryMessageTemplate.defaultTemplate;
@@ -245,7 +245,6 @@ namespace PivoTurtle
             catch (Exception x)
             {
                 ErrorForm.ShowException(x, "Parse Message Template");
-                Properties.Settings.Default.MessageTemplate = previousTemplate;
                 template.Template = previousTemplate;
             }
         }
@@ -319,7 +318,7 @@ namespace PivoTurtle
                     LoadPivotalData();
                 }
                 DisplayPivotalData();
-                UpdateTemplate();
+                UpdateTemplate(Properties.Settings.Default.MessageTemplate);
             }
             catch (Exception x)
             {
@@ -365,7 +364,7 @@ namespace PivoTurtle
                     item.Checked = check;
                 }
             }
-            catch (Exception x)
+            finally
             {
                 whileChangingAllSelections = false;
             }
@@ -413,6 +412,17 @@ namespace PivoTurtle
             System.Diagnostics.Process.Start(link);
         }
 
+        private void buttonTemplate_Click(object sender, EventArgs e)
+        {
+            string editTemplate = template.Template;
+            List<PivotalStory> selectedStoryList = GetSelectedStories();
+            if (TemplateForm.EditTemplate(ref editTemplate, selectedStoryList, textBoxOriginal.Text))
+            {
+                UpdateTemplate(editTemplate);
+                Properties.Settings.Default.MessageTemplate = editTemplate;
+            }
+        }
+
         private void buttonRefresh_Click(object sender, EventArgs e)
         {
             LoadPivotalData();
@@ -423,10 +433,6 @@ namespace PivoTurtle
         {
             OptionsForm.ShowOptions();
             UpdateServerToken();
-            if (!Properties.Settings.Default.MessageTemplate.Equals(template.Template))
-            {
-                UpdateTemplate();
-            }
         }
 
         private void buttonOk_Click(object sender, EventArgs e)

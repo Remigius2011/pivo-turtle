@@ -22,7 +22,6 @@ namespace PivoTurtle
         public OptionsForm()
         {
             InitializeComponent();
-            textBoxMessageTemplate.Text = Properties.Settings.Default.MessageTemplate;
         }
 
         private void buttonResetToken_Click(object sender, EventArgs e)
@@ -33,7 +32,6 @@ namespace PivoTurtle
 
         private void buttonOk_Click(object sender, EventArgs e)
         {
-            Properties.Settings.Default.MessageTemplate = textBoxMessageTemplate.Text;
         }
     }
 }

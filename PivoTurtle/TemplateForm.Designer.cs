@@ -71,6 +71,8 @@
             this.textBoxTemplate.TabIndex = 2;
             this.textBoxTemplate.WordWrap = false;
             this.textBoxTemplate.TextChanged += new System.EventHandler(this.textBoxTemplate_TextChanged);
+            this.textBoxTemplate.Enter += new System.EventHandler(this.textBoxTemplate_Enter);
+            this.textBoxTemplate.Leave += new System.EventHandler(this.textBoxTemplate_Leave);
             // 
             // textBoxPreview
             // 

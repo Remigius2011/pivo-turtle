@@ -78,5 +78,15 @@ namespace PivoTurtle
             template = textBoxTemplate.Text;
             buttonOk.Enabled = false;
         }
+
+        private void textBoxTemplate_Enter(object sender, EventArgs e)
+        {
+            AcceptButton = null;
+        }
+
+        private void textBoxTemplate_Leave(object sender, EventArgs e)
+        {
+            AcceptButton = buttonOk;
+        }
     }
 }

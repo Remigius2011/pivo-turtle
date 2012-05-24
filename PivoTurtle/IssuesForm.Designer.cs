@@ -208,6 +208,8 @@
             this.textBoxOriginal.TabIndex = 10;
             this.textBoxOriginal.WordWrap = false;
             this.textBoxOriginal.TextChanged += new System.EventHandler(this.textBoxOriginal_TextChanged);
+            this.textBoxOriginal.Enter += new System.EventHandler(this.textBoxOriginal_Enter);
+            this.textBoxOriginal.Leave += new System.EventHandler(this.textBoxOriginal_Leave);
             // 
             // textBoxResult
             // 

@@ -440,5 +440,15 @@ namespace PivoTurtle
             Properties.Settings.Default.SelectedStories = selectedStories;
             Properties.Settings.Default.SelectedProject = selectedProjectId;
         }
+
+        private void textBoxOriginal_Enter(object sender, EventArgs e)
+        {
+            AcceptButton = null;
+        }
+
+        private void textBoxOriginal_Leave(object sender, EventArgs e)
+        {
+            AcceptButton = buttonOk;
+        }
     }
 }

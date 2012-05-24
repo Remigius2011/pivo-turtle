@@ -6,7 +6,7 @@ namespace PivoTurtle
 {
     public class StoryMessageTemplate
     {
-        public const string defaultTemplate = "[%original%\\r\\n\\r\\n]{%url% %name%\\r\\n}\\r\\n\\0x65";
+        public const string defaultTemplate = "[%original%\\r\\n\\r\\n]{%url% %name%\\r\\n}";
 
         public const string tokenId = "id";
         public const string tokenName = "name";

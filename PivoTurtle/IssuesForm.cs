@@ -349,6 +349,7 @@ namespace PivoTurtle
                 DisplayPivotalData();
                 UpdateSelectAllCheckbox();
                 UpdateTemplate(Properties.Settings.Default.MessageTemplate);
+                textBoxOriginal.Select();
             }
             catch (Exception x)
             {

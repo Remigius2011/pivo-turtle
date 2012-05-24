@@ -40,7 +40,7 @@
             this.buttonOk.Location = new System.Drawing.Point(326, 227);
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.Size = new System.Drawing.Size(75, 23);
-            this.buttonOk.TabIndex = 0;
+            this.buttonOk.TabIndex = 2;
             this.buttonOk.Text = "Ok";
             this.buttonOk.UseVisualStyleBackColor = true;
             this.buttonOk.Click += new System.EventHandler(this.buttonOk_Click);
@@ -61,7 +61,7 @@
             this.buttonResetToken.Location = new System.Drawing.Point(12, 227);
             this.buttonResetToken.Name = "buttonResetToken";
             this.buttonResetToken.Size = new System.Drawing.Size(139, 23);
-            this.buttonResetToken.TabIndex = 2;
+            this.buttonResetToken.TabIndex = 0;
             this.buttonResetToken.Text = "Reset Server Token";
             this.buttonResetToken.UseVisualStyleBackColor = true;
             this.buttonResetToken.Click += new System.EventHandler(this.buttonResetToken_Click);

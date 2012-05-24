@@ -60,7 +60,7 @@
             this.buttonCancel.Location = new System.Drawing.Point(461, 477);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
-            this.buttonCancel.TabIndex = 5;
+            this.buttonCancel.TabIndex = 12;
             this.buttonCancel.Text = "Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
             // 
@@ -71,7 +71,7 @@
             this.buttonOk.Location = new System.Drawing.Point(542, 477);
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.Size = new System.Drawing.Size(75, 23);
-            this.buttonOk.TabIndex = 6;
+            this.buttonOk.TabIndex = 13;
             this.buttonOk.Text = "OK";
             this.buttonOk.UseVisualStyleBackColor = true;
             this.buttonOk.Click += new System.EventHandler(this.buttonOk_Click);
@@ -91,7 +91,7 @@
             this.listViewStories.Name = "listViewStories";
             this.listViewStories.Size = new System.Drawing.Size(605, 177);
             this.listViewStories.SmallImageList = this.imageListCheckbox;
-            this.listViewStories.TabIndex = 3;
+            this.listViewStories.TabIndex = 7;
             this.listViewStories.UseCompatibleStateImageBehavior = false;
             this.listViewStories.View = System.Windows.Forms.View.Details;
             this.listViewStories.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listViewStories_ColumnClick);
@@ -148,7 +148,7 @@
             this.labelStories.Location = new System.Drawing.Point(12, 273);
             this.labelStories.Name = "labelStories";
             this.labelStories.Size = new System.Drawing.Size(39, 13);
-            this.labelStories.TabIndex = 2;
+            this.labelStories.TabIndex = 6;
             this.labelStories.Text = "Stories";
             // 
             // linkLabelPivotal
@@ -158,7 +158,7 @@
             this.linkLabelPivotal.Location = new System.Drawing.Point(12, 482);
             this.linkLabelPivotal.Name = "linkLabelPivotal";
             this.linkLabelPivotal.Size = new System.Drawing.Size(157, 13);
-            this.linkLabelPivotal.TabIndex = 4;
+            this.linkLabelPivotal.TabIndex = 8;
             this.linkLabelPivotal.TabStop = true;
             this.linkLabelPivotal.Text = "https://www.pivotaltracker.com";
             this.linkLabelPivotal.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelPivotal_LinkClicked);
@@ -184,7 +184,7 @@
             this.buttonOptions.Location = new System.Drawing.Point(417, 477);
             this.buttonOptions.Name = "buttonOptions";
             this.buttonOptions.Size = new System.Drawing.Size(23, 23);
-            this.buttonOptions.TabIndex = 7;
+            this.buttonOptions.TabIndex = 11;
             this.buttonOptions.UseVisualStyleBackColor = true;
             this.buttonOptions.Click += new System.EventHandler(this.buttonOptions_Click);
             // 
@@ -194,7 +194,7 @@
             this.labelOriginal.Location = new System.Drawing.Point(12, 42);
             this.labelOriginal.Name = "labelOriginal";
             this.labelOriginal.Size = new System.Drawing.Size(42, 13);
-            this.labelOriginal.TabIndex = 8;
+            this.labelOriginal.TabIndex = 2;
             this.labelOriginal.Text = "Original";
             // 
             // labelResult
@@ -203,7 +203,7 @@
             this.labelResult.Location = new System.Drawing.Point(12, 148);
             this.labelResult.Name = "labelResult";
             this.labelResult.Size = new System.Drawing.Size(37, 13);
-            this.labelResult.TabIndex = 9;
+            this.labelResult.TabIndex = 4;
             this.labelResult.Text = "Result";
             // 
             // textBoxOriginal
@@ -215,7 +215,7 @@
             this.textBoxOriginal.Name = "textBoxOriginal";
             this.textBoxOriginal.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.textBoxOriginal.Size = new System.Drawing.Size(504, 100);
-            this.textBoxOriginal.TabIndex = 10;
+            this.textBoxOriginal.TabIndex = 3;
             this.textBoxOriginal.WordWrap = false;
             this.textBoxOriginal.TextChanged += new System.EventHandler(this.textBoxOriginal_TextChanged);
             this.textBoxOriginal.Enter += new System.EventHandler(this.textBoxOriginal_Enter);
@@ -231,7 +231,7 @@
             this.textBoxResult.ReadOnly = true;
             this.textBoxResult.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.textBoxResult.Size = new System.Drawing.Size(504, 120);
-            this.textBoxResult.TabIndex = 11;
+            this.textBoxResult.TabIndex = 5;
             this.textBoxResult.WordWrap = false;
             // 
             // buttonRefresh
@@ -241,7 +241,7 @@
             this.buttonRefresh.Location = new System.Drawing.Point(388, 477);
             this.buttonRefresh.Name = "buttonRefresh";
             this.buttonRefresh.Size = new System.Drawing.Size(23, 23);
-            this.buttonRefresh.TabIndex = 12;
+            this.buttonRefresh.TabIndex = 10;
             this.buttonRefresh.UseVisualStyleBackColor = true;
             this.buttonRefresh.Click += new System.EventHandler(this.buttonRefresh_Click);
             // 
@@ -252,7 +252,7 @@
             this.buttonTemplate.Location = new System.Drawing.Point(359, 477);
             this.buttonTemplate.Name = "buttonTemplate";
             this.buttonTemplate.Size = new System.Drawing.Size(23, 23);
-            this.buttonTemplate.TabIndex = 13;
+            this.buttonTemplate.TabIndex = 9;
             this.buttonTemplate.UseVisualStyleBackColor = true;
             this.buttonTemplate.Click += new System.EventHandler(this.buttonTemplate_Click);
             // 

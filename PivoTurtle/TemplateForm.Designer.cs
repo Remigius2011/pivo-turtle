@@ -56,7 +56,7 @@
             this.labelPreview.Location = new System.Drawing.Point(12, 121);
             this.labelPreview.Name = "labelPreview";
             this.labelPreview.Size = new System.Drawing.Size(45, 13);
-            this.labelPreview.TabIndex = 1;
+            this.labelPreview.TabIndex = 3;
             this.labelPreview.Text = "Preview";
             // 
             // textBoxTemplate
@@ -69,7 +69,7 @@
             this.textBoxTemplate.Name = "textBoxTemplate";
             this.textBoxTemplate.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.textBoxTemplate.Size = new System.Drawing.Size(411, 100);
-            this.textBoxTemplate.TabIndex = 2;
+            this.textBoxTemplate.TabIndex = 1;
             this.textBoxTemplate.WordWrap = false;
             this.textBoxTemplate.TextChanged += new System.EventHandler(this.textBoxTemplate_TextChanged);
             this.textBoxTemplate.Enter += new System.EventHandler(this.textBoxTemplate_Enter);
@@ -85,7 +85,7 @@
             this.textBoxPreview.ReadOnly = true;
             this.textBoxPreview.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.textBoxPreview.Size = new System.Drawing.Size(411, 100);
-            this.textBoxPreview.TabIndex = 3;
+            this.textBoxPreview.TabIndex = 4;
             this.textBoxPreview.WordWrap = false;
             // 
             // buttonOk
@@ -95,7 +95,7 @@
             this.buttonOk.Location = new System.Drawing.Point(429, 236);
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.Size = new System.Drawing.Size(75, 23);
-            this.buttonOk.TabIndex = 4;
+            this.buttonOk.TabIndex = 6;
             this.buttonOk.Text = "OK";
             this.buttonOk.UseVisualStyleBackColor = true;
             this.buttonOk.Click += new System.EventHandler(this.buttonOk_Click);
@@ -125,7 +125,7 @@
             this.labelOkFail.Location = new System.Drawing.Point(25, 40);
             this.labelOkFail.Name = "labelOkFail";
             this.labelOkFail.Size = new System.Drawing.Size(32, 32);
-            this.labelOkFail.TabIndex = 6;
+            this.labelOkFail.TabIndex = 2;
             // 
             // TemplateForm
             // 

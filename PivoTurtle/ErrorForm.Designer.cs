@@ -43,7 +43,7 @@
             this.buttonOk.Location = new System.Drawing.Point(301, 285);
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.Size = new System.Drawing.Size(75, 23);
-            this.buttonOk.TabIndex = 4;
+            this.buttonOk.TabIndex = 5;
             this.buttonOk.Text = "OK";
             this.buttonOk.UseVisualStyleBackColor = true;
             // 
@@ -97,7 +97,7 @@
             this.buttonCopy.Location = new System.Drawing.Point(15, 285);
             this.buttonCopy.Name = "buttonCopy";
             this.buttonCopy.Size = new System.Drawing.Size(75, 23);
-            this.buttonCopy.TabIndex = 5;
+            this.buttonCopy.TabIndex = 4;
             this.buttonCopy.Text = "to Clipboard";
             this.buttonCopy.UseVisualStyleBackColor = true;
             this.buttonCopy.Click += new System.EventHandler(this.buttonCopy_Click);

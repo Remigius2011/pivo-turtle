@@ -13,12 +13,13 @@ namespace PivoTurtle
         private List<PivotalProject> projects = new List<PivotalProject>();
         private List<PivotalStory> stories = new List<PivotalStory>();
         private long selectedProjectId = -1;
-        private List<PivotalStory> selectedStories = new List<PivotalStory>();
         private string originalMessage;
         private string commitMessage;
+        private string selectedStories;
         private StoryMessageTemplate template = new StoryMessageTemplate();
         private bool whileDisplayingStories = false;
         private bool whileDisplayingProjects = false;
+        private bool whileChangingAllSelections = false;
 
         public IssuesForm()
         {
@@ -39,12 +40,13 @@ namespace PivoTurtle
         public long SelectedProjectId
         {
             get { return selectedProjectId; }
-            set { selectedProjectId = value; }
+            set { if (value != selectedProjectId) projects.Clear(); selectedProjectId = value; }
         }
 
-        public List<PivotalStory> SelectedStories
+        public string SelectedStories
         {
             get { return selectedStories; }
+            set { selectedStories = value; }
         }
 
         public string OriginalMessage
@@ -62,7 +64,7 @@ namespace PivoTurtle
         {
             try
             {
-                selectedProjectId = long.Parse(parameters);
+                SelectedProjectId = long.Parse(parameters);
             }
             catch (System.Exception ex)
             {
@@ -70,78 +72,23 @@ namespace PivoTurtle
             }
         }
 
-        private void DisplayPivotalData()
+        public List<PivotalStory> GetSelectedStories()
         {
-            DisplayPivotalProjects();
-            DisplayPivotalStories();
-        }
-
-        private void DisplayPivotalProjects()
-        {
-            whileDisplayingProjects = true;
-            try
+            List<PivotalStory> result = new List<PivotalStory>();
+            foreach (PivotalStory story in stories)
             {
-                comboBoxProjects.BeginUpdate();
-                comboBoxProjects.Items.Clear();
-                comboBoxProjects.ValueMember = "Id";
-                comboBoxProjects.DisplayMember = "DisplayName";
-                foreach (PivotalProject project in projects)
+                if (IsSelected(story.Id))
                 {
-                    comboBoxProjects.Items.Add(project);
-                    if (project.Id == selectedProjectId)
-                    {
-                        comboBoxProjects.SelectedItem = project;
-                    }
+                    result.Add(story);
                 }
             }
-            finally
-            {
-                whileDisplayingProjects = false;
-                comboBoxProjects.EndUpdate();
-            }
+            return result;
         }
 
-        private void DisplayPivotalStories()
+        public bool IsSelected(long storyId)
         {
-            whileDisplayingStories = true;
-            try
-            {
-                listViewStories.BeginUpdate();
-                listViewStories.Items.Clear();
-                foreach (PivotalStory story in stories)
-                {
-                    ListViewItem item = new ListViewItem();
-                    item.Text = "";
-                    item.SubItems.Add(story.Id.ToString());
-                    item.SubItems.Add(story.Name);
-                    item.Tag = story;
-
-                    foreach (PivotalStory selected in selectedStories)
-                    {
-                        if (selected.Id == story.Id)
-                        {
-                            item.Checked = true;
-                            break;
-                        }
-                    }
-
-                    listViewStories.Items.Add(item);
-                }
-            }
-            finally
-            {
-                whileDisplayingStories = false;
-                listViewStories.EndUpdate();
-            }
-        }
-
-        private void LoadPivotalData()
-        {
-            LoadPivotalProjects();
-            if (selectedProjectId >= 0)
-            {
-                LoadPivotalStories(selectedProjectId);
-            }
+            string checkSelection = "," + selectedStories + ",";
+            return checkSelection.Contains("," + storyId + ",");
         }
 
         private void SignOn()
@@ -159,6 +106,15 @@ namespace PivoTurtle
                         Properties.Settings.Default.TokenId = token.Id;
                     }
                 }
+            }
+        }
+
+        private void LoadPivotalData()
+        {
+            LoadPivotalProjects();
+            if (selectedProjectId >= 0)
+            {
+                LoadPivotalStories(selectedProjectId);
             }
         }
 
@@ -192,6 +148,186 @@ namespace PivoTurtle
             }
         }
 
+        private void DisplayPivotalData()
+        {
+            DisplayPivotalProjects();
+            DisplayPivotalStories();
+        }
+
+        private void DisplayPivotalProjects()
+        {
+            whileDisplayingProjects = true;
+            try
+            {
+                PivotalProject selectedProject = null;
+                comboBoxProjects.BeginUpdate();
+                comboBoxProjects.Items.Clear();
+                comboBoxProjects.ValueMember = "Id";
+                comboBoxProjects.DisplayMember = "DisplayName";
+                foreach (PivotalProject project in projects)
+                {
+                    comboBoxProjects.Items.Add(project);
+                    if (project.Id == selectedProjectId)
+                    {
+                        selectedProject = project;
+                    }
+                }
+                if (selectedProject != null)
+                {
+                    comboBoxProjects.SelectedItem = selectedProject;
+                }
+            }
+            finally
+            {
+                whileDisplayingProjects = false;
+                comboBoxProjects.EndUpdate();
+            }
+        }
+
+        private void DisplayPivotalStories()
+        {
+            whileDisplayingStories = true;
+            try
+            {
+                listViewStories.BeginUpdate();
+                listViewStories.Items.Clear();
+                foreach (PivotalStory story in stories)
+                {
+                    ListViewItem item = new ListViewItem();
+                    item.Text = "";
+                    item.SubItems.Add(story.Id.ToString());
+                    item.SubItems.Add(story.Name);
+                    item.Tag = story;
+                    item.Checked = IsSelected(story.Id);
+
+                    listViewStories.Items.Add(item);
+                }
+            }
+            finally
+            {
+                whileDisplayingStories = false;
+                listViewStories.EndUpdate();
+            }
+        }
+
+        private void UpdateServerToken()
+        {
+            if (!Properties.Settings.Default.SaveServerToken)
+            {
+                return;
+            }
+            string tokenGuid = Properties.Settings.Default.TokenGuid;
+            long tokenId = Properties.Settings.Default.TokenId;
+            if (tokenId >= 0 && tokenGuid.Length > 0)
+            {
+                PivotalToken token = new PivotalToken(tokenGuid, tokenId);
+                pivotalClient.Token = token;
+            }
+            else
+            {
+                pivotalClient.Token = null;
+            }
+        }
+
+        private void UpdateTemplate()
+        {
+            string previousTemplate = template.Template;
+            try
+            {
+                string templateStr = Properties.Settings.Default.MessageTemplate;
+                if (templateStr.Length == 0)
+                {
+                    templateStr = StoryMessageTemplate.defaultTemplate;
+                }
+                template.Template = templateStr;
+                UpdateMessage();
+            }
+            catch (Exception x)
+            {
+                ErrorForm.ShowException(x, "Parse Message Template");
+                Properties.Settings.Default.MessageTemplate = previousTemplate;
+                template.Template = previousTemplate;
+            }
+        }
+
+        private void UpdateMessage()
+        {
+            if (whileDisplayingStories)
+            {
+                return;
+            }
+            try
+            {
+                List<PivotalStory> selectedStoryList = GetSelectedStories();
+                string result = template.Evaluate(selectedStoryList, textBoxOriginal.Text);
+                textBoxResult.Text = result;
+                commitMessage = result;
+                buttonOk.Enabled = textBoxOriginal.Text.Length > 0 && selectedStoryList.Count > 0;
+            }
+            catch (Exception x)
+            {
+                ErrorForm.ShowException(x, "Evaluate Message Template");
+            }
+        }
+
+        private void UpdateSelectedStories()
+        {
+            StringBuilder result = new StringBuilder();
+            foreach (ListViewItem item in listViewStories.Items)
+            {
+                if (item == null)
+                {
+                    // this seems to be a strange artifact during the second or later
+                    // construction phase of the form - we don't have to continue in this case
+                    return;
+                }
+                else
+                {
+                    if (item.Checked)
+                    {
+                        PivotalStory story = item.Tag as PivotalStory;
+                        if (result.Length > 0)
+                        {
+                            result.Append(',');
+                        }
+                        result.Append(story.Id);
+                    }
+                }
+            }
+            selectedStories = result.ToString();
+        }
+
+        private void IssuesForm_Shown(object sender, EventArgs e)
+        {
+            try
+            {
+                if (pivotalClient.Token == null)
+                {
+                    UpdateServerToken();
+                }
+                if (string.IsNullOrEmpty(selectedStories) || !selectedStories.Equals(Properties.Settings.Default.SelectedStories))
+                {
+                    selectedStories = Properties.Settings.Default.SelectedStories;
+                }
+                if (selectedProjectId != Properties.Settings.Default.SelectedProject)
+                {
+                    selectedProjectId = Properties.Settings.Default.SelectedProject;
+                    projects.Clear();
+                }
+                if (projects.Count == 0)
+                {
+                    LoadPivotalData();
+                }
+                DisplayPivotalData();
+                UpdateTemplate();
+            }
+            catch (Exception x)
+            {
+                ErrorForm.ShowException(x, "Error Displaying Issues Form - will close");
+                Close();
+            }
+        }
+
         private void comboBoxProjects_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (whileDisplayingProjects)
@@ -205,56 +341,46 @@ namespace PivoTurtle
             selectedProjectId = project.Id;
         }
 
-        private void IssuesForm_Shown(object sender, EventArgs e)
+        private void textBoxOriginal_TextChanged(object sender, EventArgs e)
         {
+            UpdateMessage();
+        }
+
+        private void listViewStories_ColumnClick(object sender, ColumnClickEventArgs e)
+        {
+            if (e.Column != 0)
+            {
+                return;
+            }
+            whileChangingAllSelections = true;
             try
             {
-                if (Properties.Settings.Default.SaveServerToken)
+                bool check = false;
+                foreach (ListViewItem item in listViewStories.Items)
                 {
-                    UpdateServerToken();
+                    check |= !item.Checked;
                 }
-                if (projects.Count == 0)
+                foreach (ListViewItem item in listViewStories.Items)
                 {
-                    LoadPivotalData();
+                    item.Checked = check;
                 }
-                DisplayPivotalData();
-                whileDisplayingStories = true;
-                string selectedIds = Properties.Settings.Default.SelectedStories;
-                if (selectedIds.Length > 0)
-                {
-                    foreach (ListViewItem item in listViewStories.Items)
-                    {
-                        PivotalStory story = item.Tag as PivotalStory;
-                        if (story != null)
-                        {
-                            item.Checked = selectedIds.Contains("," + story.Id + ",");
-                        }
-                    }
-                }
-                whileDisplayingStories = false;
-                UpdateTemplate();
             }
             catch (Exception x)
             {
-                ErrorForm.ShowException(x, "Error Displaying Issues Form - will close");
-                Close();
+                whileChangingAllSelections = false;
             }
+            UpdateSelectedStories();
+            UpdateMessage();
         }
 
-        private void linkLabelPivotal_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void listViewStories_ItemChecked(object sender, ItemCheckedEventArgs e)
         {
-            string link = "https://www.pivotaltracker.com";
-            if (selectedProjectId >= 0)
+            if (whileDisplayingStories || whileChangingAllSelections)
             {
-                link += "/projects/" + selectedProjectId;
+                return;
             }
-            System.Diagnostics.Process.Start(link);
-        }
-
-        private void openInPivotalTrackerToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            PivotalStory story = (sender as ToolStripItem).Tag as PivotalStory;
-            System.Diagnostics.Process.Start(story.Url);
+            UpdateSelectedStories();
+            UpdateMessage();
         }
 
         private void listViewStories_MouseClick(object sender, MouseEventArgs e)
@@ -271,6 +397,28 @@ namespace PivoTurtle
             }
         }
 
+        private void openInPivotalTrackerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            PivotalStory story = (sender as ToolStripItem).Tag as PivotalStory;
+            System.Diagnostics.Process.Start(story.Url);
+        }
+
+        private void linkLabelPivotal_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            string link = "https://www.pivotaltracker.com";
+            if (selectedProjectId >= 0)
+            {
+                link += "/projects/" + selectedProjectId;
+            }
+            System.Diagnostics.Process.Start(link);
+        }
+
+        private void buttonRefresh_Click(object sender, EventArgs e)
+        {
+            LoadPivotalData();
+            DisplayPivotalData();
+        }
+
         private void buttonOptions_Click(object sender, EventArgs e)
         {
             OptionsForm.ShowOptions();
@@ -281,103 +429,10 @@ namespace PivoTurtle
             }
         }
 
-        private void UpdateServerToken()
+        private void buttonOk_Click(object sender, EventArgs e)
         {
-            string tokenGuid = Properties.Settings.Default.TokenGuid;
-            long tokenId = Properties.Settings.Default.TokenId;
-            if (tokenId >= 0 && tokenGuid.Length > 0)
-            {
-                PivotalToken token = new PivotalToken(tokenGuid, tokenId);
-                pivotalClient.Token = token;
-            }
-            else
-            {
-                pivotalClient.Token = null;
-            }
-        }
-
-        private void UpdateTemplate()
-        {
-            try
-            {
-                string templateStr = Properties.Settings.Default.MessageTemplate;
-                if (templateStr.Length == 0)
-                {
-                    templateStr = StoryMessageTemplate.defaultTemplate;
-                }
-                template.Template = templateStr;
-                UpdateMessage();
-            }
-            catch (Exception x)
-            {
-                ErrorForm.ShowException(x, "Parse Message Template");
-                Properties.Settings.Default.MessageTemplate = "";
-                template.Template = StoryMessageTemplate.defaultTemplate;
-            }
-        }
-
-        private void listViewStories_ColumnClick(object sender, ColumnClickEventArgs e)
-        {
-            if (e.Column == 0)
-            {
-                bool check = false;
-                foreach (ListViewItem item in listViewStories.Items)
-                {
-                    check |= !item.Checked;
-                }
-                foreach (ListViewItem item in listViewStories.Items)
-                {
-                    item.Checked = check;
-                }
-            }
-        }
-
-        private void UpdateMessage()
-        {
-            if (whileDisplayingStories)
-            {
-                return;
-            }
-            try
-            {
-                selectedStories.Clear();
-                StringBuilder selectedIds = new StringBuilder(",");
-                foreach (ListViewItem item in listViewStories.Items)
-                {
-                    if (item.Checked)
-                    {
-                        PivotalStory story = item.Tag as PivotalStory;
-                        selectedStories.Add(story);
-                        selectedIds.Append(story.Id);
-                        selectedIds.Append(",");
-                    }
-                }
-                string result = template.Evaluate(selectedStories, textBoxOriginal.Text);
-                textBoxResult.Text = result;
-                commitMessage = result;
-                Properties.Settings.Default.SelectedStories = selectedIds.ToString();
-                buttonOk.Enabled = textBoxOriginal.Text.Length > 0 && selectedStories.Count > 0;
-            }
-            catch (Exception x)
-            {
-                ErrorForm.ShowException(x, "Evaluate Message Template");
-            }
-        }
-
-        private void textBoxOriginal_TextChanged(object sender, EventArgs e)
-        {
-            UpdateMessage();
-        }
-
-        private void listViewStories_ItemChecked(object sender, ItemCheckedEventArgs e)
-        {
-            UpdateMessage();
-        }
-
-        private void buttonRefresh_Click(object sender, EventArgs e)
-        {
-            LoadPivotalData();
-            DisplayPivotalData();
+            Properties.Settings.Default.SelectedStories = selectedStories;
+            Properties.Settings.Default.SelectedProject = selectedProjectId;
         }
     }
 }

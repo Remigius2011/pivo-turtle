@@ -93,5 +93,17 @@ namespace PivoTurtle.Properties {
                 this["MessageTemplate"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public long SelectedProject {
+            get {
+                return ((long)(this["SelectedProject"]));
+            }
+            set {
+                this["SelectedProject"] = value;
+            }
+        }
     }
 }

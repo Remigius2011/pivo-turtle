@@ -32,10 +32,18 @@ namespace PivoTurtle
      */
     public class PivotalTask
     {
+        public const string dateTimePattern = "yyyy/MM/dd hh:mm:ss";
+
+        public const string tagId = "id";
+        public const string tagDescription = "description";
+        public const string tagPosition = "position";
+        public const string tagComplete = "complete";
+        public const string tagCreatedAt = "created_at";
+
         private long id;
         private string description;
         private int position;
-        private bool completed;
+        private bool complete;
         private DateTime createdAt;
 
         public long Id
@@ -56,10 +64,10 @@ namespace PivoTurtle
             set { position = value; }
         }
 
-        public bool Completed
+        public bool Complete
         {
-            get { return completed; }
-            set { completed = value; }
+            get { return complete; }
+            set { complete = value; }
         }
 
         public DateTime CreatedAt
@@ -70,14 +78,13 @@ namespace PivoTurtle
 
         public static PivotalTask fromXml(XmlElement element)
         {
-            string idStr = element.GetElementsByTagName("id").Item(0).InnerText;
-            long id = long.Parse(idStr);
-            string description = element.GetElementsByTagName("description").Item(0).InnerText;
-            string url = element.GetElementsByTagName("url").Item(0).InnerText;
-            PivotalTask story = new PivotalTask();
-            story.Id = id;
-            story.Description = description;
-            return story;
+            PivotalTask task = new PivotalTask();
+            task.Id = XmlHelper.getElementLong(element, tagId, -1);
+            task.Description = XmlHelper.getElementString(element, tagDescription, "");
+            task.Position = XmlHelper.getElementInt(element, tagPosition, -1);
+            task.Complete = XmlHelper.getElementBool(element, tagComplete, false);
+            task.CreatedAt = XmlHelper.getElementDateTime(element, tagCreatedAt, dateTimePattern, new DateTime(0));
+            return task;
         }
     }
 }

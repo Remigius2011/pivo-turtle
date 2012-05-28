@@ -50,6 +50,23 @@ namespace PivoTurtle
     */
     public class PivotalStory
     {
+        public const string dateTimePattern = "yyyy/MM/dd hh:mm:ss";
+
+        public const string tagId = "id";
+        public const string tagProjectId = "project_id";
+        public const string tagStoryType = "story_type";
+        public const string tagUrl = "url";
+        public const string tagCurrentState = "current_state";
+        public const string tagDescription = "description";
+        public const string tagName = "name";
+        public const string tagRequestedBy = "requested_by";
+        public const string tagOwnedBy = "owned_by";
+        public const string tagCreatedAt = "created_at";
+        public const string tagUpdatedAt = "updated_at";
+        public const string tagLabels = "labels";
+        public const string tagTasks = "tasks";
+        public const string tagTask = "task";
+
         private long id;
         private long projectId;
         private string storyType;
@@ -143,14 +160,27 @@ namespace PivoTurtle
 
         public static PivotalStory fromXml(XmlElement element)
         {
-            string idStr = element.GetElementsByTagName("id").Item(0).InnerText;
-            long id = long.Parse(idStr);
-            string name = element.GetElementsByTagName("name").Item(0).InnerText;
-            string url = element.GetElementsByTagName("url").Item(0).InnerText;
             PivotalStory story = new PivotalStory();
-            story.Id = id;
-            story.Name = name;
-            story.Url = url;
+            story.Id = XmlHelper.getElementLong(element, tagId, -1);
+            story.ProjectId = XmlHelper.getElementLong(element, tagProjectId, -1);
+            story.StoryType = XmlHelper.getElementString(element, tagStoryType, "");
+            story.Url = XmlHelper.getElementString(element, tagUrl, "");
+            story.CurrentState = XmlHelper.getElementString(element, tagCurrentState, "");
+            story.Description = XmlHelper.getElementString(element, tagDescription, "");
+            story.Name = XmlHelper.getElementString(element, tagName, "");
+            story.RequestedBy = XmlHelper.getElementString(element, tagRequestedBy, "");
+            story.OwnedBy = XmlHelper.getElementString(element, tagOwnedBy, "");
+            story.CreatedAt = XmlHelper.getElementDateTime(element, tagCreatedAt, dateTimePattern, new DateTime(0));
+            story.UpdatedAt = XmlHelper.getElementDateTime(element, tagUpdatedAt, dateTimePattern, new DateTime(0));
+            XmlNodeList taskList = element.GetElementsByTagName(tagTasks);
+            XmlElement tasksElement = (XmlElement)taskList.Item(0);
+            XmlNodeList nodeList = tasksElement.GetElementsByTagName(tagTask);
+            foreach (XmlNode node in nodeList)
+            {
+                XmlElement taskElement = (XmlElement)node;
+                PivotalTask task = PivotalTask.fromXml(taskElement);
+                story.Tasks.Add(task);
+            }
             return story;
         }
     }

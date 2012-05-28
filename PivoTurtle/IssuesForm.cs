@@ -236,7 +236,9 @@ namespace PivoTurtle
             long tokenId = Properties.Settings.Default.TokenId;
             if (tokenId >= 0 && tokenGuid.Length > 0)
             {
-                PivotalToken token = new PivotalToken(tokenGuid, tokenId);
+                PivotalToken token = new PivotalToken();
+                token.Guid = tokenGuid;
+                token.Id = tokenId;
                 pivotalClient.Token = token;
             }
             else

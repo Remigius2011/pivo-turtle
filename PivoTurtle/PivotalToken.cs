@@ -29,31 +29,30 @@ namespace PivoTurtle
     */
     public class PivotalToken
     {
-        private readonly string guid;
-        private readonly long id;
+        public const string tagGuid = "guid";
+        public const string tagId = "id";
 
-        public PivotalToken(string guid, long id)
-        {
-            this.guid = guid;
-            this.id = id;
-        }
+        private string guid;
+        private long id;
 
         public string Guid
         {
             get { return guid; }
+            set { guid = value; }
         }
 
         public long Id
         {
             get { return id; }
+            set { id = value; }
         }
 
         public static PivotalToken fromXml(XmlElement element)
         {
-            string guid = element.GetElementsByTagName("guid").Item(0).InnerText;
-            string idStr = element.GetElementsByTagName("id").Item(0).InnerText;
-            long id = long.Parse(idStr);
-            return new PivotalToken(guid, id);
+            PivotalToken token = new PivotalToken();
+            token.Guid = XmlHelper.getElementString(element, tagGuid, "");
+            token.Id = XmlHelper.getElementLong(element, tagId, -1);
+            return token;
         }
     }
 }

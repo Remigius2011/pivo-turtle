@@ -62,11 +62,56 @@ namespace PivoTurtle
        */
     public class PivotalProject
     {
+        public const string dateTimePattern = "yyyy/MM/dd hh:mm:ss";
+
+        public const string tagId = "id";
+        public const string tagName = "name";
+        public const string tagIterationLength = "iteration_length";
+        public const string tagWeekStart = "week_start";
+        public const string tagPointScale = "point_scale";
+        public const string tagAccount = "account";
+        public const string tagFirstIterationStartTime = "first_iteration_start_time";
+        public const string tagCurrentIterationNumber = "current_iteration_number";
+        public const string tagEnableTasks = "enable_tasks";
+        public const string tagVelocityScheme = "velocity_scheme";
+        public const string tagCurrentVelocity = "current_velocity";
+        public const string tagInitialVelocity = "initial_velocity";
+        public const string tagNumberOfDoneIterationsToShow = "number_of_done_iterations_to_show";
+        public const string tagLabels = "labels";
+        public const string tagLastActivityAt = "last_activity_at";
+        public const string tagAllowAttachments = "allow_attachments";
+        public const string tagUseHttps = "use_https";
+        public const string tagBugsAndChoresAreEstimable = "bugs_and_chores_are_estimatable";
+        public const string tagCommitMode = "commit_mode";
+        public const string tagMemberships = "memberships";
+        public const string tagMembership = "membership";
+        public const string tagIntegrations = "integrations";
+        public const string tagIntegration = "integration";
+
+        public static readonly char[] separators = { ',' };
+
         private long id;
         private string name;
         private int iterationLength;
-        private string weekStartDay;
-
+        private string weekStart;
+        private int[] pointScale;
+        private string account;
+        private DateTime firstIterationStartTime;
+        private int currentIterationNumber;
+        private bool enableTasks;
+        private string velocityScheme;
+        private int currentVelocity;
+        private int initialVelocity;
+        private int numberOfDoneIterationsToShow;
+        private string[] labels;
+        private DateTime lastActivityAt;
+        private bool allowAttachments;
+        private bool useHttps;
+        private bool bugsAndChoresAreEstimable;
+        private bool commitMode;
+//        private List<PivotalMembrship> memberships;
+//        private List<PivotalIntegration> integrations;
+        
         public string DisplayName
         {
             get { return name + " (" + id + ")"; }
@@ -90,20 +135,124 @@ namespace PivoTurtle
             set { iterationLength = value; }
         }
 
-        public string WeekStartDay
+        public string WeekStart
         {
-            get { return weekStartDay; }
-            set { weekStartDay = value; }
+            get { return weekStart; }
+            set { weekStart = value; }
+        }
+
+        public int[] PointScale
+        {
+            get { return pointScale; }
+            set { pointScale = value; }
+        }
+
+        public string Account
+        {
+            get { return account; }
+            set { account = value; }
+        }
+
+        public DateTime FirstIterationStartTime
+        {
+            get { return firstIterationStartTime; }
+            set { firstIterationStartTime = value; }
+        }
+
+        public int CurrentIterationNumber
+        {
+            get { return currentIterationNumber; }
+            set { currentIterationNumber = value; }
+        }
+
+        public bool EnableTasks
+        {
+            get { return enableTasks; }
+            set { enableTasks = value; }
+        }
+
+        public string VelocityScheme
+        {
+            get { return velocityScheme; }
+            set { velocityScheme = value; }
+        }
+
+        public int CurrentVelocity
+        {
+            get { return currentVelocity; }
+            set { currentVelocity = value; }
+        }
+
+        public int InitialVelocity
+        {
+            get { return initialVelocity; }
+            set { initialVelocity = value; }
+        }
+
+        public int NumberOfDoneIterationsToShow
+        {
+            get { return numberOfDoneIterationsToShow; }
+            set { numberOfDoneIterationsToShow = value; }
+        }
+
+        public string[] Labels
+        {
+            get { return labels; }
+            set { labels = value; }
+        }
+
+        public DateTime LastActivityAt
+        {
+            get { return lastActivityAt; }
+            set { lastActivityAt = value; }
+        }
+
+        public bool AllowAttachments
+        {
+            get { return allowAttachments; }
+            set { allowAttachments = value; }
+        }
+
+        public bool UseHttps
+        {
+            get { return useHttps; }
+            set { useHttps = value; }
+        }
+
+        public bool BugsAndChoresAreEstimable
+        {
+            get { return bugsAndChoresAreEstimable; }
+            set { bugsAndChoresAreEstimable = value; }
+        }
+
+        public bool CommitMode
+        {
+            get { return commitMode; }
+            set { commitMode = value; }
         }
 
         public static PivotalProject fromXml(XmlElement element)
         {
-            string idStr = element.GetElementsByTagName("id").Item(0).InnerText;
-            long id = long.Parse(idStr);
-            string name = element.GetElementsByTagName("name").Item(0).InnerText;
             PivotalProject project = new PivotalProject();
-            project.Id = id;
-            project.Name = name;
+            project.Id = XmlHelper.getElementLong(element, tagId, -1);
+            project.Name = XmlHelper.getElementString(element, tagName, "");
+            project.IterationLength = XmlHelper.getElementInt(element, tagIterationLength, -1);
+            project.WeekStart = XmlHelper.getElementString(element, tagWeekStart, "");
+            project.PointScale = XmlHelper.getElementIntArray(element, tagPointScale, separators, new int[] {});
+            project.Account = XmlHelper.getElementString(element, tagAccount, "");
+            project.FirstIterationStartTime = XmlHelper.getElementDateTime(element, tagFirstIterationStartTime, dateTimePattern, new DateTime(0));
+            project.CurrentIterationNumber = XmlHelper.getElementInt(element, tagCurrentIterationNumber, -1);
+            project.EnableTasks = XmlHelper.getElementBool(element, tagEnableTasks, false);
+            project.VelocityScheme = XmlHelper.getElementString(element, tagVelocityScheme, "");
+            project.CurrentVelocity = XmlHelper.getElementInt(element, tagCurrentVelocity, -1);
+            project.InitialVelocity = XmlHelper.getElementInt(element, tagInitialVelocity, -1);
+            project.NumberOfDoneIterationsToShow = XmlHelper.getElementInt(element, tagNumberOfDoneIterationsToShow, -1);
+            project.Labels = XmlHelper.getElementStringArray(element, tagLabels, separators, new string[] {});
+            project.LastActivityAt = XmlHelper.getElementDateTime(element, tagLastActivityAt, dateTimePattern, new DateTime(0));
+            project.AllowAttachments = XmlHelper.getElementBool(element, tagAllowAttachments, false);
+            project.UseHttps = XmlHelper.getElementBool(element, tagUseHttps, false);
+            project.BugsAndChoresAreEstimable = XmlHelper.getElementBool(element, tagBugsAndChoresAreEstimable, false);
+            project.CommitMode = XmlHelper.getElementBool(element, tagCommitMode, false);
             return project;
         }
     }

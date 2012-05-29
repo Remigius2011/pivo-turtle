@@ -50,6 +50,7 @@
             this.textBoxResult = new System.Windows.Forms.TextBox();
             this.buttonRefresh = new System.Windows.Forms.Button();
             this.buttonTemplate = new System.Windows.Forms.Button();
+            this.timerStateUpdate = new System.Windows.Forms.Timer(this.components);
             this.contextMenuStripStories.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -256,6 +257,10 @@
             this.buttonTemplate.UseVisualStyleBackColor = true;
             this.buttonTemplate.Click += new System.EventHandler(this.buttonTemplate_Click);
             // 
+            // timerStateUpdate
+            // 
+            this.timerStateUpdate.Tick += new System.EventHandler(this.timerStateUpdate_Tick);
+            // 
             // IssuesForm
             // 
             this.AcceptButton = this.buttonOk;
@@ -313,5 +318,6 @@
         private System.Windows.Forms.Button buttonRefresh;
         private System.Windows.Forms.Button buttonTemplate;
         private System.Windows.Forms.ImageList imageListCheckbox;
+        private System.Windows.Forms.Timer timerStateUpdate;
     }
 }

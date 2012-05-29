@@ -34,6 +34,8 @@ namespace PivoTurtle
     {
         public const string dateTimeFormat = "yyyy/MM/dd HH:mm:ss";
 
+        public const string tagTasks = "tasks";
+        public const string tagTask = "task";
         public const string tagId = "id";
         public const string tagDescription = "description";
         public const string tagPosition = "position";

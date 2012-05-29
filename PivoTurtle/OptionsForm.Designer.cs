@@ -34,6 +34,9 @@
             this.checkBoxEnforceMessage = new System.Windows.Forms.CheckBox();
             this.checkBoxEnforceStory = new System.Windows.Forms.CheckBox();
             this.checkBoxProhibitModify = new System.Windows.Forms.CheckBox();
+            this.checkBoxAllowOffline = new System.Windows.Forms.CheckBox();
+            this.labelDataDirectory = new System.Windows.Forms.Label();
+            this.textBoxDataDirectory = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // buttonOk
@@ -99,6 +102,34 @@
             this.checkBoxProhibitModify.Text = "Prohibit modified messages";
             this.checkBoxProhibitModify.UseVisualStyleBackColor = true;
             // 
+            // checkBoxAllowOffline
+            // 
+            this.checkBoxAllowOffline.AutoSize = true;
+            this.checkBoxAllowOffline.Location = new System.Drawing.Point(12, 80);
+            this.checkBoxAllowOffline.Name = "checkBoxAllowOffline";
+            this.checkBoxAllowOffline.Size = new System.Drawing.Size(102, 17);
+            this.checkBoxAllowOffline.TabIndex = 6;
+            this.checkBoxAllowOffline.Text = "Allow offline use";
+            this.checkBoxAllowOffline.UseVisualStyleBackColor = true;
+            // 
+            // labelDataDirectory
+            // 
+            this.labelDataDirectory.AutoSize = true;
+            this.labelDataDirectory.Location = new System.Drawing.Point(12, 111);
+            this.labelDataDirectory.Name = "labelDataDirectory";
+            this.labelDataDirectory.Size = new System.Drawing.Size(75, 13);
+            this.labelDataDirectory.TabIndex = 7;
+            this.labelDataDirectory.Text = "Data Directory";
+            // 
+            // textBoxDataDirectory
+            // 
+            this.textBoxDataDirectory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxDataDirectory.Location = new System.Drawing.Point(123, 108);
+            this.textBoxDataDirectory.Name = "textBoxDataDirectory";
+            this.textBoxDataDirectory.Size = new System.Drawing.Size(278, 20);
+            this.textBoxDataDirectory.TabIndex = 8;
+            // 
             // OptionsForm
             // 
             this.AcceptButton = this.buttonOk;
@@ -106,6 +137,9 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(413, 262);
+            this.Controls.Add(this.textBoxDataDirectory);
+            this.Controls.Add(this.labelDataDirectory);
+            this.Controls.Add(this.checkBoxAllowOffline);
             this.Controls.Add(this.checkBoxProhibitModify);
             this.Controls.Add(this.checkBoxEnforceStory);
             this.Controls.Add(this.checkBoxEnforceMessage);
@@ -119,6 +153,7 @@
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "PivoTurtle Options";
+            this.Load += new System.EventHandler(this.OptionsForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -132,5 +167,8 @@
         private System.Windows.Forms.CheckBox checkBoxEnforceMessage;
         private System.Windows.Forms.CheckBox checkBoxEnforceStory;
         private System.Windows.Forms.CheckBox checkBoxProhibitModify;
+        private System.Windows.Forms.CheckBox checkBoxAllowOffline;
+        private System.Windows.Forms.Label labelDataDirectory;
+        private System.Windows.Forms.TextBox textBoxDataDirectory;
     }
 }

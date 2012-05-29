@@ -25,11 +25,30 @@ namespace PivoTurtle
 {
     public partial class OptionsForm : Form
     {
+        private bool allowOffline;
+        private string dataDirectory;
+
+        public bool AllowOffline
+        {
+            get { return allowOffline; }
+            set { allowOffline = value; }
+        }
+
+        public string DataDirectory
+        {
+            get { return dataDirectory; }
+            set { dataDirectory = value; }
+        }
+
         public static bool ShowOptions()
         {
             OptionsForm form = new OptionsForm();
+            form.AllowOffline = Properties.Settings.Default.AllowOffline;
+            form.DataDirectory = Properties.Settings.Default.DataDirectory;
             if (form.ShowDialog() == DialogResult.OK)
             {
+                Properties.Settings.Default.AllowOffline = form.AllowOffline;
+                Properties.Settings.Default.DataDirectory = form.DataDirectory;
                 return true;
             }
             return false;
@@ -40,6 +59,12 @@ namespace PivoTurtle
             InitializeComponent();
         }
 
+        private void OptionsForm_Load(object sender, EventArgs e)
+        {
+            checkBoxAllowOffline.Checked = allowOffline;
+            textBoxDataDirectory.Text = dataDirectory;
+        }
+
         private void buttonResetToken_Click(object sender, EventArgs e)
         {
             Properties.Settings.Default.TokenGuid = "";
@@ -48,6 +73,8 @@ namespace PivoTurtle
 
         private void buttonOk_Click(object sender, EventArgs e)
         {
+            allowOffline = checkBoxAllowOffline.Checked;
+            dataDirectory = textBoxDataDirectory.Text;
         }
     }
 }

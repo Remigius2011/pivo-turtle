@@ -36,6 +36,7 @@ namespace PivoTurtle
         private bool whileDisplayingStories = false;
         private bool whileDisplayingProjects = false;
         private bool whileChangingAllSelections = false;
+        private bool isConnected = true;
 
         public IssuesForm()
         {
@@ -327,10 +328,21 @@ namespace PivoTurtle
             columnHeaderCheck.ImageIndex = allUnchecked ? 0 : allChecked ? 1 : 2;
         }
 
+        private void UpdateConnected()
+        {
+            isConnected = InternetCheck.CheckInternetConnection();
+            pivotalClient.IsConnected = isConnected;
+            buttonRefresh.Enabled = isConnected;
+        }
+
         private void IssuesForm_Shown(object sender, EventArgs e)
         {
             try
             {
+                pivotalClient.AllowOffline = Properties.Settings.Default.AllowOffline;
+                pivotalClient.DataDirectory = Properties.Settings.Default.DataDirectory;
+                UpdateConnected();
+                timerStateUpdate.Enabled = true;
                 if (pivotalClient.Token == null)
                 {
                     UpdateServerToken();
@@ -536,7 +548,11 @@ namespace PivoTurtle
         {
             try
             {
-                OptionsForm.ShowOptions();
+                if (OptionsForm.ShowOptions())
+                {
+                    pivotalClient.AllowOffline = Properties.Settings.Default.AllowOffline;
+                    pivotalClient.DataDirectory = Properties.Settings.Default.DataDirectory;
+                }
                 UpdateServerToken();
             }
             catch (Exception x)
@@ -559,6 +575,11 @@ namespace PivoTurtle
         private void textBoxOriginal_Leave(object sender, EventArgs e)
         {
             AcceptButton = buttonOk;
+        }
+
+        private void timerStateUpdate_Tick(object sender, EventArgs e)
+        {
+            UpdateConnected();
         }
     }
 }

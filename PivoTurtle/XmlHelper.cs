@@ -19,11 +19,34 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using System.Globalization;
+using System.IO;
 
 namespace PivoTurtle
 {
     public class XmlHelper
     {
+        public static XmlDocument parseStream(Stream stream, string encoding)
+        {
+            StreamReader reader = null;
+            try
+            {
+                Encoding encode = System.Text.Encoding.GetEncoding(encoding);
+
+                // Pipes the stream to a higher level stream reader with the required encoding format. 
+                reader = new StreamReader(stream, encode);
+                XmlDocument document = new XmlDocument();
+                document.Load(reader);
+                return document;
+            }
+            finally
+            {
+                if (reader != null)
+                {
+                    reader.Close();
+                }
+            }
+        }
+
         public static string getElementString(XmlElement parent, string name, string defaultValue)
         {
             XmlNodeList nodes = parent.GetElementsByTagName(name);

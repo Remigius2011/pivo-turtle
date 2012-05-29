@@ -25,11 +25,41 @@ namespace PivoTurtle
 {
     public class PivotalServiceClient
     {
+        public delegate void ResponseHandler(Stream stream);
+
+        public const string defaultEncoding = "utf-8";
+        public const string fileNameProjects = "PivotalProjects";
+        public const string fileNameStories = "PivotalStories";
+        public const string fileNameTasks = "PivotalTasks";
+        public const string fileSuffix = ".xml";
+
         private PivotalToken token;
+        private string dataDirectory;
+        private bool allowOffline = true;
+        private bool isConnected = true;
+
         public PivotalToken Token
         {
             get { return token; }
             set { token = value; }
+        }
+
+        public string DataDirectory
+        {
+            get { return dataDirectory; }
+            set { dataDirectory = value; }
+        }
+
+        public bool AllowOffline
+        {
+            get { return allowOffline; }
+            set { allowOffline = value; }
+        }
+
+        public bool IsConnected
+        {
+            get { return isConnected; }
+            set { isConnected = value; }
         }
 
         public bool IsSignedOn()
@@ -41,23 +71,25 @@ namespace PivoTurtle
         {
             // curl -u remigius:remi1965$ -X GET https://www.pivotaltracker.com/services/v3/tokens/active
             token = null;
-            XmlDocument result = executeRequest("https://www.pivotaltracker.com/services/v3/tokens/active", userId, passWord);
-            token = PivotalToken.fromXml(result.DocumentElement);
+            string requestUrl = "https://www.pivotaltracker.com/services/v3/tokens/active";
+            ExecuteRequest(requestUrl, null, userId, passWord, delegate(Stream stream)
+            {
+                XmlDocument document = XmlHelper.parseStream(stream, defaultEncoding);
+                token = PivotalToken.fromXml(document.DocumentElement);
+            });
             return token;
         }
         
         public List<PivotalProject> GetProjects()
         {
             // curl -H "X-TrackerToken: %TOKEN%" -X GET https://www.pivotaltracker.com/services/v3/projects
-            XmlDocument result = executeRequest("https://www.pivotaltracker.com/services/v3/projects");
-            List<PivotalProject> projects = new List<PivotalProject>();
-            XmlNodeList nodeList = result.DocumentElement.GetElementsByTagName("project");
-            foreach (XmlNode node in nodeList)
+            string requestUrl = "https://www.pivotaltracker.com/services/v3/projects";
+            List<PivotalProject> projects = null;
+            string fileName = fileNameProjects + fileSuffix;
+            ExecuteRequest(requestUrl, fileName, delegate(Stream stream)
             {
-                XmlElement element = (XmlElement)node;
-                PivotalProject project = PivotalProject.fromXml(element);
-                projects.Add(project);
-            }
+                ParseProjects(stream, ref projects);
+            });
             return projects;
         }
 
@@ -65,69 +97,141 @@ namespace PivoTurtle
         {
             // curl -H "X-TrackerToken: %TOKEN%" -X GET https://www.pivotaltracker.com/services/v3/projects/%PROJECT_ID%/stories
             // curl -H "X-TrackerToken: %TOKEN%" -X GET "https://www.pivotaltracker.com/services/v3/projects/%PROJECT_ID%/stories?filter=mywork:remigius%%20state:started"
-            XmlDocument result = executeRequest("https://www.pivotaltracker.com/services/v3/projects/" + projectId + "/stories?filter=state:started");
-            List<PivotalStory> stories = new List<PivotalStory>();
-            XmlNodeList nodeList = result.DocumentElement.GetElementsByTagName("story");
-            foreach (XmlNode node in nodeList)
+            string requestUrl = "https://www.pivotaltracker.com/services/v3/projects/" + projectId + "/stories?filter=state:started";
+            List<PivotalStory> stories = null;
+            string fileName = fileNameStories + "-" + projectId + fileSuffix;
+            ExecuteRequest(requestUrl, fileName, delegate(Stream stream)
             {
-                XmlElement element = (XmlElement)node;
-                PivotalStory story = PivotalStory.fromXml(element);
-                stories.Add(story);
-            }
+                ParseStories(stream, ref stories);
+            });
             return stories;
         }
 
         public List<PivotalTask> GetTasks(string projectId, string storyId)
         {
             // curl -H "X-TrackerToken: %TOKEN%" -X GET https://www.pivotaltracker.com/services/v3/projects/%PROJECT_ID%/stories/%STORY_ID%/tasks
-            XmlDocument result = executeRequest("https://www.pivotaltracker.com/services/v3/projects/" + projectId + "/stories/" + storyId + "/tasks");
-            List<PivotalTask> tasks = new List<PivotalTask>();
-            XmlNodeList nodeList = result.DocumentElement.GetElementsByTagName("task");
+            string requestUrl = "https://www.pivotaltracker.com/services/v3/projects/" + projectId + "/stories/" + storyId + "/tasks";
+            List<PivotalTask> tasks = null;
+            string fileName = fileNameTasks + "-" + projectId + "-" + storyId + fileSuffix;
+            ExecuteRequest(requestUrl, fileName, delegate(Stream stream)
+            {
+                ParseTasks(stream, ref tasks);
+            });
+            return tasks;
+        }
+
+        public void ParseProjects(Stream stream, ref List<PivotalProject> projects)
+        {
+            XmlDocument document = XmlHelper.parseStream(stream, defaultEncoding);
+            XmlNodeList nodeList = document.DocumentElement.GetElementsByTagName(PivotalProject.tagProject);
+            projects = new List<PivotalProject>();
+            foreach (XmlNode node in nodeList)
+            {
+                XmlElement element = (XmlElement)node;
+                PivotalProject project = PivotalProject.fromXml(element);
+                projects.Add(project);
+            }
+        }
+
+        public void ParseStories(Stream stream, ref List<PivotalStory> stories)
+        {
+            XmlDocument document = XmlHelper.parseStream(stream, defaultEncoding);
+            XmlNodeList nodeList = document.DocumentElement.GetElementsByTagName(PivotalStory.tagStory);
+            stories = new List<PivotalStory>();
+            foreach (XmlNode node in nodeList)
+            {
+                XmlElement element = (XmlElement)node;
+                PivotalStory story = PivotalStory.fromXml(element);
+                stories.Add(story);
+            }
+        }
+
+        public void ParseTasks(Stream stream, ref List<PivotalTask> tasks)
+        {
+            XmlDocument document = XmlHelper.parseStream(stream, defaultEncoding);
+            XmlNodeList nodeList = document.DocumentElement.GetElementsByTagName(PivotalTask.tagTask);
+            tasks = new List<PivotalTask>();
             foreach (XmlNode node in nodeList)
             {
                 XmlElement element = (XmlElement)node;
                 PivotalTask task = PivotalTask.fromXml(element);
                 tasks.Add(task);
             }
-            return tasks;
         }
 
-        public XmlDocument executeRequest(string requestUrl)
+        public void ExecuteRequest(string requestUrl, string fileName, ResponseHandler handler)
         {
-            return executeRequest(requestUrl, "", "");
+            ExecuteRequest(requestUrl, fileName, "", "", handler);
         }
 
-        public XmlDocument executeRequest(string requestUrl, string userId, string passWord)
+        public void ExecuteRequest(string requestUrl, string fileName, string userId, string passWord, ResponseHandler handler)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUrl);
             HttpWebResponse response = null;
-            StreamReader reader = null;
+            Stream resultStream = null;
             try
             {
-                if (userId.Length > 0 && passWord.Length > 0)
+                if (isConnected)
                 {
-                    request.Credentials = new NetworkCredential(userId, passWord);
+                    if (userId.Length > 0 && passWord.Length > 0)
+                    {
+                        request.Credentials = new NetworkCredential(userId, passWord);
+                    }
+                    if (token != null)
+                    {
+                        request.Headers.Add("X-TrackerToken", token.Guid);
+                    }
+                    request.KeepAlive = false;
+                    response = (HttpWebResponse)request.GetResponse();
+                    resultStream = response.GetResponseStream();
+                    if (allowOffline)
+                    {
+                        MemoryStream memoryStream = new MemoryStream();
+                        CopyStream(resultStream, memoryStream);
+                        resultStream.Close();
+                        memoryStream.Seek(0, SeekOrigin.Begin);
+                        string path = dataDirectory + Path.DirectorySeparatorChar + fileName;
+                        FileStream fileOutput = new FileStream(path, FileMode.Create);
+                        if (!File.Exists(path))
+                        {
+                            throw new ApplicationException("The data file does not exist: " + path);
+                        }
+                        try
+                        {
+                            CopyStream(memoryStream, fileOutput);
+                        }
+                        finally
+                        {
+                            fileOutput.Close();
+                        }
+                        memoryStream.Seek(0, SeekOrigin.Begin);
+                        resultStream = memoryStream;
+                    }
                 }
-                if (token != null)
+                else if(allowOffline)
                 {
-                    request.Headers.Add("X-TrackerToken", token.Guid);
+                    string path = dataDirectory + Path.DirectorySeparatorChar + fileName;
+                    resultStream = new FileStream(path, FileMode.Open);
                 }
-                request.KeepAlive = false;
-                response = (HttpWebResponse)request.GetResponse();
-
-                Stream receiveStream = response.GetResponseStream();
-                Encoding encode = System.Text.Encoding.GetEncoding("utf-8");
-
-                // Pipes the stream to a higher level stream reader with the required encoding format. 
-                reader = new StreamReader(receiveStream, encode);
-                XmlDocument document = new XmlDocument();
-                document.Load(reader);
-                return document;
+                if (resultStream != null)
+                {
+                    handler(resultStream);
+                }
             }
             finally
             {
-                if (reader != null) { reader.Close(); }
                 if (response != null) { response.Close(); }
+                if (resultStream != null) { resultStream.Close(); }
+            }
+        }
+
+        public static void CopyStream(Stream input, Stream output)
+        {
+            byte[] buffer = new byte[4096];
+            int read;
+            while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
+            {
+                output.Write(buffer, 0, read);
             }
         }
     }

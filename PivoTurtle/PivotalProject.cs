@@ -64,6 +64,8 @@ namespace PivoTurtle
     {
         public const string dateTimeFormat = "yyyy/MM/dd HH:mm:ss";
 
+        public const string tagProject = "project";
+        public const string tagProjects = "projects";
         public const string tagId = "id";
         public const string tagName = "name";
         public const string tagIterationLength = "iteration_length";

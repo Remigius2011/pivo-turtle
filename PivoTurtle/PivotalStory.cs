@@ -52,6 +52,8 @@ namespace PivoTurtle
     {
         public const string dateTimeFormat = "yyyy/MM/dd HH:mm:ss";
 
+        public const string tagStory = "story";
+        public const string tagStories = "stories";
         public const string tagId = "id";
         public const string tagProjectId = "project_id";
         public const string tagStoryType = "story_type";
@@ -64,8 +66,6 @@ namespace PivoTurtle
         public const string tagCreatedAt = "created_at";
         public const string tagUpdatedAt = "updated_at";
         public const string tagLabels = "labels";
-        public const string tagTasks = "tasks";
-        public const string tagTask = "task";
 
         public static readonly char[] separators = { ',' };
 
@@ -175,11 +175,11 @@ namespace PivoTurtle
             story.CreatedAt = XmlHelper.getElementDateTime(element, tagCreatedAt, dateTimeFormat, new DateTime(0));
             story.UpdatedAt = XmlHelper.getElementDateTime(element, tagUpdatedAt, dateTimeFormat, new DateTime(0));
             story.Labels = XmlHelper.getElementStringArray(element, tagLabels, separators, new string[] { });
-            XmlNodeList taskList = element.GetElementsByTagName(tagTasks);
+            XmlNodeList taskList = element.GetElementsByTagName(PivotalTask.tagTasks);
             if (taskList.Count > 0)
             {
                 XmlElement tasksElement = (XmlElement)taskList.Item(0);
-                XmlNodeList nodeList = tasksElement.GetElementsByTagName(tagTask);
+                XmlNodeList nodeList = tasksElement.GetElementsByTagName(PivotalTask.tagTask);
                 foreach (XmlNode node in nodeList)
                 {
                     XmlElement taskElement = (XmlElement)node;

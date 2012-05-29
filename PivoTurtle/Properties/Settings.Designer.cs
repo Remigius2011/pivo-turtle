@@ -105,5 +105,29 @@ namespace PivoTurtle.Properties {
                 this["SelectedProject"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool AllowOffline {
+            get {
+                return ((bool)(this["AllowOffline"]));
+            }
+            set {
+                this["AllowOffline"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string DataDirectory {
+            get {
+                return ((string)(this["DataDirectory"]));
+            }
+            set {
+                this["DataDirectory"] = value;
+            }
+        }
     }
 }

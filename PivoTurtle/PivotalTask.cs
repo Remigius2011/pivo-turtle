@@ -32,7 +32,7 @@ namespace PivoTurtle
      */
     public class PivotalTask
     {
-        public const string dateTimePattern = "yyyy/MM/dd hh:mm:ss";
+        public const string dateTimeFormat = "yyyy/MM/dd HH:mm:ss";
 
         public const string tagId = "id";
         public const string tagDescription = "description";
@@ -83,7 +83,7 @@ namespace PivoTurtle
             task.Description = XmlHelper.getElementString(element, tagDescription, "");
             task.Position = XmlHelper.getElementInt(element, tagPosition, -1);
             task.Complete = XmlHelper.getElementBool(element, tagComplete, false);
-            task.CreatedAt = XmlHelper.getElementDateTime(element, tagCreatedAt, dateTimePattern, new DateTime(0));
+            task.CreatedAt = XmlHelper.getElementDateTime(element, tagCreatedAt, dateTimeFormat, new DateTime(0));
             return task;
         }
     }

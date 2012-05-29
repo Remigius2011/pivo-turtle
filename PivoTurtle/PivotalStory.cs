@@ -50,7 +50,7 @@ namespace PivoTurtle
     */
     public class PivotalStory
     {
-        public const string dateTimePattern = "yyyy/MM/dd hh:mm:ss";
+        public const string dateTimeFormat = "yyyy/MM/dd HH:mm:ss";
 
         public const string tagId = "id";
         public const string tagProjectId = "project_id";
@@ -66,6 +66,8 @@ namespace PivoTurtle
         public const string tagLabels = "labels";
         public const string tagTasks = "tasks";
         public const string tagTask = "task";
+
+        public static readonly char[] separators = { ',' };
 
         private long id;
         private long projectId;
@@ -170,16 +172,20 @@ namespace PivoTurtle
             story.Name = XmlHelper.getElementString(element, tagName, "");
             story.RequestedBy = XmlHelper.getElementString(element, tagRequestedBy, "");
             story.OwnedBy = XmlHelper.getElementString(element, tagOwnedBy, "");
-            story.CreatedAt = XmlHelper.getElementDateTime(element, tagCreatedAt, dateTimePattern, new DateTime(0));
-            story.UpdatedAt = XmlHelper.getElementDateTime(element, tagUpdatedAt, dateTimePattern, new DateTime(0));
+            story.CreatedAt = XmlHelper.getElementDateTime(element, tagCreatedAt, dateTimeFormat, new DateTime(0));
+            story.UpdatedAt = XmlHelper.getElementDateTime(element, tagUpdatedAt, dateTimeFormat, new DateTime(0));
+            story.Labels = XmlHelper.getElementStringArray(element, tagLabels, separators, new string[] { });
             XmlNodeList taskList = element.GetElementsByTagName(tagTasks);
-            XmlElement tasksElement = (XmlElement)taskList.Item(0);
-            XmlNodeList nodeList = tasksElement.GetElementsByTagName(tagTask);
-            foreach (XmlNode node in nodeList)
+            if (taskList.Count > 0)
             {
-                XmlElement taskElement = (XmlElement)node;
-                PivotalTask task = PivotalTask.fromXml(taskElement);
-                story.Tasks.Add(task);
+                XmlElement tasksElement = (XmlElement)taskList.Item(0);
+                XmlNodeList nodeList = tasksElement.GetElementsByTagName(tagTask);
+                foreach (XmlNode node in nodeList)
+                {
+                    XmlElement taskElement = (XmlElement)node;
+                    PivotalTask task = PivotalTask.fromXml(taskElement);
+                    story.Tasks.Add(task);
+                }
             }
             return story;
         }

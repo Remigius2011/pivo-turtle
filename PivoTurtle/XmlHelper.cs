@@ -92,7 +92,7 @@ namespace PivoTurtle
             {
                 if (value != null)
                 {
-                    return value.Split(separators);
+                    return value.Split(separators, StringSplitOptions.RemoveEmptyEntries);
                 }
             }
             catch (Exception x)

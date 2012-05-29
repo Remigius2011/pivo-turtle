@@ -62,7 +62,7 @@ namespace PivoTurtle
        */
     public class PivotalProject
     {
-        public const string dateTimePattern = "yyyy/MM/dd hh:mm:ss";
+        public const string dateTimeFormat = "yyyy/MM/dd HH:mm:ss";
 
         public const string tagId = "id";
         public const string tagName = "name";
@@ -240,7 +240,7 @@ namespace PivoTurtle
             project.WeekStart = XmlHelper.getElementString(element, tagWeekStart, "");
             project.PointScale = XmlHelper.getElementIntArray(element, tagPointScale, separators, new int[] {});
             project.Account = XmlHelper.getElementString(element, tagAccount, "");
-            project.FirstIterationStartTime = XmlHelper.getElementDateTime(element, tagFirstIterationStartTime, dateTimePattern, new DateTime(0));
+            project.FirstIterationStartTime = XmlHelper.getElementDateTime(element, tagFirstIterationStartTime, dateTimeFormat, new DateTime(0));
             project.CurrentIterationNumber = XmlHelper.getElementInt(element, tagCurrentIterationNumber, -1);
             project.EnableTasks = XmlHelper.getElementBool(element, tagEnableTasks, false);
             project.VelocityScheme = XmlHelper.getElementString(element, tagVelocityScheme, "");
@@ -248,7 +248,7 @@ namespace PivoTurtle
             project.InitialVelocity = XmlHelper.getElementInt(element, tagInitialVelocity, -1);
             project.NumberOfDoneIterationsToShow = XmlHelper.getElementInt(element, tagNumberOfDoneIterationsToShow, -1);
             project.Labels = XmlHelper.getElementStringArray(element, tagLabels, separators, new string[] {});
-            project.LastActivityAt = XmlHelper.getElementDateTime(element, tagLastActivityAt, dateTimePattern, new DateTime(0));
+            project.LastActivityAt = XmlHelper.getElementDateTime(element, tagLastActivityAt, dateTimeFormat, new DateTime(0));
             project.AllowAttachments = XmlHelper.getElementBool(element, tagAllowAttachments, false);
             project.UseHttps = XmlHelper.getElementBool(element, tagUseHttps, false);
             project.BugsAndChoresAreEstimable = XmlHelper.getElementBool(element, tagBugsAndChoresAreEstimable, false);

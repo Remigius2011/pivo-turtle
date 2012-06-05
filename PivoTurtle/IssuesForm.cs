@@ -20,11 +20,13 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using System.IO;
 
 namespace PivoTurtle
 {
     public partial class IssuesForm : Form
     {
+        private ProjectSettings settings;
         private PivotalServiceClient pivotalClient;
         private List<PivotalProject> projects = new List<PivotalProject>();
         private List<PivotalStory> stories = new List<PivotalStory>();
@@ -38,8 +40,9 @@ namespace PivoTurtle
         private bool whileChangingAllSelections = false;
         private bool isConnected = true;
 
-        public IssuesForm()
+        public IssuesForm(ProjectSettings settings)
         {
+            this.settings = settings;
             InitializeComponent();
             pivotalClient = new PivotalServiceClient();
         }
@@ -548,8 +551,14 @@ namespace PivoTurtle
         {
             try
             {
-                if (OptionsForm.ShowOptions())
+                string settingsFile = settings.FileName;
+                if (OptionsForm.ShowOptions(settings))
                 {
+                    if (!settingsFile.Equals(settings.FileName))
+                    {
+                        File.Move(settingsFile, settings.FileName);
+                    }
+                    settings.Save();
                     pivotalClient.AllowOffline = Properties.Settings.Default.AllowOffline;
                     pivotalClient.DataDirectory = Properties.Settings.Default.DataDirectory;
                 }

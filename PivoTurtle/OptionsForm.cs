@@ -20,6 +20,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using System.IO;
 
 namespace PivoTurtle
 {
@@ -27,6 +28,7 @@ namespace PivoTurtle
     {
         private bool allowOffline;
         private string dataDirectory;
+        private ProjectSettings settings;
 
         public bool AllowOffline
         {
@@ -40,11 +42,18 @@ namespace PivoTurtle
             set { dataDirectory = value; }
         }
 
-        public static bool ShowOptions()
+        public ProjectSettings Settings
+        {
+            get { return settings; }
+            set { settings = value; }
+        }
+
+        public static bool ShowOptions(ProjectSettings settings)
         {
             OptionsForm form = new OptionsForm();
             form.AllowOffline = Properties.Settings.Default.AllowOffline;
             form.DataDirectory = Properties.Settings.Default.DataDirectory;
+            form.Settings = settings;
             if (form.ShowDialog() == DialogResult.OK)
             {
                 Properties.Settings.Default.AllowOffline = form.AllowOffline;

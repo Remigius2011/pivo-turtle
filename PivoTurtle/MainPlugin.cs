@@ -20,6 +20,7 @@ using System.Text;
 using Interop.BugTraqProvider;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using System.IO;
 
 // see http://stackoverflow.com/questions/2753631/building-an-issue-tracker-plugin-for-tortoisesvn
 // see http://code.google.com/p/tortoisesvn/source/browse/#svn/trunk/contrib/issue-tracker-plugins
@@ -41,6 +42,7 @@ namespace PivoTurtle
     public class MainPlugin : IBugTraqProvider, IBugTraqProvider2
     {
         private IssuesForm form;
+        private readonly ProjectSettings settings = new ProjectSettings();
 
         public string GetCommitMessage(IntPtr hParentWnd, string parameters, string commonRoot, string[] pathList, string originalMessage)
         {
@@ -90,7 +92,7 @@ namespace PivoTurtle
             {
                 if (form == null)
                 {
-                    form = new IssuesForm();
+                    form = new IssuesForm(settings);
                 }
                 form.SetParameters(parameters);
                 form.OriginalMessage = originalMessage;
@@ -141,8 +143,14 @@ namespace PivoTurtle
         {
             try
             {
-                if (OptionsForm.ShowOptions())
+                LoadSettings(parameters);
+                string settingsFile = settings.FileName;
+                if (OptionsForm.ShowOptions(settings))
                 {
+                    if (!settingsFile.Equals(settings.FileName))
+                    {
+                        File.Move(settingsFile, settings.FileName);
+                    }
                     SaveSettings();
                 }
             }
@@ -153,8 +161,22 @@ namespace PivoTurtle
             return parameters;
         }
 
+        private string GetSettingsPath(string parameters)
+        {
+            if (parameters.Length == 0) return ProjectSettings.fileName;
+            return Path.Combine(parameters, ProjectSettings.fileName);
+        }
+
+        private void LoadSettings(string parameters)
+        {
+            string fileName = GetSettingsPath(parameters);
+            settings.FileName = fileName;
+            settings.Load();
+        }
+
         private void SaveSettings()
         {
+            settings.Save();
             Properties.Settings.Default.Save();
         }
     }

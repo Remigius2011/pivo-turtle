@@ -1,32 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.IO;
 
 namespace PivoTurtle
 {
-    public class ProjectSettings
+    public class ProjectSettings : SettingsFile
     {
         public const string fileName = ".pivoturtle";
 
-        public const string keyMessageTemplate = "messageTemplate";
-        public const string keyEnforceMessage = "enforceMessage";
-        public const string keyEnforceStory = "enforceStory";
+        private string messageTemplate;
+        private bool enforceMessage;
+        private bool enforceStory;
 
-        private Dictionary<string, string> properties = new Dictionary<string, string>();
-
-        public Dictionary<string, string> Properties
+        public ProjectSettings()
         {
-            get { return properties; }
         }
 
-        public void Save(string basePath)
+        public ProjectSettings(string basePath)
         {
-            string filePath = basePath + "\\" + fileName;
-        }
-
-        public void Load(string basePath)
-        {
-            string filePath = basePath + "\\" + fileName;
+            FileName = Path.Combine(basePath, fileName);
         }
     }
 }

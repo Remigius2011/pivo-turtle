@@ -52,6 +52,8 @@
     </Compile>
     <Compile Include="InternetCheck.cs" />
     <Compile Include="ProjectSettings.cs" />
+    <Compile Include="PropertiesFile.cs" />
+    <Compile Include="SettingsFile.cs" />
     <Compile Include="StoryMessageTemplate.cs" />
     <Compile Include="PivotalProject.cs" />
     <Compile Include="PivotalStory.cs" />

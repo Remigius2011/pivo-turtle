@@ -51,9 +51,11 @@ namespace PivoTurtle
         public static bool ShowOptions(ProjectSettings settings)
         {
             OptionsForm form = new OptionsForm();
+            
             form.AllowOffline = Properties.Settings.Default.AllowOffline;
-            form.DataDirectory = Properties.Settings.Default.DataDirectory;
+            form.DataDirectory = Properties.Settings.Default.DataDirectory; 
             form.Settings = settings;
+
             if (form.ShowDialog() == DialogResult.OK)
             {
                 Properties.Settings.Default.AllowOffline = form.AllowOffline;
@@ -84,6 +86,10 @@ namespace PivoTurtle
         {
             allowOffline = checkBoxAllowOffline.Checked;
             dataDirectory = textBoxDataDirectory.Text;
+
+            // Added 1/1/2014 - LAE Persist the property values
+
+            Properties.Settings.Default.Save();  
         }
     }
 }

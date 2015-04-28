@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Reflection;
-
+using System.Windows.Forms;
+using System.Xml.Serialization;
+ 
 namespace PivoTurtle
 {
     public class SettingsFile
@@ -11,22 +13,19 @@ namespace PivoTurtle
 
         private bool loaded = false;
         private string fileName;
-        private PropertiesFile properties = new PropertiesFile();
 
+        [XmlIgnore]
         public bool Loaded
         {
             get { return loaded; }
+            set { loaded = value; }
         }
 
+        [XmlIgnore] 
         public string FileName
         {
             get { return fileName; }
             set { fileName = value; }
-        }
-
-        public Dictionary<string, string> Properties
-        {
-            get { return properties; }
         }
 
         public SettingsFile()
@@ -38,50 +37,29 @@ namespace PivoTurtle
             this.fileName = fileName;
         }
 
-        public void Save()
+        public static void SaveXML(string fileName, object obj)
         {
-            ToDictionary(properties);
-            properties.Write(fileName);
-        }
-
-        public void Load()
-        {
-            properties.Clear();
-            properties.Read(fileName);
-            FromDictionary(properties);
-            loaded = true;
-        }
-
-        public void FromDictionary(Dictionary<string, string> dictionary)
-        {
-            PropertyInfo[] boundProperties = GetType().GetProperties();
-            foreach (PropertyInfo property in boundProperties)
+            using (var writer = new System.IO.StreamWriter(fileName))
             {
-                if (IsSettingsProperty(property) && dictionary.ContainsKey(property.Name))
-                {
-                    object value = ConvertValue(property.PropertyType, dictionary[property.Name]);
-                    property.SetValue(this, value, null);
-                }
+                var serializer = new XmlSerializer(obj.GetType());
+                serializer.Serialize(writer, obj);
+                writer.Flush();
             }
         }
 
-        public void ToDictionary(Dictionary<string, string> dictionary)
+        public static object LoadXML(string fileName, Type objClass)
         {
-            PropertyInfo[] boundProperties = GetType().GetProperties();
-            foreach (PropertyInfo property in boundProperties)
+            using (var stream = System.IO.File.OpenRead(fileName))
             {
-                if (IsSettingsProperty(property))
-                {
-                    dictionary[property.Name] = property.GetValue(this, null).ToString();
-                }
+                var serializer = new XmlSerializer(objClass);
+                return serializer.Deserialize(stream);
             }
         }
 
         public static bool IsSettingsProperty(PropertyInfo property)
         {
             return !property.DeclaringType.Equals(typeof(SettingsFile))
-                && property.GetIndexParameters().Length == 0
-                && (property.PropertyType.Equals(typeof(string)) || GetParserMethod(property.PropertyType) != null);
+                && property.GetIndexParameters().Length == 0;
         }
 
         private static MethodInfo GetParserMethod(Type type)
@@ -91,7 +69,7 @@ namespace PivoTurtle
                 MethodInfo parserMethod = type.GetMethod(universalParser, new Type[] { typeof(object) });
                 if (parserMethod.IsStatic) return parserMethod;
             }
-            catch (Exception x)
+            catch
             {
                 // do nothing
             }
@@ -100,13 +78,28 @@ namespace PivoTurtle
 
         public static object ConvertValue(Type type, string value)
         {
-            if (type.Equals(typeof(string)))
+            MethodInfo parserMethod = GetParserMethod(type);
+
+            if (parserMethod == null)            
             {
                 return value;
             }
-            MethodInfo parserMethod = GetParserMethod(type);
-            if (parserMethod == null) return null;
+
             return parserMethod.Invoke(null, new object[] { value });
         }
+
+ /*
+                public static object ConvertValue(Type type, string value)
+                {
+                    if (type.Equals(typeof(string)))
+                    {
+                        return value;
+                    }
+                    MethodInfo parserMethod = GetParserMethod(type);
+                    if (parserMethod == null) return null;
+                    return parserMethod.Invoke(null, new object[] { value });
+                }
+
+        */
     }
 }

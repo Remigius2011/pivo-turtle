@@ -20,7 +20,8 @@ using System.Text;
 using System.Net;
 using System.IO;
 using System.Xml;
-
+using System.Windows.Forms;
+ 
 namespace PivoTurtle
 {
     public class PivotalServiceClient
@@ -33,8 +34,8 @@ namespace PivoTurtle
         public const string fileNameTasks = "PivotalTasks";
         public const string fileSuffix = ".xml";
 
-        private PivotalToken token;
-        private string dataDirectory;
+        private PivotalToken token = null;
+        private string dataDirectory = "";
         private bool allowOffline = true;
         private bool isConnected = true;
 
@@ -72,11 +73,15 @@ namespace PivoTurtle
             // curl -u remigius:remi1965$ -X GET https://www.pivotaltracker.com/services/v3/tokens/active
             token = null;
             string requestUrl = "https://www.pivotaltracker.com/services/v3/tokens/active";
-            ExecuteRequest(requestUrl, null, userId, passWord, delegate(Stream stream)
-            {
-                XmlDocument document = XmlHelper.parseStream(stream, defaultEncoding);
-                token = PivotalToken.fromXml(document.DocumentElement);
-            });
+
+            ExecuteRequest(requestUrl, null, userId, passWord, 
+                delegate(Stream stream)
+                {
+                    XmlDocument document = XmlHelper.parseStream(stream, defaultEncoding);
+                    token = PivotalToken.fromXml(document.DocumentElement);
+                }
+            );
+
             return token;
         }
         
@@ -86,10 +91,14 @@ namespace PivoTurtle
             string requestUrl = "https://www.pivotaltracker.com/services/v3/projects";
             List<PivotalProject> projects = null;
             string fileName = fileNameProjects + fileSuffix;
-            ExecuteRequest(requestUrl, fileName, delegate(Stream stream)
-            {
-                ParseProjects(stream, ref projects);
-            });
+            
+            ExecuteRequest(requestUrl, fileName, 
+                delegate(Stream stream)
+                {
+                    ParseProjects(stream, ref projects);
+                }
+            );
+
             return projects;
         }
 
@@ -100,10 +109,14 @@ namespace PivoTurtle
             string requestUrl = "https://www.pivotaltracker.com/services/v3/projects/" + projectId + "/stories?filter=state:started";
             List<PivotalStory> stories = null;
             string fileName = fileNameStories + "-" + projectId + fileSuffix;
-            ExecuteRequest(requestUrl, fileName, delegate(Stream stream)
-            {
-                ParseStories(stream, ref stories);
-            });
+            
+            ExecuteRequest(requestUrl, fileName, 
+                delegate(Stream stream)
+                {
+                    ParseStories(stream, ref stories);
+                }
+            );
+
             return stories;
         }
 
@@ -113,10 +126,14 @@ namespace PivoTurtle
             string requestUrl = "https://www.pivotaltracker.com/services/v3/projects/" + projectId + "/stories/" + storyId + "/tasks";
             List<PivotalTask> tasks = null;
             string fileName = fileNameTasks + "-" + projectId + "-" + storyId + fileSuffix;
-            ExecuteRequest(requestUrl, fileName, delegate(Stream stream)
-            {
-                ParseTasks(stream, ref tasks);
-            });
+
+            ExecuteRequest(requestUrl, fileName, 
+                delegate(Stream stream)
+                {
+                    ParseTasks(stream, ref tasks);
+                }
+            );
+
             return tasks;
         }
 
@@ -124,6 +141,7 @@ namespace PivoTurtle
         {
             XmlDocument document = XmlHelper.parseStream(stream, defaultEncoding);
             XmlNodeList nodeList = document.DocumentElement.GetElementsByTagName(PivotalProject.tagProject);
+            
             projects = new List<PivotalProject>();
             foreach (XmlNode node in nodeList)
             {
@@ -137,6 +155,7 @@ namespace PivoTurtle
         {
             XmlDocument document = XmlHelper.parseStream(stream, defaultEncoding);
             XmlNodeList nodeList = document.DocumentElement.GetElementsByTagName(PivotalStory.tagStory);
+
             stories = new List<PivotalStory>();
             foreach (XmlNode node in nodeList)
             {
@@ -150,6 +169,7 @@ namespace PivoTurtle
         {
             XmlDocument document = XmlHelper.parseStream(stream, defaultEncoding);
             XmlNodeList nodeList = document.DocumentElement.GetElementsByTagName(PivotalTask.tagTask);
+            
             tasks = new List<PivotalTask>();
             foreach (XmlNode node in nodeList)
             {
@@ -166,11 +186,23 @@ namespace PivoTurtle
 
         public void ExecuteRequest(string requestUrl, string fileName, string userId, string passWord, ResponseHandler handler)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUrl);
             HttpWebResponse response = null;
             Stream resultStream = null;
+
             try
             {
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUrl);
+
+                // Added 1/1/2014 - LAE
+                // by default WebRequest tries to work out the proxy settings to use from
+                // IE settings. This simple thing takes bloody ages. So if you need to use
+                // proxying might be better to get the settings from user rather than wait
+                // for WebRequest to work them out
+                // Anyway the line below will drastically speed up fetching replies from the
+                // other end
+
+                request.Proxy = null;
+
                 if (isConnected)
                 {
                     if (userId.Length > 0 && passWord.Length > 0)
@@ -181,21 +213,37 @@ namespace PivoTurtle
                     {
                         request.Headers.Add("X-TrackerToken", token.Guid);
                     }
+
                     request.KeepAlive = false;
                     response = (HttpWebResponse)request.GetResponse();
                     resultStream = response.GetResponseStream();
+
+                    // offline just means it saves the servers response into a
+                    // data file for later perusal. A debugging aid
+
                     if (allowOffline)
                     {
                         MemoryStream memoryStream = new MemoryStream();
                         CopyStream(resultStream, memoryStream);
                         resultStream.Close();
                         memoryStream.Seek(0, SeekOrigin.Begin);
+
+                        // has user specified a directory into which to place the
+                        // server responses
+
+                        if (String.IsNullOrEmpty(dataDirectory) || !Directory.Exists(dataDirectory))
+                            dataDirectory = Directory.GetCurrentDirectory();
+
+                        if (String.IsNullOrEmpty(fileName))
+                            fileName = "dbg_svr.xml";
+
                         string path = dataDirectory + Path.DirectorySeparatorChar + fileName;
                         FileStream fileOutput = new FileStream(path, FileMode.Create);
                         if (!File.Exists(path))
                         {
-                            throw new ApplicationException("The data file does not exist: " + path);
+                            throw new ApplicationException("Couldn't create file: " + path);
                         }
+
                         try
                         {
                             CopyStream(memoryStream, fileOutput);
@@ -204,11 +252,12 @@ namespace PivoTurtle
                         {
                             fileOutput.Close();
                         }
+
                         memoryStream.Seek(0, SeekOrigin.Begin);
                         resultStream = memoryStream;
                     }
                 }
-                else if(allowOffline)
+                else if (allowOffline)
                 {
                     string path = dataDirectory + Path.DirectorySeparatorChar + fileName;
                     resultStream = new FileStream(path, FileMode.Open);
@@ -229,6 +278,7 @@ namespace PivoTurtle
         {
             byte[] buffer = new byte[4096];
             int read;
+
             while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
             {
                 output.Write(buffer, 0, read);

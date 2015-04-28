@@ -67,7 +67,7 @@ namespace PivoTurtle
                     return bool.Parse(value);
                 }
             }
-            catch (Exception x)
+            catch
             {
                 // do nothing
             }
@@ -84,7 +84,7 @@ namespace PivoTurtle
                     return int.Parse(value);
                 }
             }
-            catch (Exception x)
+            catch
             {
                 // do nothing
             }
@@ -101,7 +101,7 @@ namespace PivoTurtle
                     return long.Parse(value);
                 }
             }
-            catch (Exception x)
+            catch
             {
                 // do nothing
             }
@@ -118,7 +118,7 @@ namespace PivoTurtle
                     return value.Split(separators, StringSplitOptions.RemoveEmptyEntries);
                 }
             }
-            catch (Exception x)
+            catch
             {
                 // do nothing
             }
@@ -140,7 +140,7 @@ namespace PivoTurtle
                     return result;
                 }
             }
-            catch (Exception x)
+            catch
             {
                 // do nothing
             }
@@ -157,7 +157,7 @@ namespace PivoTurtle
                     return ParsePivotalDateTime(value, format);
                 }
             }
-            catch (Exception x)
+            catch
             {
                 // do nothing
             }

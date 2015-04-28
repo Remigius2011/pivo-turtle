@@ -116,7 +116,7 @@ namespace PivoTurtle
         
         public string DisplayName
         {
-            get { return name + " (" + id + ")"; }
+            get { return name + " ( ID:" + id + " )"; }
         }
 
         public long Id

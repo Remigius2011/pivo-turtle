@@ -21,29 +21,57 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
+using System.Runtime.InteropServices;
+using System.Threading;
+using System.Text.RegularExpressions;
+using System.Diagnostics;
+
 
 namespace PivoTurtle
 {
     public partial class IssuesForm : Form
     {
+        public enum STORY_STATE
+        {
+            ssChore,
+            ssFixed,
+            ssDelivered
+        }
+
+        public class STORY_STATUS
+        {
+            public long Id { get; set; }
+            public STORY_STATE Status { get; set; }
+
+            public STORY_STATUS(long _id, STORY_STATE _state)
+            {
+                Id = _id;
+                Status = _state;
+            }
+        }
+
         private ProjectSettings settings;
         private PivotalServiceClient pivotalClient;
         private List<PivotalProject> projects = new List<PivotalProject>();
         private List<PivotalStory> stories = new List<PivotalStory>();
-        private long selectedProjectId = -1;
+        private long selectedProjectId = 0;
         private string originalMessage;
         private string commitMessage;
-        private string selectedStories;
+        private List<long> selectedStories = new List<long>();
+        private STORY_STATE initState = STORY_STATE.ssChore;  
         private StoryMessageTemplate template = new StoryMessageTemplate();
+
         private bool whileDisplayingStories = false;
         private bool whileDisplayingProjects = false;
         private bool whileChangingAllSelections = false;
         private bool isConnected = true;
 
+
         public IssuesForm(ProjectSettings settings)
         {
             this.settings = settings;
             InitializeComponent();
+ 
             pivotalClient = new PivotalServiceClient();
         }
 
@@ -63,7 +91,7 @@ namespace PivoTurtle
             set { if (value != selectedProjectId) projects.Clear(); selectedProjectId = value; }
         }
 
-        public string SelectedStories
+        public List<long> SelectedStories
         {
             get { return selectedStories; }
             set { selectedStories = value; }
@@ -84,9 +112,9 @@ namespace PivoTurtle
         {
             try
             {
-                SelectedProjectId = long.Parse(parameters);
+                SelectedProjectId = Convert.ToInt32(parameters);
             }
-            catch (Exception x)
+            catch
             {
                 // do nothing
             }
@@ -98,54 +126,87 @@ namespace PivoTurtle
             foreach (PivotalStory story in stories)
             {
                 if (IsSelected(story.Id))
-                {
                     result.Add(story);
-                }
             }
             return result;
         }
 
+        // Update 2/1/2014 - LAE  selected stories now at list of longs
+
         public bool IsSelected(long storyId)
         {
-            string checkSelection = "," + selectedStories + ",";
-            return checkSelection.Contains("," + storyId + ",");
+            return selectedStories.Contains(storyId);  
         }
 
-        private void SignOn()
+        public STORY_STATE GetStoryStatus(long storyId)
+        {
+            return STORY_STATE.ssChore;
+        }
+
+        private bool SignOn()
         {
             if (!pivotalClient.IsSignedOn())
             {
                 string userId = "";
                 string password = "";
-                if (SignOnForm.SignOn(ref userId, ref password))
+
+                if (!SignOnForm.SignOn(ref userId, ref password))
+                    return false;
+
+                PivotalToken token = pivotalClient.SignOn(userId, password);
+
+                if (token == null)
+                    return false;
+
+                if (Properties.Settings.Default.SaveServerToken)
                 {
-                    PivotalToken token = pivotalClient.SignOn(userId, password);
-                    if (Properties.Settings.Default.SaveServerToken)
-                    {
-                        Properties.Settings.Default.TokenGuid = token.Guid;
-                        Properties.Settings.Default.TokenId = token.Id;
-                    }
+                    Properties.Settings.Default.TokenGuid = token.Guid;
+                    Properties.Settings.Default.TokenId = token.Id;
+
+                    // Added 1/1/2014 - LAE Persist the settings for quick start next time
+                    Properties.Settings.Default.Save();   
                 }
             }
+
+            return true;
         }
 
-        private void LoadPivotalData()
+        private bool LoadPivotalData()
         {
-            LoadPivotalProjects();
-            if (selectedProjectId >= 0)
+            try
             {
-                LoadPivotalStories(selectedProjectId);
+				if (LoadPivotalProjects())
+				{
+					if (selectedProjectId != 0)
+					{
+						return LoadPivotalStories(selectedProjectId);
+					}
+				}
+
+				return false;
             }
+            catch (Exception ex)
+            {
+                ErrorForm.ShowException(ex, "Error retreiving Pivotal data");
+            }
+
+			return false;
         }
 
-        private void LoadPivotalProjects()
+        private bool LoadPivotalProjects()
         {
             Cursor cursor = this.Cursor;
             this.Cursor = Cursors.WaitCursor;
-            try
+
+			try
             {
-                SignOn();
-                projects = pivotalClient.GetProjects();
+                if (SignOn())
+                {
+                    projects = pivotalClient.GetProjects();
+                    return (projects != null && projects.Count > 0);
+                }
+
+                return false;
             }
             finally
             {
@@ -153,14 +214,17 @@ namespace PivoTurtle
             }
         }
 
-        private void LoadPivotalStories(long projectId)
+        private bool LoadPivotalStories(long projectId)
         {
             Cursor cursor = this.Cursor;
             this.Cursor = Cursors.WaitCursor;
             try
             {
-                SignOn();
-                stories = pivotalClient.GetStories(projectId.ToString());
+				if (!SignOn())
+					return false;
+
+				stories = pivotalClient.GetStories(projectId.ToString());
+				return (stories != null && stories.Count > 0);
             }
             finally
             {
@@ -177,6 +241,7 @@ namespace PivoTurtle
         private void DisplayPivotalProjects()
         {
             whileDisplayingProjects = true;
+
             try
             {
                 PivotalProject selectedProject = null;
@@ -184,6 +249,7 @@ namespace PivoTurtle
                 comboBoxProjects.Items.Clear();
                 comboBoxProjects.ValueMember = "Id";
                 comboBoxProjects.DisplayMember = "DisplayName";
+
                 foreach (PivotalProject project in projects)
                 {
                     comboBoxProjects.Items.Add(project);
@@ -197,6 +263,12 @@ namespace PivoTurtle
                     comboBoxProjects.SelectedItem = selectedProject;
                 }
             }
+
+            catch (Exception ex)
+            {
+                ErrorForm.ShowException(ex, "An Error Occurred");
+            }
+
             finally
             {
                 whileDisplayingProjects = false;
@@ -207,10 +279,19 @@ namespace PivoTurtle
         private void DisplayPivotalStories()
         {
             whileDisplayingStories = true;
+
             try
             {
+                switch (initState)
+                {
+                    case STORY_STATE.ssFixed:       { radioFixed1.Checked = true; break; }
+                    case STORY_STATE.ssDelivered:   { radioDeliver1.Checked = true; break; }
+                    default:                        { radioChore1.Checked = true; break; }
+                }
+
                 listViewStories.BeginUpdate();
                 listViewStories.Items.Clear();
+
                 foreach (PivotalStory story in stories)
                 {
                     ListViewItem item = new ListViewItem();
@@ -221,8 +302,8 @@ namespace PivoTurtle
                     item.Checked = IsSelected(story.Id);
 
                     listViewStories.Items.Add(item);
-                }
-            }
+				}
+			}
             finally
             {
                 whileDisplayingStories = false;
@@ -233,19 +314,26 @@ namespace PivoTurtle
         private void UpdateServerToken()
         {
             if (!Properties.Settings.Default.SaveServerToken)
-            {
                 return;
-            }
-            string tokenGuid = Properties.Settings.Default.TokenGuid;
-            long tokenId = Properties.Settings.Default.TokenId;
-            if (tokenId >= 0 && tokenGuid.Length > 0)
+
+            try
             {
-                PivotalToken token = new PivotalToken();
-                token.Guid = tokenGuid;
-                token.Id = tokenId;
-                pivotalClient.Token = token;
+                string tokenGuid = Properties.Settings.Default.TokenGuid;
+                long tokenId = Properties.Settings.Default.TokenId;
+
+                if (tokenId >= 0 && tokenGuid.Length > 0)
+                {
+                    PivotalToken token = new PivotalToken();
+                    token.Guid = tokenGuid;
+                    token.Id = tokenId;
+                    pivotalClient.Token = token;
+                }
+                else
+                {
+                    pivotalClient.Token = null;
+                }
             }
-            else
+            catch
             {
                 pivotalClient.Token = null;
             }
@@ -264,9 +352,9 @@ namespace PivoTurtle
                 template.Template = templateStr;
                 UpdateMessage();
             }
-            catch (Exception x)
+            catch (Exception ex)
             {
-                ErrorForm.ShowException(x, "Parse Message Template");
+                ErrorForm.ShowException(ex, "Parse Message Template");
                 template.Template = previousTemplate;
             }
         }
@@ -274,60 +362,64 @@ namespace PivoTurtle
         private void UpdateMessage()
         {
             if (whileDisplayingStories)
-            {
                 return;
-            }
+
             try
             {
                 List<PivotalStory> selectedStoryList = GetSelectedStories();
-                string result = template.Evaluate(selectedStoryList, textBoxOriginal.Text);
+
+                string status = "chore";
+
+                if (this.radioFixed1.Checked)
+                    status = "fixes";
+                else
+                if (this.radioDeliver1.Checked)
+                    status = "deliver";
+
+                string result = template.Evaluate(selectedStoryList, status, textBoxOriginal.Text);
+
                 textBoxResult.Text = result;
                 commitMessage = result;
+                // Added 1/1/2014 - the user's input will persist between instances of this form showing
+                originalMessage = textBoxOriginal.Text; 
                 buttonOk.Enabled = textBoxOriginal.Text.Length > 0 && selectedStoryList.Count > 0;
             }
-            catch (Exception x)
+            catch (Exception ex)
             {
-                ErrorForm.ShowException(x, "Evaluate Message Template");
+                ErrorForm.ShowException(ex, "Evaluate Message Template");
             }
         }
 
+        //// Updated 2/1/2014 - LAE make a list of selected story id's
+
         private void UpdateSelectedStories()
         {
-            StringBuilder result = new StringBuilder();
+            List<long> selected = new List<long>();
+
             foreach (ListViewItem item in listViewStories.Items)
             {
-                if (item == null)
+                if (item.Checked)
                 {
-                    // this seems to be a strange artifact during the second or later
-                    // construction phase of the form - we don't have to continue in this case
-                    return;
-                }
-                else
-                {
-                    if (item.Checked)
-                    {
-                        PivotalStory story = item.Tag as PivotalStory;
-                        if (result.Length > 0)
-                        {
-                            result.Append(',');
-                        }
-                        result.Append(story.Id);
-                    }
+                    PivotalStory story = item.Tag as PivotalStory;
+                    selected.Add(story.Id);
                 }
             }
-            selectedStories = result.ToString();
+
+            selectedStories = selected;
         }
 
         private void UpdateSelectAllCheckbox()
         {
             bool allChecked = listViewStories.Items.Count > 0;
             bool allUnchecked = true;
+
             foreach (ListViewItem item in listViewStories.Items)
             {
                 bool check = item.Checked;
                 allChecked &= check;
                 allUnchecked &= !check;
             }
+
             columnHeaderCheck.ImageIndex = allUnchecked ? 0 : allChecked ? 1 : 2;
         }
 
@@ -344,59 +436,156 @@ namespace PivoTurtle
             {
                 pivotalClient.AllowOffline = Properties.Settings.Default.AllowOffline;
                 pivotalClient.DataDirectory = Properties.Settings.Default.DataDirectory;
+
+                // Added 1/1/2014 - LAE force dialog to be fully drawn before going
+                // talking out to internet. Helps avoid partly drawn form.
+
+                Refresh();
+ 
                 UpdateConnected();
                 timerStateUpdate.Enabled = true;
+                
                 if (pivotalClient.Token == null)
-                {
                     UpdateServerToken();
-                }
-                if (string.IsNullOrEmpty(selectedStories) || !selectedStories.Equals(Properties.Settings.Default.SelectedStories))
+
+                // auto-select last project
+
+                if (selectedProjectId != settings.ProjectId)
                 {
-                    selectedStories = Properties.Settings.Default.SelectedStories;
-                }
-                if (selectedProjectId != Properties.Settings.Default.SelectedProject)
-                {
-                    selectedProjectId = Properties.Settings.Default.SelectedProject;
+                    selectedProjectId = settings.ProjectId;
                     projects.Clear();
                     stories.Clear();
                 }
+
                 if (projects.Count == 0)
                 {
-                    LoadPivotalData();
-                    if (projects.Count == 0)
-                    {
-                        throw new ApplicationException("No projects obtained from Pivotal Tracker.\nYou must be assigned to at least one project.");
-                    }
+                    if (LoadPivotalData() == false)
+                        MessageBox.Show ("No projects obtained from Pivotal Tracker.\nYou must be assigned to at least one project.");
                 }
+
+                // Added 2/1/2013 - LAE get previous selected story indecies
+
+                ExtractPivotalFieldsFromMessage(OriginalMessage);
+ 
+                // show data
+
                 DisplayPivotalData();
                 UpdateSelectAllCheckbox();
                 UpdateTemplate(Properties.Settings.Default.MessageTemplate);
                 textBoxOriginal.Select();
             }
-            catch (Exception x)
+            catch (Exception ex)
             {
-                ErrorForm.ShowException(x, "Error Displaying Issues Form - will close");
-                Close();
+                ErrorForm.ShowException(ex, "Error Displaying Issues Form - will close");
             }
         }
+
+        // Added 2/1/2014 - LAE extract the story id's from the original message
+
+        private void ExtractPivotalFieldsFromMessage(string Msg)
+        {
+            string bracketPat = @"(?:[\[](?<1>[^\]]*)[\]])";    // search for [#nnnn,#nnnn]
+            string srchId = @"(?:[#\s](?<1>\d+))";
+            string srchStatus = @"(?<1>\w+)";
+
+            selectedStories.Clear();
+            string newStr = Msg;
+
+            // replace \n with \r\n
+            newStr = Regex.Replace(newStr, @"\r\n?|\n", Environment.NewLine);
+
+            if (!String.IsNullOrEmpty(Msg))
+            {
+                try
+                {
+                    //
+
+                    foreach (Match substr in Regex.Matches(Msg, bracketPat))
+                    {
+                        // remove found ref field from original string
+
+                        newStr = Regex.Replace(newStr, bracketPat, "");
+
+                        // extract the story IDs
+
+                        initState = STORY_STATE.ssChore;
+  
+                        foreach (Match m in Regex.Matches(substr.Groups[1].Value, srchStatus))
+                        {
+                            switch (m.Groups[1].Value.ToUpper())
+                            {
+                                case "FIXES":
+                                case "FIXED":
+                                case "FINISHED":
+                                    initState = STORY_STATE.ssFixed; 
+                                    break;
+                                case "DELIVER":
+                                case "DELIVERED":
+                                    initState = STORY_STATE.ssDelivered;  
+                                    break;
+                            }
+                        }
+
+                        // process the id's found
+
+                        foreach (Match Id in Regex.Matches(substr.Groups[1].Value, srchId))
+                        {
+                            int id = Convert.ToInt32(Id.Groups[1].Value);
+
+                            if (id == 0) 
+                                continue;
+
+                            // add id to list if it doesn't already exist
+
+                            if (!IsSelected(id))
+                                selectedStories.Add(id);
+                        }
+
+                    }
+
+                    // see if any story url's can be found in the original message
+
+                    foreach (PivotalStory story in stories)
+                    {
+                        string pattern = story.Url;
+                        foreach (Match substr in Regex.Matches(Msg, pattern))
+                        {
+                            // remove found ref field from original string
+                            newStr = Regex.Replace(newStr, pattern, "");
+
+                            // add story id to list if doesn't already exist
+                            if (!IsSelected(story.Id))
+                                selectedStories.Add(story.Id);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ErrorForm.ShowException(ex, "Error extracting Id fields");
+                }
+            }
+
+            OriginalMessage = newStr.Trim(); 
+            textBoxOriginal.Text = OriginalMessage;
+        }
+
 
         private void comboBoxProjects_SelectedIndexChanged(object sender, EventArgs e)
         {
             try
             {
                 if (whileDisplayingProjects)
-                {
                     return;
-                }
+                
                 PivotalProject project = comboBoxProjects.SelectedItem as PivotalProject;
                 LoadPivotalStories(project.Id);
                 DisplayPivotalStories();
                 UpdateMessage();
                 selectedProjectId = project.Id;
             }
-            catch (Exception x)
+            catch (Exception ex)
             {
-                ErrorForm.ShowException(x, "An Error Occurred");
+                ErrorForm.ShowException(ex, "An Error Occurred");
             }
         }
 
@@ -406,9 +595,9 @@ namespace PivoTurtle
             {
                 UpdateMessage();
             }
-            catch (Exception x)
+            catch (Exception ex)
             {
-                ErrorForm.ShowException(x, "An Error Occurred");
+                ErrorForm.ShowException(ex, "An Error Occurred");
             }
         }
 
@@ -417,17 +606,21 @@ namespace PivoTurtle
             try
             {
                 if (e.Column != 0)
-                {
                     return;
-                }
+
                 whileChangingAllSelections = true;
+
                 try
                 {
                     bool check = false;
+                    
                     foreach (ListViewItem item in listViewStories.Items)
                     {
                         check |= !item.Checked;
+                        // Added 1/1/2014 - LAE stop as soon as we find a check item
+                        if (check) break;
                     }
+                
                     foreach (ListViewItem item in listViewStories.Items)
                     {
                         item.Checked = check;
@@ -437,13 +630,14 @@ namespace PivoTurtle
                 {
                     whileChangingAllSelections = false;
                 }
+
                 UpdateSelectAllCheckbox();
                 UpdateSelectedStories();
                 UpdateMessage();
             }
-            catch (Exception x)
+            catch (Exception ex)
             {
-                ErrorForm.ShowException(x, "An Error Occurred");
+                ErrorForm.ShowException(ex, "An Error Occurred");
             }
         }
 
@@ -452,16 +646,15 @@ namespace PivoTurtle
             try
             {
                 if (whileDisplayingStories || whileChangingAllSelections)
-                {
                     return;
-                }
+
                 UpdateSelectAllCheckbox();
                 UpdateSelectedStories();
                 UpdateMessage();
             }
-            catch (Exception x)
+            catch (Exception ex)
             {
-                ErrorForm.ShowException(x, "An Error Occurred");
+                ErrorForm.ShowException(ex, "An Error Occurred");
             }
         }
 
@@ -480,9 +673,9 @@ namespace PivoTurtle
                     }
                 }
             }
-            catch (Exception x)
+            catch (Exception ex)
             {
-                ErrorForm.ShowException(x, "An Error Occurred");
+                ErrorForm.ShowException(ex, "An Error Occurred");
             }
         }
 
@@ -493,9 +686,9 @@ namespace PivoTurtle
                 PivotalStory story = (sender as ToolStripItem).Tag as PivotalStory;
                 System.Diagnostics.Process.Start(story.Url);
             }
-            catch (Exception x)
+            catch (Exception ex)
             {
-                ErrorForm.ShowException(x, "An Error Occurred");
+                ErrorForm.ShowException(ex, "An Error Occurred");
             }
         }
 
@@ -504,15 +697,16 @@ namespace PivoTurtle
             try
             {
                 string link = "https://www.pivotaltracker.com";
-                if (selectedProjectId >= 0)
+                if (selectedProjectId != 0)
                 {
                     link += "/projects/" + selectedProjectId;
                 }
-                System.Diagnostics.Process.Start(link);
+
+				System.Diagnostics.Process.Start(link);
             }
-            catch (Exception x)
+            catch (Exception ex)
             {
-                ErrorForm.ShowException(x, "An Error Occurred");
+                ErrorForm.ShowException(ex, "An Error Occurred");
             }
         }
 
@@ -522,15 +716,16 @@ namespace PivoTurtle
             {
                 string editTemplate = template.Template;
                 List<PivotalStory> selectedStoryList = GetSelectedStories();
+
                 if (TemplateForm.EditTemplate(ref editTemplate, selectedStoryList, textBoxOriginal.Text))
                 {
                     UpdateTemplate(editTemplate);
                     Properties.Settings.Default.MessageTemplate = editTemplate;
                 }
             }
-            catch (Exception x)
+            catch (Exception ex)
             {
-                ErrorForm.ShowException(x, "An Error Occurred");
+                ErrorForm.ShowException(ex, "An Error Occurred");
             }
         }
 
@@ -541,9 +736,9 @@ namespace PivoTurtle
                 LoadPivotalData();
                 DisplayPivotalData();
             }
-            catch (Exception x)
+            catch (Exception ex)
             {
-                ErrorForm.ShowException(x, "An Error Occurred");
+                ErrorForm.ShowException(ex, "An Error Occurred");
             }
         }
 
@@ -551,29 +746,49 @@ namespace PivoTurtle
         {
             try
             {
+                // Added - 1/1/2014 LAE - Make sure always got a valid settings filename
+                // The settings file will hold some per repository attributes settings
+
+                if (String.IsNullOrEmpty(settings.FileName))
+                    settings.FileName = ProjectSettings.fileName;
+
                 string settingsFile = settings.FileName;
+
                 if (OptionsForm.ShowOptions(settings))
                 {
-                    if (!settingsFile.Equals(settings.FileName))
+                    if (!String.IsNullOrEmpty(settingsFile) && !settingsFile.Equals(settings.FileName))
                     {
                         File.Move(settingsFile, settings.FileName);
                     }
-                    settings.Save();
+
+                    SettingsFile.SaveXML(settings.FileName, settings);   
+
                     pivotalClient.AllowOffline = Properties.Settings.Default.AllowOffline;
                     pivotalClient.DataDirectory = Properties.Settings.Default.DataDirectory;
                 }
+
                 UpdateServerToken();
             }
-            catch (Exception x)
+            catch (Exception ex)
             {
-                ErrorForm.ShowException(x, "An Error Occurred");
+                ErrorForm.ShowException(ex, "An Error Occurred");
             }
         }
 
         private void buttonOk_Click(object sender, EventArgs e)
         {
-            Properties.Settings.Default.SelectedStories = selectedStories;
-            Properties.Settings.Default.SelectedProject = selectedProjectId;
+            StringBuilder IDs = new StringBuilder();
+
+            foreach (long id in selectedStories)
+            {
+                if (IDs.Length > 0)
+                    IDs.Append(",");
+
+                IDs.Append(id.ToString());
+            }
+
+            // persist projectid
+            settings.ProjectId = selectedProjectId;
         }
 
         private void textBoxOriginal_Enter(object sender, EventArgs e)
@@ -589,6 +804,72 @@ namespace PivoTurtle
         private void timerStateUpdate_Tick(object sender, EventArgs e)
         {
             UpdateConnected();
+        }
+
+        private void Status_Change(object sender, EventArgs e)
+        {
+            UpdateMessage();
+        }
+
+        private void buttonCancel_Click(object sender, EventArgs e)
+        {
+            // persist projectid
+            settings.ProjectId = selectedProjectId;
+        }
+    }
+
+    // Added 1/1/2014 - LAE provide a way of timing functions
+
+    public class HiPerfTimer
+    {
+        [DllImport("Kernel32.dll")]
+        private static extern bool QueryPerformanceCounter(
+            out long lpPerformanceCount);
+
+        [DllImport("Kernel32.dll")]
+        private static extern bool QueryPerformanceFrequency(
+            out long lpFrequency);
+
+        private long startTime, stopTime;
+        private long freq;
+
+        public long Frequency { get { return freq; } }
+
+        // Constructor
+        public HiPerfTimer()
+        {
+            startTime = 0;
+            stopTime = 0;
+
+            if (QueryPerformanceFrequency(out freq) == false)
+            {
+                // high-performance counter not supported
+                throw new Win32Exception();
+            }
+        }
+
+        // Start the timer
+        public void Start()
+        {
+            // lets do the waiting threads there work
+            Thread.Sleep(0);
+
+            QueryPerformanceCounter(out startTime);
+        }
+
+        // Stop the timer
+        public void Stop()
+        {
+            QueryPerformanceCounter(out stopTime);
+        }
+
+        // Returns the duration of the timer (in seconds)
+        public double Duration
+        {
+            get
+            {
+                return (double)(stopTime - startTime) / (double)freq;
+            }
         }
     }
 }

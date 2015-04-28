@@ -17,23 +17,28 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Windows.Forms;
 
+ 
 namespace PivoTurtle
 {
     public class StoryMessageTemplate
     {
         public static readonly string[] standardTemplates = {
-                                                      "{%id%,}[ %original%]",
-                                                      "[%original%\\r\\n\\r\\n]{%name%, }",
-                                                      "[%original%\\r\\n\\r\\n]{%id% - %name%, }",
-                                                      "[%original%\\r\\n\\r\\n]{%name%\\r\\n}",
-                                                      "[%original%\\r\\n\\r\\n]{%id% - %name%\\r\\n}",
-                                                      "[%original%\\r\\n\\r\\n]{%url%\\r\\n}",
-                                                      "[%original%\\r\\n\\r\\n]{%url% %name%\\r\\n}",
-                                                      "[Message: %original%\\r\\n\\r\\n]Pivotal Tracker Stories:\\r\\n\\r\\n{%url% %name%\\r\\n}"
+                                                      "[[%state% {#%id%,}]][ %original% ]",
+                                                      //@"%original%\r\n\r\n{%name%, }",
+                                                      //@"%original%\r\n\r\n[[ %state% {#%id% - %name%, }]]",
+                                                      //@"%original%\r\n\r\n{%name%\r\n}",
+                                                      //@"%original%\r\n\r\n[[ %state% {#%id% - %name%\r\n}]]",
+                                                      @"%original%\r\n\r\n{%url%\r\n}",
+                                                      //@"%original%\r\n\r\n{%url% %name%\r\n}",
+                                                      //@"Message: %original%\r\n\r\nPivotal Tracker Stories:\r\n\r\n{%url% %name%\r\n}",
+//                                                      @"Message: [[ %state% {#%id%,} ] %original%\r\n\r\nPivotal Tracker Stories:\r\n\r\n{%url%\r\n}"
+                                                      @"Message: [[%state% {#%id%,}]] %original%\r\n\r\n{%url%\r\n}"
                                                   };
 
         public const string tokenId = "id";
+        public const string tokenState = "state";
         public const string tokenName = "name";
         public const string tokenUrl = "url";
         public const string tokenOriginal = "original";
@@ -55,7 +60,7 @@ namespace PivoTurtle
 
         private enum FragmentToken
         {
-            LITERAL, ID, NAME, URL, ORIGINAL, REPEAT_START, REPEAT_END, OPTIONAL_START, OPTIONAL_END
+            LITERAL, ID, STATE, NAME, URL, ORIGINAL, REPEAT_START, REPEAT_END, OPTIONAL_START, OPTIONAL_END
         }
 
         private class Fragment
@@ -82,7 +87,7 @@ namespace PivoTurtle
             set { ParseTemplate(value); template = value; }
         }
 
-        public string Evaluate(List<PivotalStory> stories, string originalMessage)
+        public string Evaluate(List<PivotalStory> stories, string status, string originalMessage)
         {
             int repeatFrom = -1;
             StringBuilder result = new StringBuilder();
@@ -119,7 +124,7 @@ namespace PivoTurtle
                         {
                             if (fragments[k].token != FragmentToken.LITERAL)
                             {
-                                string value = GetFragmentValue(fragments[k], null, 0, originalMessage);
+                                string value = GetFragmentValue(fragments[k], null, 0, status, originalMessage);
                                 isEmpty = string.IsNullOrEmpty(value);
                             }
                             k++;
@@ -132,10 +137,11 @@ namespace PivoTurtle
                     case FragmentToken.OPTIONAL_END:
                         result.Append(fragment.value);
                         break;
+
                     default:
                         if (!isRepeating || storyIndex < storyCount)
                         {
-                            string value = GetFragmentValue(fragment, stories, storyIndex, originalMessage);
+                            string value = GetFragmentValue(fragment, stories, storyIndex, status, originalMessage);
                             result.Append(value);
                         }
                         break;
@@ -144,13 +150,17 @@ namespace PivoTurtle
             return result.ToString();
         }
 
-        private string GetFragmentValue(Fragment fragment, List<PivotalStory> stories, int index, string originalMessage)
+        private string GetFragmentValue(Fragment fragment, List<PivotalStory> stories, int index, string status, string originalMessage)
         {
             PivotalStory story = stories != null && index < stories.Count ? stories[index] : null;
             switch (fragment.token)
             {
                 case FragmentToken.LITERAL:
                     return fragment.value;
+
+                case FragmentToken.STATE:
+                    return status;
+
                 case FragmentToken.ID:
                     if (story != null)
                     {
@@ -182,8 +192,13 @@ namespace PivoTurtle
             bool isRepeat = false;
             bool isOptional = false;
             bool isToken = false;
+
             StringBuilder currentFragmentValue = new StringBuilder();
-            for (int i = 0; i < length; i++)
+
+            // Updated 1/1/2014 - LAE Can't use 'for' loop due to extra character processing
+
+            int i = 0;
+            while (i < length)
             {
                 switch (template[i])
                 {
@@ -191,6 +206,7 @@ namespace PivoTurtle
                         AddFragment(newFragments, currentFragmentValue, isToken);
                         isToken = !isToken;
                         break;
+
                     case repeatStart:
                         if (isRepeat)
                         {
@@ -204,6 +220,7 @@ namespace PivoTurtle
                         AddFragment(newFragments, currentFragmentValue, FragmentToken.REPEAT_START);
                         isRepeat = true;
                         break;
+
                     case repeatEnd:
                         if (!isRepeat)
                         {
@@ -216,11 +233,24 @@ namespace PivoTurtle
                         AddFragment(newFragments, currentFragmentValue, FragmentToken.REPEAT_END);
                         isRepeat = false;
                         break;
+
                     case optionalStart:
+
+                        // Added 1/1/2014 - LAE see if a square bracket literal is present ie [[
+
+                        if (!isRepeat && !isToken && (i + 1 < length) && (template[i + 1] == optionalStart))
+                        {
+                            currentFragmentValue.Append(template[i]);
+                            isOptional = false;
+                            ++i;    // inc char index. Index stepped at end of loop as well
+                            break;
+                        }
+
                         if (isOptional)
                         {
                             throw new ApplicationException("Error in template: nested optional sequence is not allowed");
                         }
+
                         if (isToken || isRepeat)
                         {
                             throw new ApplicationException("Error in template: unterminated token or repeated sequence encountered: " + currentFragmentValue.ToString());
@@ -229,7 +259,19 @@ namespace PivoTurtle
                         AddFragment(newFragments, currentFragmentValue, FragmentToken.OPTIONAL_START);
                         isOptional = true;
                         break;
+
                     case optionalEnd:
+
+                        // Added 1/1/2014 - LAE see if a square bracket literal is present ie ]]
+
+                        if (!isRepeat && !isToken && (i + 1 < length) && (template[i + 1] == optionalEnd))
+                        {
+                            currentFragmentValue.Append(template[i]);
+                            isOptional = false;
+                            ++i;    // inc char index. Index stepped at end of loop as well
+                            break;
+                        }
+
                         if (!isOptional)
                         {
                             throw new ApplicationException("Error in template: end of optional sequence without corresponding start");
@@ -241,11 +283,15 @@ namespace PivoTurtle
                         isOptional = false;
                         AddFragment(newFragments, currentFragmentValue, FragmentToken.OPTIONAL_END);
                         break;
+
                     default:
                         currentFragmentValue.Append(template[i]);
                         break;
                 }
+
+                ++i;        // step to next char
             }
+
             if (isRepeat)
             {
                 throw new ApplicationException("Error in template: start repeat without corresponding end");
@@ -278,6 +324,10 @@ namespace PivoTurtle
                 if (tokenId.Equals(value))
                 {
                     fragment = new Fragment(FragmentToken.ID);
+                }
+                else if (tokenState.Equals(value)) // Added 5/1/2014
+                {
+                    fragment = new Fragment(FragmentToken.STATE);
                 }
                 else if (tokenName.Equals(value))
                 {

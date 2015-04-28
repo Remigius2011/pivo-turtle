@@ -36,7 +36,7 @@ namespace PivoTurtle
                 bool isConnected = InternetGetConnectedState(ref flags, 0);
                 return isConnected;
             }
-            catch (Exception x)
+            catch
             {
                 // do nothing
             }

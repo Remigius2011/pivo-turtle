@@ -28,154 +28,154 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TemplateForm));
-            this.labelTemplate = new System.Windows.Forms.Label();
-            this.labelPreview = new System.Windows.Forms.Label();
-            this.textBoxTemplate = new System.Windows.Forms.TextBox();
-            this.textBoxPreview = new System.Windows.Forms.TextBox();
-            this.buttonOk = new System.Windows.Forms.Button();
-            this.buttonCancel = new System.Windows.Forms.Button();
-            this.imageListOkFail = new System.Windows.Forms.ImageList(this.components);
-            this.labelOkFail = new System.Windows.Forms.Label();
-            this.labelStandard = new System.Windows.Forms.Label();
-            this.comboBoxStandard = new System.Windows.Forms.ComboBox();
-            this.SuspendLayout();
-            // 
-            // labelTemplate
-            // 
-            this.labelTemplate.AutoSize = true;
-            this.labelTemplate.Location = new System.Drawing.Point(12, 45);
-            this.labelTemplate.Name = "labelTemplate";
-            this.labelTemplate.Size = new System.Drawing.Size(51, 13);
-            this.labelTemplate.TabIndex = 0;
-            this.labelTemplate.Text = "Template";
-            // 
-            // labelPreview
-            // 
-            this.labelPreview.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.labelPreview.AutoSize = true;
-            this.labelPreview.Location = new System.Drawing.Point(12, 151);
-            this.labelPreview.Name = "labelPreview";
-            this.labelPreview.Size = new System.Drawing.Size(45, 13);
-            this.labelPreview.TabIndex = 3;
-            this.labelPreview.Text = "Preview";
-            // 
-            // textBoxTemplate
-            // 
-            this.textBoxTemplate.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			this.components = new System.ComponentModel.Container();
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TemplateForm));
+			this.labelTemplate = new System.Windows.Forms.Label();
+			this.labelPreview = new System.Windows.Forms.Label();
+			this.textBoxTemplate = new System.Windows.Forms.TextBox();
+			this.textBoxPreview = new System.Windows.Forms.TextBox();
+			this.buttonOk = new System.Windows.Forms.Button();
+			this.buttonCancel = new System.Windows.Forms.Button();
+			this.imageListOkFail = new System.Windows.Forms.ImageList(this.components);
+			this.labelOkFail = new System.Windows.Forms.Label();
+			this.labelStandard = new System.Windows.Forms.Label();
+			this.comboBoxStandard = new System.Windows.Forms.ComboBox();
+			this.SuspendLayout();
+			// 
+			// labelTemplate
+			// 
+			this.labelTemplate.AutoSize = true;
+			this.labelTemplate.Location = new System.Drawing.Point(12, 45);
+			this.labelTemplate.Name = "labelTemplate";
+			this.labelTemplate.Size = new System.Drawing.Size(51, 13);
+			this.labelTemplate.TabIndex = 0;
+			this.labelTemplate.Text = "Template";
+			// 
+			// labelPreview
+			// 
+			this.labelPreview.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.labelPreview.AutoSize = true;
+			this.labelPreview.Location = new System.Drawing.Point(12, 151);
+			this.labelPreview.Name = "labelPreview";
+			this.labelPreview.Size = new System.Drawing.Size(45, 13);
+			this.labelPreview.TabIndex = 3;
+			this.labelPreview.Text = "Preview";
+			// 
+			// textBoxTemplate
+			// 
+			this.textBoxTemplate.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxTemplate.Location = new System.Drawing.Point(126, 42);
-            this.textBoxTemplate.Multiline = true;
-            this.textBoxTemplate.Name = "textBoxTemplate";
-            this.textBoxTemplate.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBoxTemplate.Size = new System.Drawing.Size(425, 100);
-            this.textBoxTemplate.TabIndex = 1;
-            this.textBoxTemplate.WordWrap = false;
-            this.textBoxTemplate.TextChanged += new System.EventHandler(this.textBoxTemplate_TextChanged);
-            this.textBoxTemplate.Enter += new System.EventHandler(this.textBoxTemplate_Enter);
-            this.textBoxTemplate.Leave += new System.EventHandler(this.textBoxTemplate_Leave);
-            // 
-            // textBoxPreview
-            // 
-            this.textBoxPreview.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+			this.textBoxTemplate.Location = new System.Drawing.Point(126, 42);
+			this.textBoxTemplate.Multiline = true;
+			this.textBoxTemplate.Name = "textBoxTemplate";
+			this.textBoxTemplate.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+			this.textBoxTemplate.Size = new System.Drawing.Size(425, 100);
+			this.textBoxTemplate.TabIndex = 1;
+			this.textBoxTemplate.WordWrap = false;
+			this.textBoxTemplate.TextChanged += new System.EventHandler(this.textBoxTemplate_TextChanged);
+			this.textBoxTemplate.Enter += new System.EventHandler(this.textBoxTemplate_Enter);
+			this.textBoxTemplate.Leave += new System.EventHandler(this.textBoxTemplate_Leave);
+			// 
+			// textBoxPreview
+			// 
+			this.textBoxPreview.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxPreview.Location = new System.Drawing.Point(126, 148);
-            this.textBoxPreview.Multiline = true;
-            this.textBoxPreview.Name = "textBoxPreview";
-            this.textBoxPreview.ReadOnly = true;
-            this.textBoxPreview.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBoxPreview.Size = new System.Drawing.Size(425, 100);
-            this.textBoxPreview.TabIndex = 4;
-            this.textBoxPreview.WordWrap = false;
-            // 
-            // buttonOk
-            // 
-            this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.buttonOk.Location = new System.Drawing.Point(476, 266);
-            this.buttonOk.Name = "buttonOk";
-            this.buttonOk.Size = new System.Drawing.Size(75, 23);
-            this.buttonOk.TabIndex = 6;
-            this.buttonOk.Text = "OK";
-            this.buttonOk.UseVisualStyleBackColor = true;
-            this.buttonOk.Click += new System.EventHandler(this.buttonOk_Click);
-            // 
-            // buttonCancel
-            // 
-            this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(385, 266);
-            this.buttonCancel.Name = "buttonCancel";
-            this.buttonCancel.Size = new System.Drawing.Size(75, 23);
-            this.buttonCancel.TabIndex = 5;
-            this.buttonCancel.Text = "Cancel";
-            this.buttonCancel.UseVisualStyleBackColor = true;
-            // 
-            // imageListOkFail
-            // 
-            this.imageListOkFail.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListOkFail.ImageStream")));
-            this.imageListOkFail.TransparentColor = System.Drawing.Color.Transparent;
-            this.imageListOkFail.Images.SetKeyName(0, "IconOk32.png");
-            this.imageListOkFail.Images.SetKeyName(1, "IconFail32.png");
-            // 
-            // labelOkFail
-            // 
-            this.labelOkFail.ImageIndex = 0;
-            this.labelOkFail.ImageList = this.imageListOkFail;
-            this.labelOkFail.Location = new System.Drawing.Point(25, 70);
-            this.labelOkFail.Name = "labelOkFail";
-            this.labelOkFail.Size = new System.Drawing.Size(32, 32);
-            this.labelOkFail.TabIndex = 2;
-            // 
-            // labelStandard
-            // 
-            this.labelStandard.AutoSize = true;
-            this.labelStandard.Location = new System.Drawing.Point(12, 12);
-            this.labelStandard.Name = "labelStandard";
-            this.labelStandard.Size = new System.Drawing.Size(96, 13);
-            this.labelStandard.TabIndex = 7;
-            this.labelStandard.Text = "Standard Temlates";
-            // 
-            // comboBoxStandard
-            // 
-            this.comboBoxStandard.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+			this.textBoxPreview.Location = new System.Drawing.Point(126, 148);
+			this.textBoxPreview.Multiline = true;
+			this.textBoxPreview.Name = "textBoxPreview";
+			this.textBoxPreview.ReadOnly = true;
+			this.textBoxPreview.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+			this.textBoxPreview.Size = new System.Drawing.Size(425, 100);
+			this.textBoxPreview.TabIndex = 4;
+			this.textBoxPreview.WordWrap = false;
+			// 
+			// buttonOk
+			// 
+			this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
+			this.buttonOk.Location = new System.Drawing.Point(395, 266);
+			this.buttonOk.Name = "buttonOk";
+			this.buttonOk.Size = new System.Drawing.Size(75, 23);
+			this.buttonOk.TabIndex = 6;
+			this.buttonOk.Text = "OK";
+			this.buttonOk.UseVisualStyleBackColor = true;
+			this.buttonOk.Click += new System.EventHandler(this.buttonOk_Click);
+			// 
+			// buttonCancel
+			// 
+			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.buttonCancel.Location = new System.Drawing.Point(476, 266);
+			this.buttonCancel.Name = "buttonCancel";
+			this.buttonCancel.Size = new System.Drawing.Size(75, 23);
+			this.buttonCancel.TabIndex = 5;
+			this.buttonCancel.Text = "Cancel";
+			this.buttonCancel.UseVisualStyleBackColor = true;
+			// 
+			// imageListOkFail
+			// 
+			this.imageListOkFail.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListOkFail.ImageStream")));
+			this.imageListOkFail.TransparentColor = System.Drawing.Color.Transparent;
+			this.imageListOkFail.Images.SetKeyName(0, "IconOk32.png");
+			this.imageListOkFail.Images.SetKeyName(1, "IconFail32.png");
+			// 
+			// labelOkFail
+			// 
+			this.labelOkFail.ImageIndex = 0;
+			this.labelOkFail.ImageList = this.imageListOkFail;
+			this.labelOkFail.Location = new System.Drawing.Point(25, 70);
+			this.labelOkFail.Name = "labelOkFail";
+			this.labelOkFail.Size = new System.Drawing.Size(32, 32);
+			this.labelOkFail.TabIndex = 2;
+			// 
+			// labelStandard
+			// 
+			this.labelStandard.AutoSize = true;
+			this.labelStandard.Location = new System.Drawing.Point(12, 12);
+			this.labelStandard.Name = "labelStandard";
+			this.labelStandard.Size = new System.Drawing.Size(96, 13);
+			this.labelStandard.TabIndex = 7;
+			this.labelStandard.Text = "Standard Temlates";
+			// 
+			// comboBoxStandard
+			// 
+			this.comboBoxStandard.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboBoxStandard.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxStandard.FormattingEnabled = true;
-            this.comboBoxStandard.Location = new System.Drawing.Point(126, 9);
-            this.comboBoxStandard.Name = "comboBoxStandard";
-            this.comboBoxStandard.Size = new System.Drawing.Size(425, 21);
-            this.comboBoxStandard.TabIndex = 8;
-            this.comboBoxStandard.SelectedIndexChanged += new System.EventHandler(this.comboBoxStandard_SelectedIndexChanged);
-            // 
-            // TemplateForm
-            // 
-            this.AcceptButton = this.buttonOk;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(563, 301);
-            this.Controls.Add(this.comboBoxStandard);
-            this.Controls.Add(this.labelStandard);
-            this.Controls.Add(this.labelOkFail);
-            this.Controls.Add(this.buttonCancel);
-            this.Controls.Add(this.buttonOk);
-            this.Controls.Add(this.textBoxPreview);
-            this.Controls.Add(this.textBoxTemplate);
-            this.Controls.Add(this.labelPreview);
-            this.Controls.Add(this.labelTemplate);
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
-            this.Name = "TemplateForm";
-            this.ShowIcon = false;
-            this.ShowInTaskbar = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Edit Template";
-            this.Load += new System.EventHandler(this.TemplateForm_Load);
-            this.ResumeLayout(false);
-            this.PerformLayout();
+			this.comboBoxStandard.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.comboBoxStandard.FormattingEnabled = true;
+			this.comboBoxStandard.Location = new System.Drawing.Point(126, 9);
+			this.comboBoxStandard.Name = "comboBoxStandard";
+			this.comboBoxStandard.Size = new System.Drawing.Size(425, 21);
+			this.comboBoxStandard.TabIndex = 8;
+			this.comboBoxStandard.SelectedIndexChanged += new System.EventHandler(this.comboBoxStandard_SelectedIndexChanged);
+			// 
+			// TemplateForm
+			// 
+			this.AcceptButton = this.buttonOk;
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.CancelButton = this.buttonCancel;
+			this.ClientSize = new System.Drawing.Size(563, 301);
+			this.Controls.Add(this.comboBoxStandard);
+			this.Controls.Add(this.labelStandard);
+			this.Controls.Add(this.labelOkFail);
+			this.Controls.Add(this.buttonCancel);
+			this.Controls.Add(this.buttonOk);
+			this.Controls.Add(this.textBoxPreview);
+			this.Controls.Add(this.textBoxTemplate);
+			this.Controls.Add(this.labelPreview);
+			this.Controls.Add(this.labelTemplate);
+			this.MaximizeBox = false;
+			this.MinimizeBox = false;
+			this.Name = "TemplateForm";
+			this.ShowIcon = false;
+			this.ShowInTaskbar = false;
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+			this.Text = "Edit Template";
+			this.Load += new System.EventHandler(this.TemplateForm_Load);
+			this.ResumeLayout(false);
+			this.PerformLayout();
 
         }
 

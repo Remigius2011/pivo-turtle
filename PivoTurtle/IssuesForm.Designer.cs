@@ -64,7 +64,7 @@
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.Location = new System.Drawing.Point(461, 477);
+			this.buttonCancel.Location = new System.Drawing.Point(543, 477);
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.Size = new System.Drawing.Size(75, 23);
 			this.buttonCancel.TabIndex = 12;
@@ -76,7 +76,7 @@
 			// 
 			this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonOk.Location = new System.Drawing.Point(542, 477);
+			this.buttonOk.Location = new System.Drawing.Point(462, 477);
 			this.buttonOk.Name = "buttonOk";
 			this.buttonOk.Size = new System.Drawing.Size(75, 23);
 			this.buttonOk.TabIndex = 13;
@@ -189,7 +189,7 @@
 			// 
 			this.buttonOptions.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonOptions.Image = ((System.Drawing.Image)(resources.GetObject("buttonOptions.Image")));
-			this.buttonOptions.Location = new System.Drawing.Point(417, 477);
+			this.buttonOptions.Location = new System.Drawing.Point(348, 477);
 			this.buttonOptions.Name = "buttonOptions";
 			this.buttonOptions.Size = new System.Drawing.Size(23, 23);
 			this.buttonOptions.TabIndex = 11;
@@ -248,7 +248,7 @@
 			// 
 			this.buttonRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonRefresh.Image = ((System.Drawing.Image)(resources.GetObject("buttonRefresh.Image")));
-			this.buttonRefresh.Location = new System.Drawing.Point(388, 477);
+			this.buttonRefresh.Location = new System.Drawing.Point(319, 477);
 			this.buttonRefresh.Name = "buttonRefresh";
 			this.buttonRefresh.Size = new System.Drawing.Size(23, 23);
 			this.buttonRefresh.TabIndex = 10;
@@ -259,7 +259,7 @@
 			// 
 			this.buttonTemplate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonTemplate.Image = ((System.Drawing.Image)(resources.GetObject("buttonTemplate.Image")));
-			this.buttonTemplate.Location = new System.Drawing.Point(359, 477);
+			this.buttonTemplate.Location = new System.Drawing.Point(290, 477);
 			this.buttonTemplate.Name = "buttonTemplate";
 			this.buttonTemplate.Size = new System.Drawing.Size(23, 23);
 			this.buttonTemplate.TabIndex = 9;

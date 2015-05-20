@@ -15,81 +15,76 @@
 */
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
-using System.IO;
 
 namespace PivoTurtle
 {
-    public partial class OptionsForm : Form
-    {
-        private bool allowOffline;
-        private string dataDirectory;
-        private ProjectSettings settings;
+	public partial class OptionsForm : Form
+	{
+		private bool allowOffline;
+		private string dataDirectory;
+		private ProjectSettings settings;
 
-        public bool AllowOffline
-        {
-            get { return allowOffline; }
-            set { allowOffline = value; }
-        }
+		public bool AllowOffline
+		{
+			get { return allowOffline; }
+			set { allowOffline = value; }
+		}
 
-        public string DataDirectory
-        {
-            get { return dataDirectory; }
-            set { dataDirectory = value; }
-        }
+		public string DataDirectory
+		{
+			get { return dataDirectory; }
+			set { dataDirectory = value; }
+		}
 
-        public ProjectSettings Settings
-        {
-            get { return settings; }
-            set { settings = value; }
-        }
+		public ProjectSettings Settings
+		{
+			get { return settings; }
+			set { settings = value; }
+		}
 
-        public static bool ShowOptions(ProjectSettings settings)
-        {
-            OptionsForm form = new OptionsForm();
-            
-            form.AllowOffline = Properties.Settings.Default.AllowOffline;
-            form.DataDirectory = Properties.Settings.Default.DataDirectory; 
-            form.Settings = settings;
+		public static bool ShowOptions(ProjectSettings settings)
+		{
+			OptionsForm form = new OptionsForm();
 
-            if (form.ShowDialog() == DialogResult.OK)
-            {
-                Properties.Settings.Default.AllowOffline = form.AllowOffline;
-                Properties.Settings.Default.DataDirectory = form.DataDirectory;
-                return true;
-            }
-            return false;
-        }
+			form.AllowOffline = Properties.Settings.Default.AllowOffline;
+			form.DataDirectory = Properties.Settings.Default.DataDirectory;
+			form.Settings = settings;
 
-        public OptionsForm()
-        {
-            InitializeComponent();
-        }
+			if (form.ShowDialog() == DialogResult.OK)
+			{
+				Properties.Settings.Default.AllowOffline = form.AllowOffline;
+				Properties.Settings.Default.DataDirectory = form.DataDirectory;
+				return true;
+			}
+			return false;
+		}
 
-        private void OptionsForm_Load(object sender, EventArgs e)
-        {
-            checkBoxAllowOffline.Checked = allowOffline;
-            textBoxDataDirectory.Text = dataDirectory;
-        }
+		public OptionsForm()
+		{
+			InitializeComponent();
+		}
 
-        private void buttonResetToken_Click(object sender, EventArgs e)
-        {
-            Properties.Settings.Default.TokenGuid = "";
-            Properties.Settings.Default.TokenId = -1;
-        }
+		private void OptionsForm_Load(object sender, EventArgs e)
+		{
+			checkBoxAllowOffline.Checked = allowOffline;
+			textBoxDataDirectory.Text = dataDirectory;
+		}
 
-        private void buttonOk_Click(object sender, EventArgs e)
-        {
-            allowOffline = checkBoxAllowOffline.Checked;
-            dataDirectory = textBoxDataDirectory.Text;
+		private void buttonResetToken_Click(object sender, EventArgs e)
+		{
+			Properties.Settings.Default.TokenGuid = "";
+			Properties.Settings.Default.TokenId = -1;
+		}
 
-            // Added 1/1/2014 - LAE Persist the property values
+		private void buttonOk_Click(object sender, EventArgs e)
+		{
+			allowOffline = checkBoxAllowOffline.Checked;
+			dataDirectory = textBoxDataDirectory.Text;
 
-            Properties.Settings.Default.Save();  
-        }
-    }
+			// Added 1/1/2014 - LAE Persist the property values
+
+			Properties.Settings.Default.Save();
+		}
+	}
 }

@@ -15,13 +15,11 @@
 */
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Xml;
 
 namespace PivoTurtle
 {
-    /*
+	/*
 <task>
   <id type="integer">7342401</id>
   <description>test</description>
@@ -29,64 +27,65 @@ namespace PivoTurtle
   <complete type="boolean">false</complete>
   <created_at type="datetime">2012/05/17 00:37:32 CEST</created_at>
 </task>
-     */
-    public class PivotalTask
-    {
-        public const string dateTimeFormat = "yyyy/MM/dd HH:mm:ss";
+	 */
 
-        public const string tagTasks = "tasks";
-        public const string tagTask = "task";
-        public const string tagId = "id";
-        public const string tagDescription = "description";
-        public const string tagPosition = "position";
-        public const string tagComplete = "complete";
-        public const string tagCreatedAt = "created_at";
+	public class PivotalTask
+	{
+		public const string dateTimeFormat = "yyyy/MM/dd HH:mm:ss";
 
-        private long id;
-        private string description;
-        private int position;
-        private bool complete;
-        private DateTime createdAt;
+		public const string tagTasks = "tasks";
+		public const string tagTask = "task";
+		public const string tagId = "id";
+		public const string tagDescription = "description";
+		public const string tagPosition = "position";
+		public const string tagComplete = "complete";
+		public const string tagCreatedAt = "created_at";
 
-        public long Id
-        {
-            get { return id; }
-            set { id = value; }
-        }
+		private long id;
+		private string description;
+		private int position;
+		private bool complete;
+		private DateTime createdAt;
 
-        public string Description
-        {
-            get { return description; }
-            set { description = value; }
-        }
+		public long Id
+		{
+			get { return id; }
+			set { id = value; }
+		}
 
-        public int Position
-        {
-            get { return position; }
-            set { position = value; }
-        }
+		public string Description
+		{
+			get { return description; }
+			set { description = value; }
+		}
 
-        public bool Complete
-        {
-            get { return complete; }
-            set { complete = value; }
-        }
+		public int Position
+		{
+			get { return position; }
+			set { position = value; }
+		}
 
-        public DateTime CreatedAt
-        {
-            get { return createdAt; }
-            set { createdAt = value; }
-        }
+		public bool Complete
+		{
+			get { return complete; }
+			set { complete = value; }
+		}
 
-        public static PivotalTask fromXml(XmlElement element)
-        {
-            PivotalTask task = new PivotalTask();
-            task.Id = XmlHelper.getElementLong(element, tagId, -1);
-            task.Description = XmlHelper.getElementString(element, tagDescription, "");
-            task.Position = XmlHelper.getElementInt(element, tagPosition, -1);
-            task.Complete = XmlHelper.getElementBool(element, tagComplete, false);
-            task.CreatedAt = XmlHelper.getElementDateTime(element, tagCreatedAt, dateTimeFormat, new DateTime(0));
-            return task;
-        }
-    }
+		public DateTime CreatedAt
+		{
+			get { return createdAt; }
+			set { createdAt = value; }
+		}
+
+		public static PivotalTask fromXml(XmlElement element)
+		{
+			PivotalTask task = new PivotalTask();
+			task.Id = XmlHelper.getElementLong(element, tagId, -1);
+			task.Description = XmlHelper.getElementString(element, tagDescription, "");
+			task.Position = XmlHelper.getElementInt(element, tagPosition, -1);
+			task.Complete = XmlHelper.getElementBool(element, tagComplete, false);
+			task.CreatedAt = XmlHelper.getElementDateTime(element, tagCreatedAt, dateTimeFormat, new DateTime(0));
+			return task;
+		}
+	}
 }

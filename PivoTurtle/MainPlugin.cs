@@ -15,12 +15,10 @@
 */
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-using Interop.BugTraqProvider;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using System.IO;
+using Interop.BugTraqProvider;
 
 // see http://stackoverflow.com/questions/2753631/building-an-issue-tracker-plugin-for-tortoisesvn
 // see http://code.google.com/p/tortoisesvn/source/browse/#svn/trunk/contrib/issue-tracker-plugins
@@ -38,182 +36,179 @@ using System.IO;
 
 namespace PivoTurtle
 {
-    [ComVisible(true), Guid("4A32C95D-0B66-4280-B370-F71410B521D6"), ClassInterface(ClassInterfaceType.None)]
-    public class MainPlugin : IBugTraqProvider, IBugTraqProvider2
-    {
-        private IssuesForm form;
-        private ProjectSettings settings = new ProjectSettings();
-        private string reposRootPath = "";
-        private static string savedMessage;
-        private static string savedCommitMessage;
+	[ComVisible(true), Guid("4A32C95D-0B66-4280-B370-F71410B521D6"), ClassInterface(ClassInterfaceType.None)]
+	public class MainPlugin : IBugTraqProvider, IBugTraqProvider2
+	{
+		private IssuesForm form;
+		private ProjectSettings settings = new ProjectSettings();
+		private string reposRootPath = "";
+		private static string savedMessage;
+		private static string savedCommitMessage;
 
-        public string GetCommitMessage(IntPtr hParentWnd, string parameters, string commonRoot, string[] pathList, string originalMessage)
-        {
-            string bugId = "";
-            string[] revPropNames;
-            string[] revPropValues;
-            return GetCommitMessage2(hParentWnd, parameters, "", commonRoot, pathList, originalMessage, bugId, out bugId, out revPropNames, out revPropValues);
-        }
+		public string GetCommitMessage(IntPtr hParentWnd, string parameters, string commonRoot, string[] pathList, string originalMessage)
+		{
+			string bugId = "";
+			string[] revPropNames;
+			string[] revPropValues;
+			return GetCommitMessage2(hParentWnd, parameters, "", commonRoot, pathList, originalMessage, bugId, out bugId, out revPropNames, out revPropValues);
+		}
 
-        public string GetLinkText(IntPtr hParentWnd, string parameters)
-        {
-            return "Choose Pivotal Stories";
-        }
+		public string GetLinkText(IntPtr hParentWnd, string parameters)
+		{
+			return "Choose Pivotal Stories";
+		}
 
-        public bool ValidateParameters(IntPtr hParentWnd, string parameters)
-        {
-            try
-            {
-                return true;
-            }
-            catch (Exception ex)
-            {
-                ErrorForm.ShowException(ex, "Error Validating Parameters");
-            }
-            return false;
-        }
+		public bool ValidateParameters(IntPtr hParentWnd, string parameters)
+		{
+			try
+			{
+				return true;
+			}
+			catch (Exception ex)
+			{
+				ErrorForm.ShowException(ex, "Error Validating Parameters");
+			}
+			return false;
+		}
 
-        public string CheckCommit(IntPtr hParentWnd, string parameters, string commonURL, string commonRoot, string[] pathList, string commitMessage)
-        {
-            // return an empty string for OK or an error message to inhibit the commit
+		public string CheckCommit(IntPtr hParentWnd, string parameters, string commonURL, string commonRoot, string[] pathList, string commitMessage)
+		{
+			// return an empty string for OK or an error message to inhibit the commit
 
 			if (commitMessage == null || !commitMessage.Equals(savedCommitMessage))
-            {
-                if (MessageBox.Show("The message has been edited outside PivoTurtle\nand therefore might not be compliant to the project guidelines.\n\nDo you want to continue anyway?", "Message modified", MessageBoxButtons.YesNo) == DialogResult.No)
-                {
-                    return "Commit aborted after message modification";
-                }
-            }
-            return "";
-        }
+			{
+				if (MessageBox.Show("The message has been edited outside PivoTurtle\nand therefore might not be compliant to the project guidelines.\n\nDo you want to continue anyway?", "Message modified", MessageBoxButtons.YesNo) == DialogResult.No)
+				{
+					return "Commit aborted after message modification";
+				}
+			}
+			return "";
+		}
 
-        public string GetCommitMessage2(IntPtr hParentWnd, string parameters, 
-            string commonURL, string commonRoot, string[] pathList, 
-            string originalMessage, string bugID, out string bugIDOut, 
-            out string[] revPropNames, out string[] revPropValues)
-        {
-            bugIDOut = bugID;
+		public string GetCommitMessage2(IntPtr hParentWnd, string parameters,
+			string commonURL, string commonRoot, string[] pathList,
+			string originalMessage, string bugID, out string bugIDOut,
+			out string[] revPropNames, out string[] revPropValues)
+		{
+			bugIDOut = bugID;
 
-            revPropNames = new string[0];
-            revPropValues = new string[0];
+			revPropNames = new string[0];
+			revPropValues = new string[0];
 
-            try
-            {
-                reposRootPath = commonRoot;
-  
-                LoadSettings();  
-                using(form = new IssuesForm(settings))
-                {
-                    form.SetParameters(parameters);
-                    form.OriginalMessage = originalMessage;
+			try
+			{
+				reposRootPath = commonRoot;
 
-                    if (form.ShowDialog() == DialogResult.OK)
-                    {
-                        savedMessage = form.OriginalMessage;
-                        savedCommitMessage = form.CommitMessage; 
-                        return form.CommitMessage;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                ErrorForm.ShowException(ex, "Error Getting Commit Message");
-            }
+				LoadSettings();
+				using (form = new IssuesForm(settings))
+				{
+					form.SetParameters(parameters);
+					form.OriginalMessage = originalMessage;
 
-            finally
-            {
-                SaveSettings();
-            }
+					if (form.ShowDialog() == DialogResult.OK)
+					{
+						savedMessage = form.OriginalMessage;
+						savedCommitMessage = form.CommitMessage;
+						return form.CommitMessage;
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				ErrorForm.ShowException(ex, "Error Getting Commit Message");
+			}
+			finally
+			{
+				SaveSettings();
+			}
 
-            return originalMessage;
-        }
+			return originalMessage;
+		}
 
-        public bool HasOptions()
-        {
-            return true;
-        }
+		public bool HasOptions()
+		{
+			return true;
+		}
 
-        public string OnCommitFinished(IntPtr hParentWnd, string commonRoot, string[] pathList, string logMessage, int revision)
-        {
-            // todo: link back to commit here
-            // pathList contains a list of relative paths to the committed objects
-            // todo: find a way to access commit hash in case of git
-            // o optionally add comment with path list
-            // o optionally add comment with commit hash / revision no
-            // o optionally finish the issue
-            // -> dialog to make sure everything is OK even if PivoTurtle was not invoked for the commit message
-            /*
-            try
-            {
+		public string OnCommitFinished(IntPtr hParentWnd, string commonRoot, string[] pathList, string logMessage, int revision)
+		{
+			// todo: link back to commit here
+			// pathList contains a list of relative paths to the committed objects
+			// todo: find a way to access commit hash in case of git
+			// o optionally add comment with path list
+			// o optionally add comment with commit hash / revision no
+			// o optionally finish the issue
+			// -> dialog to make sure everything is OK even if PivoTurtle was not invoked for the commit message
+			/*
+			try
+			{
+			}
+			catch (Exception x)
+			{
+				ErrorForm.ShowException(x, "Error After Commit");
+			}
+			 * */
+			return "";
+		}
 
-            }
-            catch (Exception x)
-            {
-                ErrorForm.ShowException(x, "Error After Commit");
-            }
-             * */
-            return "";
-        }
+		public string ShowOptionsDialog(IntPtr hParentWnd, string parameters)
+		{
+			try
+			{
+				LoadSettings();
+				bool settingsLoaded = settings.Loaded;
+				string settingsFile = settings.FileName;
+				if (OptionsForm.ShowOptions(settings))
+				{
+					if (settingsLoaded && !settingsFile.Equals(settings.FileName))
+					{
+						File.Move(settingsFile, settings.FileName);
+					}
+					SaveSettings();
+				}
+			}
+			catch (Exception ex)
+			{
+				ErrorForm.ShowException(ex, "Error Showing Options Dialog");
+			}
+			return parameters;
+		}
 
-        public string ShowOptionsDialog(IntPtr hParentWnd, string parameters)
-        {
-            try
-            {
-                LoadSettings();
-                bool settingsLoaded = settings.Loaded; 
-                string settingsFile = settings.FileName;
-                if (OptionsForm.ShowOptions(settings))
-                {
-                    if (settingsLoaded && !settingsFile.Equals(settings.FileName))
-                    {
-                        File.Move(settingsFile, settings.FileName);
-                    }
-                    SaveSettings();
-                }
-            }
-            catch (Exception ex)
-            {
-                ErrorForm.ShowException(ex, "Error Showing Options Dialog");
-            }
-            return parameters;
-        }
+		private string GetSettingsPath(string parameters)
+		{
+			if (parameters.Length == 0) return ProjectSettings.fileName;
+			return Path.Combine(parameters, ProjectSettings.fileName);
+		}
 
-        private string GetSettingsPath(string parameters)
-        {
-            if (parameters.Length == 0) return ProjectSettings.fileName;
-            return Path.Combine(parameters, ProjectSettings.fileName);
-        }
+		private void LoadSettings()
+		{
+			string fileName = GetSettingsPath(reposRootPath);
 
-        private void LoadSettings()
-        {
-            string fileName = GetSettingsPath(reposRootPath);
+			try
+			{
+				if (File.Exists(fileName))
+				{
+					// load in project settings file
+					settings = (ProjectSettings)SettingsFile.LoadXML(fileName, settings.GetType());
+					settings.Loaded = true;
+				}
+			}
+			catch (Exception ex)
+			{
+				ErrorForm.ShowException(ex, "An Error Occurred");
+			}
+		}
 
-            try
-            {
-                if (File.Exists(fileName))
-                {
-                    // load in project settings file
-                    settings = (ProjectSettings)SettingsFile.LoadXML(fileName, settings.GetType());
-                    settings.Loaded = true;
-                }
-            }
-            catch (Exception ex)
-            {
-                ErrorForm.ShowException(ex, "An Error Occurred");
-            }
-        }
+		private void SaveSettings()
+		{
+			// Added 2/1/2014 - LAE persist local project settings
 
-        private void SaveSettings()
-        {
-            // Added 2/1/2014 - LAE persist local project settings
+			string fileName = GetSettingsPath(reposRootPath);
+			SettingsFile.SaveXML(fileName, settings);
 
-            string fileName = GetSettingsPath(reposRootPath);
-            SettingsFile.SaveXML(fileName, settings);
-  
-            // Added 2/1/2014 - LAE persist application settings
-            
-            Properties.Settings.Default.Save();
-        }
+			// Added 2/1/2014 - LAE persist application settings
 
-    }
+			Properties.Settings.Default.Save();
+		}
+	}
 }

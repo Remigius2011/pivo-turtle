@@ -84,7 +84,7 @@ namespace PivoTurtle.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("@\"Message: [[%state% {#%id%,}]] %original%\\r\\n\\r\\n{%url%}\\r\\n}\"\r\n")]
         public string MessageTemplate {
             get {
                 return ((string)(this["MessageTemplate"]));
@@ -108,7 +108,7 @@ namespace PivoTurtle.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool AllowOffline {
             get {
                 return ((bool)(this["AllowOffline"]));

@@ -23,16 +23,9 @@ namespace PivoTurtle
 	public class StoryMessageTemplate
 	{
 		public static readonly string[] standardTemplates = {
-                                                      "[[%state% {#%id%,}]][ %original% ]",
-                                                      //@"%original%\r\n\r\n{%name%, }",
-                                                      //@"%original%\r\n\r\n[[ %state% {#%id% - %name%, }]]",
-                                                      //@"%original%\r\n\r\n{%name%\r\n}",
-                                                      //@"%original%\r\n\r\n[[ %state% {#%id% - %name%\r\n}]]",
+                                                      @"[[%state% {#%id%,}]][ %original% ]",
                                                       @"%original%\r\n\r\n{%url%\r\n}",
-                                                      //@"%original%\r\n\r\n{%url% %name%\r\n}",
-                                                      //@"Message: %original%\r\n\r\nPivotal Tracker Stories:\r\n\r\n{%url% %name%\r\n}",
-//                                                      @"Message: [[ %state% {#%id%,} ] %original%\r\n\r\nPivotal Tracker Stories:\r\n\r\n{%url%\r\n}"
-                                                      @"Message: [[%state% {#%id%,}]] %original%\r\n\r\n{%url%\r\n}"
+                                                      @"Message: [[%state% {#%id%,}]] %original%\r\n\r\n{%url%}\r\n}"
                                                   };
 
 		public const string tokenId = "id";

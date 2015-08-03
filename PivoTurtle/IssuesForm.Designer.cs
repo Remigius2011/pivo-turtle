@@ -56,6 +56,7 @@
 			this.radioFixed1 = new System.Windows.Forms.RadioButton();
 			this.radioChore1 = new System.Windows.Forms.RadioButton();
 			this.label1 = new System.Windows.Forms.Label();
+			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.contextMenuStripStories.SuspendLayout();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
@@ -139,6 +140,7 @@
 			this.comboBoxProjects.Name = "comboBoxProjects";
 			this.comboBoxProjects.Size = new System.Drawing.Size(504, 21);
 			this.comboBoxProjects.TabIndex = 1;
+			this.toolTip1.SetToolTip(this.comboBoxProjects, "Currently active project");
 			this.comboBoxProjects.SelectedIndexChanged += new System.EventHandler(this.comboBoxProjects_SelectedIndexChanged);
 			// 
 			// labelProject
@@ -189,10 +191,11 @@
 			// 
 			this.buttonOptions.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonOptions.Image = ((System.Drawing.Image)(resources.GetObject("buttonOptions.Image")));
-			this.buttonOptions.Location = new System.Drawing.Point(348, 477);
+			this.buttonOptions.Location = new System.Drawing.Point(319, 477);
 			this.buttonOptions.Name = "buttonOptions";
 			this.buttonOptions.Size = new System.Drawing.Size(23, 23);
 			this.buttonOptions.TabIndex = 11;
+			this.toolTip1.SetToolTip(this.buttonOptions, "Configure general settings");
 			this.buttonOptions.UseVisualStyleBackColor = true;
 			this.buttonOptions.Click += new System.EventHandler(this.buttonOptions_Click);
 			// 
@@ -242,16 +245,18 @@
 			this.textBoxResult.ScrollBars = System.Windows.Forms.ScrollBars.Both;
 			this.textBoxResult.Size = new System.Drawing.Size(504, 98);
 			this.textBoxResult.TabIndex = 5;
+			this.toolTip1.SetToolTip(this.textBoxResult, "Preview of message");
 			this.textBoxResult.WordWrap = false;
 			// 
 			// buttonRefresh
 			// 
 			this.buttonRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonRefresh.Image = ((System.Drawing.Image)(resources.GetObject("buttonRefresh.Image")));
-			this.buttonRefresh.Location = new System.Drawing.Point(319, 477);
+			this.buttonRefresh.Location = new System.Drawing.Point(386, 477);
 			this.buttonRefresh.Name = "buttonRefresh";
 			this.buttonRefresh.Size = new System.Drawing.Size(23, 23);
 			this.buttonRefresh.TabIndex = 10;
+			this.toolTip1.SetToolTip(this.buttonRefresh, "Refetch Pivotal stories");
 			this.buttonRefresh.UseVisualStyleBackColor = true;
 			this.buttonRefresh.Click += new System.EventHandler(this.buttonRefresh_Click);
 			// 
@@ -263,6 +268,7 @@
 			this.buttonTemplate.Name = "buttonTemplate";
 			this.buttonTemplate.Size = new System.Drawing.Size(23, 23);
 			this.buttonTemplate.TabIndex = 9;
+			this.toolTip1.SetToolTip(this.buttonTemplate, "Configure log message formatting");
 			this.buttonTemplate.UseVisualStyleBackColor = true;
 			this.buttonTemplate.Click += new System.EventHandler(this.buttonTemplate_Click);
 			// 
@@ -291,6 +297,7 @@
 			this.radioDeliver1.TabStop = true;
 			this.radioDeliver1.Tag = "STORY_STATE.ssDelivered";
 			this.radioDeliver1.Text = "Deliver";
+			this.toolTip1.SetToolTip(this.radioDeliver1, "Set selected story items as ready for \'delivery\'");
 			this.radioDeliver1.UseVisualStyleBackColor = true;
 			this.radioDeliver1.Click += new System.EventHandler(this.Status_Change);
 			// 
@@ -304,6 +311,7 @@
 			this.radioFixed1.TabStop = true;
 			this.radioFixed1.Tag = "STORY_STATE.ssFixed";
 			this.radioFixed1.Text = "Fixed";
+			this.toolTip1.SetToolTip(this.radioFixed1, "Set selected story update as being \'fixed\'");
 			this.radioFixed1.UseVisualStyleBackColor = true;
 			this.radioFixed1.Click += new System.EventHandler(this.Status_Change);
 			// 
@@ -317,6 +325,7 @@
 			this.radioChore1.TabStop = true;
 			this.radioChore1.Tag = "STORY_STATE.ssChore";
 			this.radioChore1.Text = "Chore";
+			this.toolTip1.SetToolTip(this.radioChore1, "Set selected story updates as being \'chore\'");
 			this.radioChore1.UseVisualStyleBackColor = true;
 			this.radioChore1.Click += new System.EventHandler(this.Status_Change);
 			// 
@@ -396,5 +405,6 @@
         private System.Windows.Forms.RadioButton radioFixed1;
         private System.Windows.Forms.RadioButton radioChore1;
 		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.ToolTip toolTip1;
     }
 }

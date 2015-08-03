@@ -25,7 +25,7 @@ namespace PivoTurtle
 		public static readonly string[] standardTemplates = {
                                                       @"[[%state% {#%id%,}]][ %original% ]",
                                                       @"%original%\r\n\r\n{%url%\r\n}",
-                                                      @"Message: [[%state% {#%id%,}]] %original%\r\n\r\n{%url%}\r\n}"
+                                                      @"Message: [[%state% {#%id%,}]] %original%\r\n\r\n{%url%\r\n}"
                                                   };
 
 		public const string tokenId = "id";

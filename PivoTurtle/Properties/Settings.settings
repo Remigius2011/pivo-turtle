@@ -18,13 +18,14 @@
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="MessageTemplate" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">@"Message: [[%state% {#%id%,}]] %original%\r\n\r\n{%url%}\r\n}"
+</Value>
     </Setting>
     <Setting Name="SelectedProject" Type="System.Int64" Scope="User">
       <Value Profile="(Default)">-1</Value>
     </Setting>
     <Setting Name="AllowOffline" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="DataDirectory" Type="System.String" Scope="User">
       <Value Profile="(Default)" />

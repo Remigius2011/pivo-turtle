@@ -51,17 +51,28 @@ namespace PivoTurtle
         public static bool SignOn(ref string userId, ref string password)
         {
             SignOnForm form = new SignOnForm();
+            
             form.UserId = userId.Length > 0 ? userId : Properties.Settings.Default.UserId;
             form.Password = password;
             form.SaveServerToken = Properties.Settings.Default.SaveServerToken;
+
             if (form.ShowDialog() != DialogResult.OK)
             {
                 return false;
             }
             userId = form.UserId;
             password = form.Password;
+            
+            // update property values
+
             Properties.Settings.Default.UserId = userId;
             Properties.Settings.Default.SaveServerToken = form.SaveServerToken;
+
+            // Added 1/1/2014 - Persist the changed property values if required to
+
+            if (form.SaveServerToken) 
+                Properties.Settings.Default.Save();   
+
             return true;
         }
 

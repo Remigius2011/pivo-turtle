@@ -5,7 +5,7 @@
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
 
-       http://www.apache.org/licenses/LICENSE-2.0
+	   http://www.apache.org/licenses/LICENSE-2.0
 
    Unless required by applicable law or agreed to in writing, software
    distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,31 +14,27 @@
    limitations under the License.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace PivoTurtle
 {
-    public class TicketItem
-    {
-        private readonly int _ticketNumber;
-        private readonly string _ticketSummary;
+	public class TicketItem
+	{
+		private readonly int _ticketNumber;
+		private readonly string _ticketSummary;
 
-        public TicketItem(int ticketNumber, string ticketSummary)
-        {
-            _ticketNumber = ticketNumber;
-            _ticketSummary = ticketSummary;
-        }
+		public TicketItem(int ticketNumber, string ticketSummary)
+		{
+			_ticketNumber = ticketNumber;
+			_ticketSummary = ticketSummary;
+		}
 
-        public int Number
-        {
-            get { return _ticketNumber; }
-        }
+		public int Number
+		{
+			get { return _ticketNumber; }
+		}
 
-        public string Summary
-        {
-            get { return _ticketSummary; }
-        }
-    }
+		public string Summary
+		{
+			get { return _ticketSummary; }
+		}
+	}
 }

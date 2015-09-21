@@ -90,7 +90,7 @@ namespace PivoTurtle
             {
                 string newTemplate = textBoxTemplate.Text;
                 messageTemplate.Template = newTemplate;
-                textBoxPreview.Text = messageTemplate.Evaluate(stories, originalMessage);
+                textBoxPreview.Text = messageTemplate.Evaluate(stories, "Fixes", originalMessage);
                 labelOkFail.ImageIndex = 0;
                 buttonOk.Enabled = true;
                 int count = comboBoxStandard.Items.Count;
@@ -108,7 +108,7 @@ namespace PivoTurtle
                     comboBoxStandard.SelectedIndex = selectedIndex;
                 }
             }
-            catch (Exception x)
+            catch
             {
                 labelOkFail.ImageIndex = 1;
                 textBoxPreview.Text = "";
